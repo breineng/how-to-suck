@@ -1,0 +1,6 @@
+{
+  "name": "HowToSuck.Runtime",
+  "rootNamespace": "HowToSuck",
+  "references": ["Unity.InputSystem", "Unity.ugui", "Unity.TextMeshPro"],
+  "autoReferenced": true
+}

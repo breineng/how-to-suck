@@ -1,0 +1,81 @@
+# Unity-generated caches and local editor state
+/[Ll]ibrary/
+/[Tt]emp/
+/[Ll]ogs/
+/[Oo]bj/
+/[Uu]ser[Ss]ettings/
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/.vs/
+/.idea/
+/.vscode/
+/.codex/
+/.agents/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.suo
+*.pidb
+*.booproj
+*.svd
+*.tmp
+*.log
+
+# Process crash dumps may contain private data from memory.
+*.[dD][mM][pP]
+
+# Local authoring sources, exports and development automation.
+/Tools/
+/SourceAssets/
+/Exports/
+/AgentScripts/
+
+# Local credentials and machine-specific integration data
+**/eos-client.json
+**/eos-client.json.meta
+.env
+.env.*
+!.env.example
+**/secrets/
+**/credentials/
+**/steam_appid.txt
+**/*.pfx
+**/*.p12
+**/*.pem
+**/*.key
+
+# Backup files, never the authored .blend/FBX/WAV sources
+*.blend1
+*.blend2
+.DS_Store
+Thumbs.db
+
+# Packaged binaries are reproducible local outputs
+/Artifacts/Builds/
+/Artifacts/Packages/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Machine-local audio evaluator, model cache, build recipes and inspection receipts
+/.local/
+/tmp/
+/work/
+
+# Public documentation: Markdown and selected illustrations.
+/docs/**
+!/docs/**/
+!/docs/**/*.md
+!/docs/visual-concepts/old-house-v1.png
+!/docs/visual-concepts/supermarket-v1.png
+!/docs/visual-concepts/warehouse-v2.png
+
+# Local reports, production receipts, release staging and test captures.
+/docs/asset-production/
+/docs/balance/
+/docs/itch/
+/docs/testing/
