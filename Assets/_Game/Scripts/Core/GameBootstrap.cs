@@ -23,7 +23,7 @@ namespace HowToSuck
                     return;
                 }
             DontDestroyOnLoad(gameObject);
-            Session.Initialize(Catalog, new LocalSessionDriver());
+            Session.Initialize(Catalog, new LocalSessionDriver(Session.World));
         }
     }
 }

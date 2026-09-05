@@ -6,6 +6,7 @@ namespace HowToSuck
     public sealed class LevelContext : MonoBehaviour
     {
         public ContractDefinition Contract;
+        public GameObject PlayerPrefab;
         public Transform[] PlayerSpawns = new Transform[4];
 
         private bool showBootstrapHint;

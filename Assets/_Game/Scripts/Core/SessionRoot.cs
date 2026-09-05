@@ -14,6 +14,7 @@ namespace HowToSuck
         public GameCatalog Catalog { get; private set; }
         public ContractDefinition CurrentContract { get; private set; }
         public LevelContext CurrentLevel { get; private set; }
+        public PlayerMotor LocalPlayer { get; private set; }
         public string LastError { get; private set; } = "";
         public bool IsInitialized { get; private set; }
         public event Action Changed;
@@ -54,6 +55,7 @@ namespace HowToSuck
         {
             if (!IsInitialized || Phase == SessionPhase.Loading || Phase == SessionPhase.Booting) return false;
             World.Clear();
+            LocalPlayer = null;
             CurrentLevel = null;
             CurrentContract = null;
             SetPhase(SessionPhase.Loading);
@@ -91,6 +93,7 @@ namespace HowToSuck
                 {
                     LastError = "Could not load location: " + failure.Message;
                     World.Clear();
+            LocalPlayer = null;
                     CurrentContract = null;
                     SetPhase(SessionPhase.Lobby);
                     yield break;
@@ -109,11 +112,28 @@ namespace HowToSuck
                 {
                     LastError = error;
                     World.Clear();
+            LocalPlayer = null;
                     CurrentLevel = null;
                     CurrentContract = null;
                     yield return LoadScene(MenuSceneName, false);
                     yield break;
                 }
+                if (CurrentLevel.PlayerPrefab == null)
+                {
+                    LastError = "Location is missing its player prefab.";
+                    World.Clear();
+            LocalPlayer = null; CurrentLevel = null; CurrentContract = null;
+                    yield return LoadScene(MenuSceneName, false);
+                    yield break;
+                }
+                var spawn = CurrentLevel.PlayerSpawns[0];
+                var player = ((IWorldSpawner)driver).Spawn(CurrentLevel.PlayerPrefab, spawn.position, spawn.rotation);
+                LocalPlayer = player.GetComponent<PlayerMotor>();
+                LocalPlayer.Initialize(1);
+                World.RegisterPlayer(LocalPlayer);
+                var reader = player.GetComponent<PlayerInputReader>();
+                reader.Initialize(1, (IPlayerIntentSink)driver);
+                foreach (var menu in FindObjectsByType<MenuInputController>(FindObjectsSortMode.None)) menu.Bind(this, reader);
                 World.SetRunning(true);
                 SetPhase(SessionPhase.Playing);
             }

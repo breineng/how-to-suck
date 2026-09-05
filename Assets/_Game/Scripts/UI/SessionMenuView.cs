@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace HowToSuck
 {
@@ -17,6 +18,7 @@ namespace HowToSuck
             if (StartButton != null) StartButton.onClick.AddListener(StartSelected);
             if (BackButton != null) BackButton.onClick.AddListener(Back);
             Refresh();
+            if (StartButton != null && StartButton.interactable && EventSystem.current != null) EventSystem.current.SetSelectedGameObject(StartButton.gameObject);
         }
         private void StartSelected()
         {
