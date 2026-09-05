@@ -7,6 +7,7 @@ namespace HowToSuck
     {
         public ContractDefinition Contract;
         public GameObject PlayerPrefab;
+        public LootSpawnPoint[] LootSpawns = System.Array.Empty<LootSpawnPoint>();
         public Transform[] PlayerSpawns = new Transform[4];
 
         private bool showBootstrapHint;
@@ -53,6 +54,36 @@ namespace HowToSuck
                 }
             }
 
+            var motor = PlayerPrefab != null ? PlayerPrefab.GetComponent<PlayerMotor>() : null;
+            var reader = PlayerPrefab != null ? PlayerPrefab.GetComponent<PlayerInputReader>() : null;
+            if (motor == null || reader == null || reader.Actions == null ||
+                motor.AuthoritativeAim == null || motor.NozzleAnchor == null || motor.CameraPivot == null ||
+                PlayerPrefab.GetComponent<VacuumEmitter>() == null)
+            {
+                error = "Location needs a complete player prefab with input, aim and vacuum references.";
+                return false;
+            }
+            if (LootSpawns == null)
+            {
+                error = "Location loot spawn list is missing.";
+                return false;
+            }
+            var authored = new System.Collections.Generic.HashSet<LootSpawnPoint>();
+            foreach (var spawn in LootSpawns)
+            {
+                if (spawn == null || !authored.Add(spawn) || spawn.Prefab == null)
+                {
+                    error = "Location has a missing or duplicate loot spawn or prefab.";
+                    return false;
+                }
+                var item = spawn.Prefab.GetComponent<SuckableObject>();
+                if (item == null)
+                {
+                    error = "Loot prefab '" + spawn.Prefab.name + "' has no SuckableObject.";
+                    return false;
+                }
+                if (!item.TryValidate(out error)) return false;
+            }
             error = null;
             return true;
         }

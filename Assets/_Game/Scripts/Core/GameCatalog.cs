@@ -8,6 +8,7 @@ namespace HowToSuck
     public sealed class GameCatalog : ScriptableObject
     {
         public ContractDefinition[] Contracts = Array.Empty<ContractDefinition>();
+        public VacuumDefinition[] Vacuums = Array.Empty<VacuumDefinition>();
 
         public bool TryValidate(out string error)
         {
@@ -37,6 +38,14 @@ namespace HowToSuck
                 }
             }
 
+            if(Vacuums==null || Vacuums.Length==0) {error="Game catalog has no vacuum definitions.";return false;}
+            ids.Clear();
+            foreach(var vacuum in Vacuums)
+            {
+                if(vacuum==null) {error="Missing vacuum definition.";return false;}
+                if(!vacuum.TryValidate(out error))return false;
+                if(!ids.Add(vacuum.TierId)) {error="Duplicate vacuum tier: "+vacuum.TierId;return false;}
+            }
             error = null;
             return true;
         }

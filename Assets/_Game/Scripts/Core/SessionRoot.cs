@@ -93,7 +93,7 @@ namespace HowToSuck
                 {
                     LastError = "Could not load location: " + failure.Message;
                     World.Clear();
-            LocalPlayer = null;
+                    LocalPlayer = null;
                     CurrentContract = null;
                     SetPhase(SessionPhase.Lobby);
                     yield break;
@@ -112,35 +112,57 @@ namespace HowToSuck
                 {
                     LastError = error;
                     World.Clear();
-            LocalPlayer = null;
+                    LocalPlayer = null;
                     CurrentLevel = null;
                     CurrentContract = null;
                     yield return LoadScene(MenuSceneName, false);
                     yield break;
                 }
-                if (CurrentLevel.PlayerPrefab == null)
+                if (!TryPrepareGameplay(out error))
                 {
-                    LastError = "Location is missing its player prefab.";
+                    LastError = error;
                     World.Clear();
-            LocalPlayer = null; CurrentLevel = null; CurrentContract = null;
+                    LocalPlayer = null;
+                    CurrentLevel = null;
+                    CurrentContract = null;
                     yield return LoadScene(MenuSceneName, false);
                     yield break;
                 }
-                var spawn = CurrentLevel.PlayerSpawns[0];
-                var player = ((IWorldSpawner)driver).Spawn(CurrentLevel.PlayerPrefab, spawn.position, spawn.rotation);
-                LocalPlayer = player.GetComponent<PlayerMotor>();
-                LocalPlayer.Initialize(1);
-                World.RegisterPlayer(LocalPlayer);
-                var reader = player.GetComponent<PlayerInputReader>();
-                reader.Initialize(1, (IPlayerIntentSink)driver);
-                foreach (var menu in FindObjectsByType<MenuInputController>(FindObjectsSortMode.None)) menu.Bind(this, reader);
-                World.SetRunning(true);
                 SetPhase(SessionPhase.Playing);
             }
             else SetPhase(SessionPhase.Lobby);
             BindSceneUi();
         }
 
+        private bool TryPrepareGameplay(out string error)
+        {
+            GameObject player = null;
+            IWorldSpawner spawner = driver as IWorldSpawner;
+            try
+            {
+                if (spawner == null || !(driver is IPlayerIntentSink sink))
+                    throw new InvalidOperationException("Session driver cannot spawn players or accept input.");
+                var spawn = CurrentLevel.PlayerSpawns[0];
+                player = spawner.Spawn(CurrentLevel.PlayerPrefab, spawn.position, spawn.rotation);
+                if (player == null) throw new InvalidOperationException("Player spawn failed.");
+                LocalPlayer = player.GetComponent<PlayerMotor>();
+                LocalPlayer.Initialize(1);
+                World.RegisterPlayer(LocalPlayer);
+                var reader = player.GetComponent<PlayerInputReader>();
+                reader.Initialize(1, sink);
+                foreach (var menu in FindObjectsByType<MenuInputController>(FindObjectsSortMode.None)) menu.Bind(this, reader);
+                World.PrepareWorld(CurrentLevel, spawner, Catalog.Vacuums[0]);
+                World.SetRunning(true);
+                error = null;
+                return true;
+            }
+            catch (Exception exception)
+            {
+                if (player != null) spawner?.Despawn(player);
+                error = "Could not prepare location: " + exception.Message;
+                return false;
+            }
+        }
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => BindSceneUi();
         private void BindSceneUi()
         {

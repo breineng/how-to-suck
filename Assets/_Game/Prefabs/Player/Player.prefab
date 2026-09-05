@@ -289,6 +289,7 @@ GameObject:
   - component: {fileID: 7863383232765003051}
   - component: {fileID: 8433726955786416163}
   - component: {fileID: 7768017250329156359}
+  - component: {fileID: 7586470912145467593}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -396,6 +397,25 @@ MonoBehaviour:
   Camera: {fileID: 559298014665892342}
   ViewModelRoot: {fileID: 9161191420594537179}
   IsLocal: 1
+--- !u!114 &7586470912145467593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263073286817840940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92b993441a795f488d19830fe86c1cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.VacuumEmitter
+  Definition: {fileID: 11400000, guid: effca0e56bf355f48891f9669d036d23, type: 2}
+  Source: {fileID: 1813127610997729912}
+  OriginGuard: {fileID: 4723793246463260092}
+  Range: 5
+  HalfAngle: 30
+  EmitterId: 1
+  Active: 0
 --- !u!1 &6714027290487946301
 GameObject:
   m_ObjectHideFlags: 0
