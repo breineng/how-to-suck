@@ -17,6 +17,7 @@ namespace HowToSuck
         public float LastLoad { get; internal set; }
         public bool HasClearSourcePath()
         {
+            if(Physics.CheckSphere(Position,.015f,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))return false;
             if(OriginGuard==null)return true;
             Vector3 delta=Position-OriginGuard.position;
             return delta.sqrMagnitude<.0001f || !Physics.SphereCast(OriginGuard.position,.04f,delta.normalized,out _,delta.magnitude,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore);

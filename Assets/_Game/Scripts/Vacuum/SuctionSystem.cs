@@ -16,6 +16,16 @@ namespace HowToSuck
     {
         private readonly LootRegistry registry;
         public SuctionSystem(LootRegistry lootRegistry) {registry=lootRegistry ?? throw new ArgumentNullException(nameof(lootRegistry));}
+        private readonly Dictionary<Rigidbody,float> appliedBrakes=new Dictionary<Rigidbody,float>();
+        // Called once by the authority before all player and truck sources for this physics tick.
+        public void BeginStep() {appliedBrakes.Clear();}
+        private void ApplyBrake(Rigidbody body,float requested)
+        {
+            appliedBrakes.TryGetValue(body,out float applied);
+            float total=Mathf.Min(applied+requested,body.mass*.95f/Time.fixedDeltaTime);
+            if(total>applied)body.AddForce(-body.linearVelocity*(total-applied),ForceMode.Force);
+            appliedBrakes[body]=total;
+        }
         private Collider[] overlap=new Collider[128];
         private readonly HashSet<Rigidbody> seen=new HashSet<Rigidbody>();
         private readonly List<SuctionContact> contacts=new List<SuctionContact>(128);
@@ -53,14 +63,40 @@ namespace HowToSuck
                 var body=hit.Item.Body;
                 if(body==null || body.isKinematic)continue;
                 Vector3 offset=hit.Point-source.Position;float distance=offset.magnitude;
-                if(distance<.025f)continue;
+                // Close-range physical drag prevents waiting light objects shooting past a busy mouth.
+                float brake=Mathf.Min(2f*Mathf.Sqrt(source.Definition.Power*body.mass),body.mass*.95f/Time.fixedDeltaTime);
+                if(distance<.025f){ApplyBrake(body,brake);source.LastLoad+=body.mass;continue;}
                 float edge=Mathf.Cos(source.HalfAngle*Mathf.Deg2Rad);
                 float dot=Vector3.Dot(source.Forward,offset/distance);
                 float center=Mathf.InverseLerp(edge,1f,dot);
                 float strength=source.Definition.Power*(.3f+.7f*(1f-distance/source.Range))*(.25f+.75f*center);
                 body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
-                body.AddForceAtPosition(-offset/distance*strength,hit.Point,ForceMode.Force);
+                Vector3 force=-offset/distance*strength*Mathf.Min(1f,distance);
+                if(distance<1f)ApplyBrake(body,brake);
+                body.AddForceAtPosition(force,hit.Point,ForceMode.Force);
                 source.LastLoad+=body.mass;
+            }
+        }
+        public bool TryFindIntakeSurface(VacuumEmitter source,SuckableObject item,Vector3 centre,float radius,out Vector3 point)
+        {
+            Vector3 chosen=default;bool found=false;float best=float.PositiveInfinity;
+            var right=Vector3.Cross(Vector3.up,source.Forward).normalized;if(right.sqrMagnitude<.1f)right=Vector3.right;
+            var up=Vector3.Cross(source.Forward,right).normalized;
+            foreach(var collider in item.GameplayColliders)
+            {
+                if(collider==null || !collider.enabled || collider.isTrigger)continue;
+                TryCandidate(collider.ClosestPoint(centre));
+                if(!found)for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++)if(x!=0 || y!=0)
+                    TryCandidate(collider.ClosestPoint(centre+right*(x*radius*.65f)+up*(y*radius*.65f)));
+            }
+            point=chosen;return found;
+            void TryCandidate(Vector3 candidate)
+            {
+                float distance=Vector3.Distance(candidate,centre);if(distance>radius || distance>=best)return;
+                Vector3 offset=candidate-source.Position;float rayLength=offset.magnitude;
+                if(Vector3.Dot(offset,source.Forward)<-.025f)return;
+                if(rayLength>.001f && (!Physics.Raycast(source.Position,offset/rayLength,out var hit,rayLength+.02f,blockerMask,QueryTriggerInteraction.Ignore) || hit.rigidbody!=item.Body))return;
+                chosen=candidate;best=distance;found=true;
             }
         }
         public bool TryFindSurface(VacuumEmitter source,SuckableObject item,out Vector3 best)
@@ -74,6 +110,7 @@ namespace HowToSuck
             foreach(var collider in item.GameplayColliders)
             {
                 if(collider==null || !collider.enabled)continue;
+                if((collider.ClosestPoint(origin)-origin).sqrMagnitude<.000001f){best=origin;return true;}
                 float along=Mathf.Clamp(Vector3.Dot(collider.bounds.center-origin,forward),.01f,source.Range);
                 TryCandidate(collider.ClosestPoint(origin+forward*along));
                 TryCandidate(collider.ClosestPoint(origin));

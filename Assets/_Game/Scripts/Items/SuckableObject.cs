@@ -24,6 +24,7 @@ namespace HowToSuck
         public ulong InstanceId { get; private set; }
         public SuckableState State { get; private set; } = SuckableState.Available;
         public bool WorldFrozen { get; private set; }
+        public IngestionSnapshot Ingestion { get; internal set; }
 
         private Rigidbody body;
         private Collider[] gameplayColliders = Array.Empty<Collider>();

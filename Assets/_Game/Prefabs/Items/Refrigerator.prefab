@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &814243452952601692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1035457785026135849}
+  m_Layer: 10
+  m_Name: VisualRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1035457785026135849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814243452952601692}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 457904166353929888}
+  m_Father: {fileID: 5861893307003985795}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1293225698534444253
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,6 +129,7 @@ GameObject:
   - component: {fileID: 5861893307003985795}
   - component: {fileID: 6050697534928146954}
   - component: {fileID: 34770826896083497}
+  - component: {fileID: 7436993089769301299}
   m_Layer: 10
   m_Name: Refrigerator
   m_TagString: Untagged
@@ -118,7 +151,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1951614832448186192}
-  - {fileID: 6955458497575646698}
+  - {fileID: 1035457785026135849}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6050697534928146954
@@ -161,39 +194,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableObject
   Definition: {fileID: 11400000, guid: a5c275cb684592447aa002401c5e8f8d, type: 2}
-  VisualRoot: {fileID: 6955458497575646698}
---- !u!1 &4896959713769695939
-GameObject:
+  VisualRoot: {fileID: 1035457785026135849}
+--- !u!114 &7436993089769301299
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6955458497575646698}
-  m_Layer: 10
-  m_Name: VisualRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6955458497575646698
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4896959713769695939}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4805430570310605840}
-  m_Father: {fileID: 5861893307003985795}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 4592531144466123679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9fd0eeb559623c46bd2478831fe0846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.IngestionView
+  Item: {fileID: 34770826896083497}
 --- !u!1 &8957144696469037101
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,13 +261,13 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &4988555559303642107
+--- !u!1001 &130732021496406347
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 6955458497575646698}
+    m_TransformParent: {fileID: 1035457785026135849}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalPosition.x
@@ -269,19 +283,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.00000004371139
+      value: -0.000000030908616
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.00000003090862
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.7071067
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -324,8 +338,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 643472aab39fe51489de2b71886cc522, type: 3}
---- !u!4 &4805430570310605840 stripped
+--- !u!4 &457904166353929888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 643472aab39fe51489de2b71886cc522, type: 3}
-  m_PrefabInstance: {fileID: 4988555559303642107}
+  m_PrefabInstance: {fileID: 130732021496406347}
   m_PrefabAsset: {fileID: 0}

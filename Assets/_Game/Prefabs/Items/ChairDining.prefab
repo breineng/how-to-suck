@@ -159,38 +159,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &4491835400491506785
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4949950178528966898}
-  m_Layer: 10
-  m_Name: VisualRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4949950178528966898
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4491835400491506785}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4980563302500813496}
-  m_Father: {fileID: 4343499064688959248}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5405021592073617640
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,6 +170,7 @@ GameObject:
   - component: {fileID: 4343499064688959248}
   - component: {fileID: 2965701507982726659}
   - component: {fileID: 8705247936620461750}
+  - component: {fileID: 5723063627462580331}
   m_Layer: 10
   m_Name: ChairDining
   m_TagString: Untagged
@@ -223,7 +192,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2300828933788361148}
-  - {fileID: 4949950178528966898}
+  - {fileID: 667124637961669478}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &2965701507982726659
@@ -266,7 +235,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableObject
   Definition: {fileID: 11400000, guid: 8394d911416db774fa0ce744b1808be5, type: 2}
-  VisualRoot: {fileID: 4949950178528966898}
+  VisualRoot: {fileID: 667124637961669478}
+--- !u!114 &5723063627462580331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5405021592073617640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9fd0eeb559623c46bd2478831fe0846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.IngestionView
+  Item: {fileID: 8705247936620461750}
 --- !u!1 &6123671460254102701
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +284,38 @@ Transform:
   - {fileID: 2946640295088420114}
   - {fileID: 8285219036625759840}
   - {fileID: 148185285833646090}
+  m_Father: {fileID: 4343499064688959248}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7772298042418959055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 667124637961669478}
+  m_Layer: 10
+  m_Name: VisualRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &667124637961669478
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7772298042418959055}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8850942587603663409}
   m_Father: {fileID: 4343499064688959248}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8430686174946480103
@@ -463,13 +477,13 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &4797523901868748115
+--- !u!1001 &9033767986384821722
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 4949950178528966898}
+    m_TransformParent: {fileID: 667124637961669478}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalPosition.x
@@ -485,19 +499,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.00000004371139
+      value: -0.000000030908616
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.00000003090862
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.7071067
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -536,8 +550,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
---- !u!4 &4980563302500813496 stripped
+--- !u!4 &8850942587603663409 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0aa7786cee62a804e86e30d404119919, type: 3}
-  m_PrefabInstance: {fileID: 4797523901868748115}
+  m_PrefabInstance: {fileID: 9033767986384821722}
   m_PrefabAsset: {fileID: 0}
