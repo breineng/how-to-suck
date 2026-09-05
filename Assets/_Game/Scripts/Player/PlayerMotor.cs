@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace HowToSuck
 {
@@ -15,11 +16,18 @@ namespace HowToSuck
         public PlayerIntent LastIntent { get; private set; }
         public bool IsGrounded => controller != null && controller.isGrounded;
         public float VerticalVelocity => verticalVelocity;
+        public Vector3 CameraLocalMount => Settings!=null?new Vector3(0,Settings.EyeHeight,Settings.CameraForwardOffset):new Vector3(0,1.62f,0);
 
         private CharacterController controller;
         private float verticalVelocity;
         private uint consumedJumpSequence;
         private bool initialized;
+        private Vector3 previousRenderPosition,currentRenderPosition;
+        private double renderPoseFixedTime;
+        private readonly HashSet<Rigidbody> pushedBodies=new HashSet<Rigidbody>();
+        private Vector3 pushVelocity;
+        private float pushImpulseBudget;
+        private bool moving;
 
         public void Initialize(int playerId)
         {
@@ -32,12 +40,34 @@ namespace HowToSuck
             controller.stepOffset = Mathf.Clamp(Settings.StepOffset, 0f, controller.height);
             controller.slopeLimit = Settings.SlopeLimit;
             controller.minMoveDistance = 0f;
-            if (CameraPivot != null) CameraPivot.localPosition = Vector3.up * Settings.EyeHeight;
+            if (CameraPivot != null) CameraPivot.localPosition = CameraLocalMount;
             if (AuthoritativeAim != null) AuthoritativeAim.localPosition = Vector3.up * Settings.EyeHeight;
             verticalVelocity = 0f;
-            consumedJumpSequence = 0;
-            LastIntent = new PlayerIntent { Yaw = transform.eulerAngles.y };
+            if (!initialized) consumedJumpSequence = 0;
+            LastIntent = new PlayerIntent { Yaw = transform.eulerAngles.y, JumpPressSequence = consumedJumpSequence };
+            previousRenderPosition=currentRenderPosition=transform.position;renderPoseFixedTime=Time.fixedTimeAsDouble;
             initialized = true;
+        }
+
+        public Vector3 GetRenderPosition()
+        {
+            if(!initialized || (transform.position-currentRenderPosition).sqrMagnitude>.000001f)return transform.position;
+            if(Time.fixedTimeAsDouble>renderPoseFixedTime+.000001)return currentRenderPosition;
+            float alpha=Mathf.Clamp01((float)((Time.timeAsDouble-Time.fixedTimeAsDouble)/Time.fixedDeltaTime));
+            return Vector3.Lerp(previousRenderPosition,currentRenderPosition,alpha);
+        }
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            // CharacterController does not push rigidbodies itself. Nudge side contacts through physics.
+            if(!moving || Mathf.Abs(hit.normal.y)>.5f || pushVelocity.sqrMagnitude<.001f)return;
+            var body=hit.rigidbody;if(body==null || body.isKinematic)return;
+            var item=body.GetComponent<SuckableObject>();
+            if(item==null || item.InstanceId==0 || item.State!=SuckableState.Available || item.WorldFrozen || !pushedBodies.Add(body))return;
+            Vector3 direction=pushVelocity.normalized;
+            float gap=Mathf.Max(0,Vector3.Dot(pushVelocity-body.linearVelocity,direction));
+            float impulse=Mathf.Min(body.mass*gap,pushImpulseBudget);
+            pushImpulseBudget-=impulse;
+            body.AddForceAtPosition(direction*impulse,hit.point,ForceMode.Impulse);
         }
 
         public void Step(PlayerIntent intent, float dt)
@@ -45,6 +75,7 @@ namespace HowToSuck
             if (!initialized || !controller.enabled || !gameObject.activeInHierarchy || !intent.IsFinite ||
                 float.IsNaN(dt) || float.IsInfinity(dt) || dt <= 0f) return;
 
+            previousRenderPosition=(transform.position-currentRenderPosition).sqrMagnitude>.000001f?transform.position:currentRenderPosition;
             intent.Move = Vector2.ClampMagnitude(intent.Move, 1f);
             intent.Yaw = Mathf.Repeat(intent.Yaw, 360f);
             intent.Pitch = Mathf.Clamp(intent.Pitch, -80f, 80f);
@@ -68,7 +99,10 @@ namespace HowToSuck
             verticalVelocity += Mathf.Min(-0.01f, Settings.Gravity) * dt;
             float speed = intent.SprintHeld ? Settings.SprintSpeed : Settings.WalkSpeed;
             Vector3 horizontal = transform.right * intent.Move.x + transform.forward * intent.Move.y;
-            CollisionFlags collisions = controller.Move((horizontal * speed + Vector3.up * verticalVelocity) * dt);
+            pushedBodies.Clear();pushVelocity=horizontal*speed;pushImpulseBudget=125f*dt;moving=true;
+            CollisionFlags collisions;
+            try{collisions = controller.Move((horizontal * speed + Vector3.up * verticalVelocity) * dt);}
+            finally{moving=false;currentRenderPosition=transform.position;renderPoseFixedTime=Time.fixedTimeAsDouble;}
             if ((collisions & CollisionFlags.Above) != 0 && verticalVelocity > 0f) verticalVelocity = 0f;
             if ((collisions & CollisionFlags.Below) != 0 && verticalVelocity < 0f) verticalVelocity = -2f;
         }

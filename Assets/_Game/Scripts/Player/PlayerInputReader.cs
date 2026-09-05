@@ -30,7 +30,8 @@ namespace HowToSuck
             DisposeActions();
             playerId = id;
             sink = intentSink;
-            LatestIntent = new PlayerIntent { Yaw = transform.eulerAngles.y };
+            // A live reader must keep its counters across rebinding; the authority may still remember them.
+            LatestIntent = new PlayerIntent { Sequence = LatestIntent.Sequence, JumpPressSequence = LatestIntent.JumpPressSequence, Yaw = transform.eulerAngles.y };
             MenuOpen = false;
             focused = Application.isFocused;
             if (Actions == null)

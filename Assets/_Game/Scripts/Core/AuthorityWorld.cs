@@ -18,6 +18,7 @@ namespace HowToSuck
         private readonly List<IntakeReceiver> receivers=new List<IntakeReceiver>();
         private SuctionSystem suction;
         private IWorldSpawner spawner;
+        private TruckIntake truck;
         public void Initialize(bool authority)
         {
             HasAuthority=authority;suction=new SuctionSystem(Loot);
@@ -25,7 +26,8 @@ namespace HowToSuck
         }
         public void PrepareWorld(LevelContext level,IWorldSpawner worldSpawner,VacuumDefinition vacuum)
         {
-            spawner=worldSpawner;
+            spawner=worldSpawner;if(truck!=null)truck.Stop();truck=level.Truck;
+            receivers.RemoveAll(r=>r==null || r.IsTruck);if(truck!=null)receivers.Add(truck.Receiver);
             Loot.Begin(Guid.NewGuid().ToString("N"));Ingestion.Begin(Loot.RunId);
             foreach(var spawn in level.LootSpawns)
             {
@@ -38,7 +40,7 @@ namespace HowToSuck
         }
         public void SetRunning(bool running)
         {
-            IsRunning=running;Ingestion?.SetRunning(running);
+            IsRunning=running;Ingestion?.SetRunning(running);if(!running && truck!=null)truck.Stop();
             foreach(var item in Loot.Items.Values)if(item!=null)item.SetWorldFrozen(!running);
             if(!running)foreach(var source in emitters.Values)if(source!=null)source.Active=false;
         }
@@ -61,7 +63,7 @@ namespace HowToSuck
         {
             SetRunning(false);TickCount=0;
             foreach(var item in Loot.Items.Values)if(item!=null)spawner?.Despawn(item.gameObject);
-            Ingestion?.Clear();Loot.Clear();players.Clear();inputs.Clear();emitters.Clear();receivers.Clear();
+            Ingestion?.Clear();truck=null;Loot.Clear();players.Clear();inputs.Clear();emitters.Clear();receivers.Clear();
         }
         private void FixedUpdate()
         {
@@ -73,6 +75,7 @@ namespace HowToSuck
                 pair.Value.Step(inputs[pair.Key].Read(now),Time.fixedDeltaTime);
                 if(emitters.TryGetValue(pair.Key,out var emitter)){emitter.Active=pair.Value.LastIntent.VacuumHeld;suction.Apply(emitter);}
             }
+            if(truck!=null)truck.Step(suction);
             Ingestion.Step(now,receivers);
         }
     }

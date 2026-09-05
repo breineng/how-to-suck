@@ -39,7 +39,7 @@ namespace HowToSuck
             {
                 var snapshot=active[i];
                 if(snapshot.Receiver!=null && (snapshot.Receiver.Target!=null || snapshot.Receiver.Emitter!=null))
-                {snapshot.TargetPosition=snapshot.Receiver.Position;snapshot.TargetRotation=snapshot.Receiver.Rotation;}
+                {snapshot.TargetPosition=snapshot.Receiver.Position;snapshot.TargetRotation=snapshot.Receiver.Rotation;snapshot.EndPosition=snapshot.Receiver.EndPosition;}
                 if(now>=snapshot.StartedAt+snapshot.Duration){active.RemoveAt(i);Finish(snapshot);if(!running || generation!=currentGeneration)return;}
             }
             requests.Clear();

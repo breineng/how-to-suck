@@ -6,6 +6,7 @@ namespace HowToSuck
     public sealed class LevelContext : MonoBehaviour
     {
         public ContractDefinition Contract;
+        public TruckIntake Truck;
         public GameObject PlayerPrefab;
         public LootSpawnPoint[] LootSpawns = System.Array.Empty<LootSpawnPoint>();
         public Transform[] PlayerSpawns = new Transform[4];
@@ -84,6 +85,8 @@ namespace HowToSuck
                 }
                 if (!item.TryValidate(out error)) return false;
             }
+            if (Truck == null) { error = "Location needs its Suck Truck."; return false; }
+            if (!Truck.TryValidate(out error)) return false;
             error = null;
             return true;
         }

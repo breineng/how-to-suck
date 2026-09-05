@@ -15,6 +15,7 @@ namespace HowToSuck
         [Min(0f)] public float StepOffset = 0.3f;
         [Range(0f, 89f)] public float SlopeLimit = 45f;
         [Min(0f)] public float EyeHeight = 1.62f;
+        [Range(-.1f,.2f)] public float CameraForwardOffset = 0f;
         [Range(40f, 110f)] public float FieldOfView = 75f;
     }
 }
