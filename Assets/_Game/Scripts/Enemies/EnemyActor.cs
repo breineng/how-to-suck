@@ -106,6 +106,10 @@ namespace HowToSuck
                 if(BossKey.IsValid)simulation.RecordBossDefeat(this,hit.AuthorityTime);
             }
             else if(!BossKey.IsValid&&(Phase==EnemyPhase.Idle||Phase==EnemyPhase.Move))SetPhase(EnemyPhase.Hit,hit.AuthorityTime);
+            Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.EnemyHit,
+                hit.ShotId,hit.Key.InstanceId,InstanceId,hit.OwnerId,0,false,hit.AuthorityTime,0,hit.Damage,hit.Point));
+            if(Health==0)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.EnemyDefeat,
+                hit.ShotId,hit.Key.InstanceId,InstanceId,hit.OwnerId,0,false,hit.AuthorityTime,0,0,hit.Point));
             return true;
         }
         internal void Step(double now,float dt)

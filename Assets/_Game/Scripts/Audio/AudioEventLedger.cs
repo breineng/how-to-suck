@@ -5,7 +5,9 @@ namespace HowToSuck.Audio
     // Run identity is established by SessionRoot, never adopted from an incoming cue.
     public sealed class AudioEventLedger
     {
-        private readonly HashSet<ulong> ingestions=new HashSet<ulong>();
+        private readonly Dictionary<CommittedAudioSourceKey,CommittedAudioFact> committed=new Dictionary<CommittedAudioSourceKey,CommittedAudioFact>();
+        private ulong issuedCommitted,receivedCommitted;
+        public int ConflictingFacts {get;private set;}
         private readonly HashSet<string> purchases=new HashSet<string>(StringComparer.Ordinal);
         private readonly Dictionary<Pair,double> pairs=new Dictionary<Pair,double>();
         private readonly List<Pair> expired=new List<Pair>();
@@ -15,14 +17,25 @@ namespace HowToSuck.Audio
         public bool SetRun(string run)
         {
             run=run??"";if(run==Run)return false;
-            Run=run;ingestions.Clear();pairs.Clear();expired.Clear();newestImpact=impactBits=signals=0;return true;
+            Run=run;committed.Clear();issuedCommitted=receivedCommitted=0;pairs.Clear();expired.Clear();newestImpact=impactBits=signals=0;return true;
         }
         public bool Matches(string run)=>!string.IsNullOrEmpty(Run)&&string.Equals(run,Run,StringComparison.Ordinal);
-        public bool Ingestion(string run,ulong instance)
+        public bool TryIssueCommitted(CommittedAudioFact fact,bool localAuthority,out CommittedAudioReceipt receipt)
         {
-            if(!Matches(run)||instance==0||ingestions.Contains(instance))return false;
-            if(ingestions.Count>=8192){CapacityDrops++;return false;}
-            return ingestions.Add(instance);
+            receipt=default;if(!localAuthority||issuedCommitted==ulong.MaxValue||!StoreCommitted(fact))return false;
+            receipt=new CommittedAudioReceipt(++issuedCommitted,fact);return true;
+        }
+        public bool TryReceiveCommitted(CommittedAudioReceipt receipt,bool fromCurrentServer,bool localAuthority)
+        {
+            // Reliable ordered channel, with independent source occurrence protection against a repackaged duplicate.
+            if(!fromCurrentServer||localAuthority||receipt.Sequence==0||receipt.Sequence<=receivedCommitted||!StoreCommitted(receipt.Fact))return false;
+            receivedCommitted=receipt.Sequence;return true;
+        }
+        private bool StoreCommitted(CommittedAudioFact fact)
+        {
+            if(!fact.IsValid||!Matches(fact.Run))return false;var key=new CommittedAudioSourceKey(fact);
+            if(committed.TryGetValue(key,out var old)){if(!old.Equals(fact))ConflictingFacts++;return false;}
+            if(committed.Count>=8192){CapacityDrops++;return false;}committed.Add(key,fact);return true;
         }
         public bool Signal(string run,SfxId id)
         {

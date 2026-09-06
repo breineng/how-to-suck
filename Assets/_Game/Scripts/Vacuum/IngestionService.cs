@@ -16,6 +16,7 @@ namespace HowToSuck
         private string runId;
         private bool running;
         private ulong generation;
+        private ulong audioAdmissionOccurrence;
         public int ActiveCount=>active.Count;
         public IReadOnlyList<DeliveryRecord> Records=>records.AsReadOnly();
         public event Action<DeliveryRecord> Delivered;
@@ -27,7 +28,7 @@ namespace HowToSuck
         }
         public IngestionService(LootRegistry loot,SuctionSystem field,Action<GameObject> despawnObject)
         {registry=loot??throw new ArgumentNullException(nameof(loot));suction=field??throw new ArgumentNullException(nameof(field));if(despawnObject==null)throw new ArgumentNullException(nameof(despawnObject));}
-        public void Begin(string id){if(!new LootKey(id,1).IsValid || registry.RunId!=id)throw new ArgumentException("Begin requires the current registry run.",nameof(id));generation++;CancelAll();runId=id;completed.Clear();records.Clear();running=false;}
+        public void Begin(string id){if(!new LootKey(id,1).IsValid || registry.RunId!=id)throw new ArgumentException("Begin requires the current registry run.",nameof(id));generation++;CancelAll();runId=id;completed.Clear();records.Clear();running=false;audioAdmissionOccurrence=0;}
         public void SetRunning(bool value){generation++;running=value;if(!value)CancelAll();}
         public void Clear(){SetRunning(false);runId=null;completed.Clear();records.Clear();}
         // Legacy call retains complete-then-admit behavior for existing fixtures.
@@ -96,7 +97,12 @@ namespace HowToSuck
             var snapshot=new IngestionSnapshot(item,receiver,now);
             if(!snapshot.IsTruck && (snapshot.Storage==null || !snapshot.Storage.Reserve(snapshot)))return false;
             if(!item.TryTransition(item.State,SuckableState.Ingesting)) { snapshot.Storage?.Cancel(snapshot); return false; }
-            receiver.Current=snapshot;item.Ingestion=snapshot;active.Add(snapshot);return true;
+            receiver.Current=snapshot;item.Ingestion=snapshot;active.Add(snapshot);
+            // Cosmetic fact only after the real slot/state/job commit; exhausted audio IDs never reject gameplay.
+            if(audioAdmissionOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
+                runId,Audio.CommittedAudioKind.Ingestion,++audioAdmissionOccurrence,item.InstanceId,0,snapshot.PlayerId,snapshot.IntakeId,
+                snapshot.IsTruck,now,snapshot.RequiredSize,0,snapshot.TargetPosition,snapshot.Duration));
+            return true;
         }
         private static bool Loose(SuckableObject item) => item.State==SuckableState.Available || item.State==SuckableState.InFlight;
         private bool Registered(SuckableObject item) => item!=null && item.RunId==runId && registry.Items.TryGetValue(item.InstanceId,out var found) && found==item;

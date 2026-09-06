@@ -23,9 +23,11 @@ namespace HowToSuck
   public LocalMenuNavigation Navigation {get;private set;}
   private int page;private bool refreshing,baseInteractable,baseRaycasts,confirming;
   private GameObject previousSelection;private PlayerInputReader input;
+  private SessionMenuView lobbyMenu;private MenuInputController pauseMenu;
   public void Bind(LocalMenuNavigation owner)
   {
    if(Navigation==owner)return;Unbind(Navigation);Navigation=owner;if(owner==null)return;
+   lobbyMenu=GetComponentInParent<SessionMenuView>();pauseMenu=GetComponent<MenuInputController>();
    SettingsButton.onClick.AddListener(OpenSettings);HelpButton.onClick.AddListener(OpenHelp);CreditsButton.onClick.AddListener(OpenCredits);
    ApplyButton.onClick.AddListener(Apply);DefaultsButton.onClick.AddListener(Defaults);ReloadButton.onClick.AddListener(Reload);
    ResetFileButton.onClick.AddListener(AskReset);ConfirmResetButton.onClick.AddListener(ConfirmReset);CancelResetButton.onClick.AddListener(CancelReset);CloseButton.onClick.AddListener(Back);
@@ -93,10 +95,15 @@ namespace HowToSuck
   }
   private void LateUpdate()
   {
+   // Lobby launchers must not draw or intercept input over another modal.
+   bool launchersVisible=!IsOpen&&(lobbyMenu==null||!lobbyMenu.ModalBlocksLobby)
+    &&(pauseMenu==null||pauseMenu.ConfirmLeavePanel==null||!pauseMenu.ConfirmLeavePanel.activeInHierarchy);
+   ShowLauncher(SettingsButton,launchersVisible);ShowLauncher(HelpButton,launchersVisible);ShowLauncher(CreditsButton,launchersVisible);
    if(!IsOpen||EventSystem.current==null)return;var selected=EventSystem.current.currentSelectedGameObject;
    if(selected==null||!selected.transform.IsChildOf(Panel.transform)||!selected.activeInHierarchy)
     Select(confirming?CancelResetButton:CloseButton);
   }
+  private static void ShowLauncher(Button button,bool visible){if(button!=null&&button.gameObject.activeSelf!=visible)button.gameObject.SetActive(visible);}
   private static void Select(Selectable target){if(EventSystem.current!=null&&target!=null)EventSystem.current.SetSelectedGameObject(target.gameObject);}
   public void Unbind(LocalMenuNavigation owner)
   {

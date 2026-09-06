@@ -20,6 +20,19 @@ namespace HowToSuck.Networking
             if(isActiveAndEnabled&&IsServer&&IsSpawned&&audioRoot!=null&&audioRoot.Playing&&!game.IsStopping)
                 ImpactRpc(new FixedString64Bytes(cue.Run),cue.Sequence,(byte)cue.Id,cue.Position,cue.Gain);
         }
+        private void SendCommitted(HowToSuck.Audio.CommittedAudioReceipt receipt)
+        {
+            if(!isActiveAndEnabled||!IsServer||!IsSpawned||audioRoot==null||!audioRoot.Playing||game.IsStopping)return;
+            var f=receipt.Fact;if(!f.IsValid||f.Run!=game.Session.RunId||receipt.Sequence==0)return;
+            CommittedRpc(new FixedString64Bytes(f.Run),receipt.Sequence,(byte)f.Kind,f.Occurrence,f.Item,f.Enemy,f.Owner,f.Intake,f.Truck,f.At,f.Size,f.Amount,f.Position,f.Duration);
+        }
+        [Rpc(SendTo.NotServer,InvokePermission=RpcInvokePermission.Server,Delivery=RpcDelivery.Reliable)]
+        private void CommittedRpc(FixedString64Bytes run,ulong sequence,byte kind,ulong occurrence,ulong item,ulong enemy,int owner,int intake,bool truck,double at,float size,int amount,Vector3 position,float duration)
+        {
+            if(!isActiveAndEnabled||IsServer||!IsSpawned||audioRoot==null||game==null||game.IsStopping)return;
+            var fact=new HowToSuck.Audio.CommittedAudioFact(run.ToString(),(HowToSuck.Audio.CommittedAudioKind)kind,occurrence,item,enemy,owner,intake,truck,at,size,amount,position,duration);
+            if(fact.IsValid)audioRoot.ReceiveCommitted(new HowToSuck.Audio.CommittedAudioReceipt(sequence,fact));
+        }
         // NotServer deliberately excludes the host's already played authoritative callback.
         [Rpc(SendTo.NotServer,InvokePermission=RpcInvokePermission.Server,Delivery=RpcDelivery.Unreliable)]
         private void ImpactRpc(FixedString64Bytes run,ulong sequence,byte id,Vector3 point,float gain)
@@ -46,8 +59,8 @@ namespace HowToSuck.Networking
             if(sequence<=receivedSequence)return;receivedSequence=sequence;
             audioRoot.SetReplicaLoad(id,1,a);audioRoot.SetReplicaLoad(id,2,b);audioRoot.SetReplicaLoad(id,3,c);audioRoot.SetReplicaLoad(id,4,d);
         }
-        private void Bind(){if(isActiveAndEnabled&&IsSpawned&&IsServer&&audioRoot!=null&&!subscribed){audioRoot.AuthorityImpact+=SendImpact;subscribed=true;}}
-        private void Unbind(){if(subscribed&&audioRoot!=null)audioRoot.AuthorityImpact-=SendImpact;subscribed=false;}
+        private void Bind(){if(isActiveAndEnabled&&IsSpawned&&IsServer&&audioRoot!=null&&!subscribed){audioRoot.AuthorityImpact+=SendImpact;audioRoot.AuthorityCommittedAudio+=SendCommitted;subscribed=true;}}
+        private void Unbind(){if(subscribed&&audioRoot!=null){audioRoot.AuthorityImpact-=SendImpact;audioRoot.AuthorityCommittedAudio-=SendCommitted;}subscribed=false;}
         private void OnEnable()=>Bind();
         private void OnDisable()=>Unbind();
         public override void OnNetworkDespawn()

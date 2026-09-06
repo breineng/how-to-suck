@@ -4,7 +4,11 @@
   "references": [
     "HowToSuck.Networking",
     "Unity.Netcode.Runtime",
-    "Unity.Networking.Transport"
+    "Unity.Networking.Transport",
+    "HowToSuck.Runtime",
+    "Unity.InputSystem",
+    "Unity.Collections",
+    "Unity.ugui"
   ],
   "includePlatforms": [
     "Editor",

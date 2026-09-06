@@ -31,7 +31,7 @@ namespace HowToSuck
         private readonly List<Pose> cargoCandidates=new List<Pose>();
         private readonly List<SuckableObject> recoverCargo=new List<SuckableObject>();
         private readonly Dictionary<ulong,double> cargoRetry=new Dictionary<ulong,double>();
-        private sealed class Suit {public int Segments=3;public double InvulnerableUntil,RetryAt;public bool Pending;}
+        private sealed class Suit {public int Segments=3;public double InvulnerableUntil,RetryAt;public bool Pending;public ulong AudioOccurrence;}
         public IReadOnlyDictionary<ulong,EnemyActor> Actors=>actors;
         public bool AdvancedEncounter=>contract!=null&&contract.State.ContractId.EndsWith("_ii",StringComparison.Ordinal);
         public IReadOnlyDictionary<int,PlayerMotor> Players=>world.Players;
@@ -101,7 +101,9 @@ namespace HowToSuck
                 var suit=pair.Value;if(!suit.Pending||now<suit.RetryAt||!world.Players.TryGetValue(pair.Key,out var motor)||motor==null)continue;
                 suit.RetryAt=now+.25;
                 if(level.BoundsGuard.TryFindRecoveryPosition(motor,out var position)&&world.TryRecoverCombatPlayer(motor,position,now))
-                {suit.Segments=3;suit.Pending=false;suit.InvulnerableUntil=now+2;}
+                {suit.Segments=3;suit.Pending=false;suit.InvulnerableUntil=now+2;
+                    if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
+                        run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,3,motor.transform.position));}
             }
             // A disconnected owner's original FIFO survives until each item has a checked physical return pose.
             foreach(var storage in world.Storages.Values)
@@ -143,6 +145,8 @@ namespace HowToSuck
                 player==null||!player.isActiveAndEnabled||!world.Players.TryGetValue(player.PlayerId,out var actual)||actual!=player||
                 !suits.TryGetValue(player.PlayerId,out var suit)||suit.Pending||time<suit.InvulnerableUntil)return false;
             suit.Segments--;suit.InvulnerableUntil=time+1.5;
+            if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
+                run,Audio.CommittedAudioKind.SuitHit,++suit.AudioOccurrence,0,enemy.InstanceId,player.PlayerId,0,false,time,0,suit.Segments,player.transform.position));
             if(suit.Segments==0)
             {
                 suit.Pending=true;suit.RetryAt=time;

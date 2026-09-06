@@ -3,15 +3,17 @@ using System;
 using UnityEngine;
 namespace HowToSuck.Audio
 {
-    public enum AudioDiagnosticKind:byte { Generic,Ingestion,Impact,Loop }
+    public enum AudioDiagnosticKind:byte { Generic,Ingestion,Impact,Loop,Committed }
     public struct AudioDiagnosticContext
     {
+        public int CommittedKind;public ulong Occurrence,CommittedSequence,Enemy;
         public AudioDiagnosticKind Kind;public string Run;public ulong Instance,ImpactSequence;public int Player;
         public AudioDiagnosticContext(AudioDiagnosticKind kind,string run,ulong instance=0,ulong impactSequence=0,int player=0)
-        {Kind=kind;Run=run;Instance=instance;ImpactSequence=impactSequence;Player=player;}
+        {CommittedKind=0;Occurrence=CommittedSequence=Enemy=0;Kind=kind;Run=run;Instance=instance;ImpactSequence=impactSequence;Player=player;}
     }
     [Serializable] public struct AudioPlaybackWitness
     {
+        public int committedKind;public ulong occurrence,committedSequence,enemy;
         public ulong serial,instance,impactSequence;public string run,clip;public int rootId,sourceId,frame,player,id,kind;
         public bool authority,loop;public double dspTime;public Vector3 position;
     }
@@ -28,7 +30,7 @@ namespace HowToSuck.Audio
             try
             {
                 if(serial==ulong.MaxValue){ObserverErrors++;return;}
-                observer(new AudioPlaybackWitness{serial=++serial,instance=context.Instance,impactSequence=context.ImpactSequence,
+                observer(new AudioPlaybackWitness{committedKind=context.CommittedKind,occurrence=context.Occurrence,committedSequence=context.CommittedSequence,enemy=context.Enemy,serial=++serial,instance=context.Instance,impactSequence=context.ImpactSequence,
                     run=context.Run??root.Session.RunId,clip=source.clip!=null?source.clip.name:"",rootId=root.GetInstanceID(),sourceId=source.GetInstanceID(),
                     frame=Time.frameCount,player=context.Player,id=(int)id,kind=(int)context.Kind,authority=root.Session.HasAuthority,loop=source.loop,
                     dspTime=AudioSettings.dspTime,position=source.transform.position});

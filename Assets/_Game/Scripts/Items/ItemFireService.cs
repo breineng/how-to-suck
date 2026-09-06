@@ -130,6 +130,8 @@ namespace HowToSuck
             // No callbacks intervene between checked FIFO release and this launch of the exact same Rigidbody.
             released.Body.linearVelocity=motor.NozzleAnchor.forward*ItemFireRules.LaunchSpeed;
             nextShot=flight.Shot; flights.Add(first.InstanceId,flight); gate.CommitLaunch(now); LaunchCount++;
+            Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.ShotLaunch,
+                flight.Shot,first.InstanceId,0,id,0,false,now,0,flight.Damage,motor.NozzleAnchor.position));
             return true;
         }
         internal void EnqueueContact(SuckableObject item, ulong shot, int owner, Collider other, float speed, Vector3 point)

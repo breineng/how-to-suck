@@ -22,6 +22,11 @@ namespace HowToSuck.Audio
         public SessionRoot Session {get;private set;}
         public static GameAudioRoot Current {get;private set;}
         public event Action<AuthorityImpactCue> AuthorityImpact;
+        public event Action<CommittedAudioReceipt> AuthorityCommittedAudio;
+        public int CommittedQueueDrops {get;private set;}
+        private readonly Queue<PendingCommitted> pendingCommitted=new Queue<PendingCommitted>();
+        private readonly struct PendingCommitted {public readonly CommittedAudioReceipt Receipt;public readonly double Received;
+            public PendingCommitted(CommittedAudioReceipt receipt,double received){Receipt=receipt;Received=received;}}
         public bool Playing=>isActiveAndEnabled&&Session!=null&&Session.IsInitialized&&Session.Phase==SessionPhase.Playing&&Session.ContractState.Phase==ContractPhase.Running;
         public int VoiceDrops {get;private set;}
         public int PendingClipSkips {get;private set;}
@@ -42,7 +47,7 @@ namespace HowToSuck.Audio
         private void OnEnable()
         {
             if(Current!=null&&Current!=this)throw new InvalidOperationException("One audio owner per active session root is required.");
-            Current=this;if(Session==null)Session=GetComponent<SessionRoot>();Session.Changed+=RefreshState;
+            Current=this;if(Session==null)Session=GetComponent<SessionRoot>();Session.Changed+=RefreshState;CommittedAudioEvents.Emitted+=OnCommitted;
         }
         private void Start()
         {
@@ -60,7 +65,7 @@ namespace HowToSuck.Audio
         }
         private void LateUpdate()
         {
-            if(!ready)return;RefreshState();
+            if(!ready)return;RefreshState();DrainCommitted();
             var local=Session.LocalPlayer;var view=local!=null?local.GetComponent<PlayerView>():null;
             var camera=view!=null?view.Camera:null;if(camera==null)camera=Camera.main;
             listener=camera!=null?camera.transform.position:transform.position;
@@ -84,7 +89,7 @@ namespace HowToSuck.Audio
         {
             if(!ready||Session==null)return;
             string run=Session.RunId??"";
-            if(ledger.SetRun(run)){StopAll();impactSequence=0;impactTokens=8;impactAt=Time.realtimeSinceStartupAsDouble;}
+            if(ledger.SetRun(run)){StopAll();pendingCommitted.Clear();impactSequence=0;impactTokens=8;impactAt=Time.realtimeSinceStartupAsDouble;}
             bool playing=Playing;
             if(wasPlaying&&!playing)StopWorld();wasPlaying=playing;
             var state=Session.ContractState;
@@ -142,19 +147,63 @@ namespace HowToSuck.Audio
         public void Unregister(VacuumAudioEmitter value){loops.Remove(value);}
         public void SetReplicaLoad(string run,int player,float load)
         {if(!Playing||Session.HasAuthority||run!=Session.RunId)return;foreach(var loop in loops)if(loop!=null&&!loop.IsTruck&&loop.PlayerId==player)loop.SetReplicaLoad(load);}
-        public void Ingestion(IngestionSnapshot value)
+        private void OnCommitted(CommittedAudioFact fact)
         {
-            if(!Playing||value==null||value.RunId!=Session.RunId||!ledger.Ingestion(value.RunId,value.InstanceId))return;
-            // A late replica retains its identity but does not replay an already finished accent.
-            if(value.PresentationNow>value.StartedAt+value.Duration+.1)return;
-            SfxId id=value.IsTruck?Variant(SfxId.TruckSwallowA,SfxId.TruckSwallowB,value.InstanceId):
-                value.RequiredSize<=.2f?SfxId.SwallowTiny:value.RequiredSize<=.6f?SfxId.SwallowMedium:SfxId.SwallowHeavy;
-            Transform follow=null;foreach(var loop in loops)if(loop!=null&&(value.IsTruck?loop.IsTruck:!loop.IsTruck&&loop.PlayerId==value.PlayerId)){follow=loop.Anchor;break;}
-            bool local=!value.IsTruck&&Session.LocalPlayer!=null&&Session.LocalPlayer.PlayerId==value.PlayerId;
+            if(!ready||!Playing||!Session.HasAuthority||!fact.IsValid||fact.Run!=Session.RunId)return;
+            RefreshState();if(!ledger.TryIssueCommitted(fact,true,out var receipt))return;
+            // Local host and reliable guest delivery share the exact immutable receipt, never a second physics call.
+            try{PlayCommitted(receipt);}catch(Exception){TransportCueErrors++;}
+            var handlers=AuthorityCommittedAudio;if(handlers!=null)foreach(Action<CommittedAudioReceipt> handler in handlers.GetInvocationList())
+                try{handler(receipt);}catch(Exception){TransportCueErrors++;}
+        }
+        public void ReceiveCommitted(CommittedAudioReceipt receipt)
+        {
+            if(!ready||!isActiveAndEnabled||Session==null||Session.HasAuthority||!Session.IsInitialized||
+                (Session.Phase!=SessionPhase.Loading&&Session.Phase!=SessionPhase.Playing)||receipt.Fact.Run!=Session.RunId)return;
+            RefreshState();if(!ledger.TryReceiveCommitted(receipt,true,false))return;
+            if(pendingCommitted.Count>=128){CommittedQueueDrops++;return;}
+            pendingCommitted.Enqueue(new PendingCommitted(receipt,Time.realtimeSinceStartupAsDouble));DrainCommitted();
+        }
+        private void DrainCommitted()
+        {
+            while(pendingCommitted.Count>0)
+            {
+                var pending=pendingCommitted.Peek();var fact=pending.Receipt.Fact;
+                if(!isActiveAndEnabled||Session==null||fact.Run!=Session.RunId||Session.Phase==SessionPhase.ShuttingDown||Session.Phase==SessionPhase.Lobby||Session.Phase==SessionPhase.Results||Time.realtimeSinceStartupAsDouble-pending.Received>2)
+                {pendingCommitted.Dequeue();CommittedQueueDrops++;continue;}
+                if(!Playing||Session.LocalPlayer==null)return;
+                // Shared contract ObservedAt is already present in the accepted session snapshot. Hold a slightly ahead cue until that clock reaches it.
+                double observed=Session.ContractState.ObservedAt;
+                if(fact.At>observed+.1)return;
+                pendingCommitted.Dequeue();
+                if(fact.At<Session.ContractState.StartedAt||observed-fact.At>(fact.Kind==CommittedAudioKind.Ingestion?fact.Duration+.1:1.5)){CommittedQueueDrops++;continue;}
+                try{PlayCommitted(pending.Receipt);}catch(Exception){TransportCueErrors++;}
+            }
+        }
+        private void PlayCommitted(CommittedAudioReceipt receipt)
+        {
+            var fact=receipt.Fact;if(!Playing||fact.Run!=Session.RunId||!fact.IsValid)return;
+            int local=Session.LocalPlayer!=null?Session.LocalPlayer.PlayerId:0;
+            if(!fact.CanPlayForLocal(local))return;
+            SfxId id;bool spatial=true;float gain=1;Transform follow=null;
+            switch(fact.Kind)
+            {
+                case CommittedAudioKind.Ingestion:
+                    id=fact.Truck?Variant(SfxId.TruckSwallowA,SfxId.TruckSwallowB,fact.Item):fact.Size<=.2f?SfxId.SwallowTiny:fact.Size<=.6f?SfxId.SwallowMedium:SfxId.SwallowHeavy;
+                    foreach(var loop in loops)if(loop!=null&&(fact.Truck?loop.IsTruck:!loop.IsTruck&&loop.PlayerId==fact.Owner)){follow=loop.Anchor;break;}
+                    spatial=fact.Truck||fact.Owner!=local;break;
+                case CommittedAudioKind.ShotLaunch:id=SfxId.SwallowTiny;gain=.7f;break;
+                case CommittedAudioKind.EnemyHit:id=fact.Amount>=6?SfxId.ImpactHeavyA:SfxId.ImpactSmallA;gain=.65f;break;
+                case CommittedAudioKind.EnemyDefeat:id=SfxId.TruckSwallowB;gain=.65f;break;
+                case CommittedAudioKind.SuitHit:id=SfxId.UiPurchase;gain=.8f;spatial=false;break;
+                case CommittedAudioKind.SuitRecovered:id=SfxId.QuotaReady;gain=.6f;spatial=false;break;
+                default:return;
+            }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            nextDiagnosticCue=new AudioDiagnosticContext(AudioDiagnosticKind.Ingestion,value.RunId,value.InstanceId,0,value.PlayerId);
+            nextDiagnosticCue=new AudioDiagnosticContext(fact.Kind==CommittedAudioKind.Ingestion?AudioDiagnosticKind.Ingestion:AudioDiagnosticKind.Committed,fact.Run,fact.Item,0,fact.Owner)
+                {CommittedKind=(int)fact.Kind,Occurrence=fact.Occurrence,CommittedSequence=receipt.Sequence,Enemy=fact.Enemy};
 #endif
-            Play(id,value.TargetPosition,!local,1,follow);
+            Play(id,fact.Position,spatial,gain,follow);
         }
         public void Rattle(VacuumAudioEmitter owner,float load)
         {if(Playing&&Registered(owner))Play(SfxId.VacuumRattle,owner.Anchor.position,!owner.IsLocal,Mathf.Lerp(.3f,.7f,load),owner.Anchor);}
@@ -235,7 +284,7 @@ namespace HowToSuck.Audio
         private void StopAll()
         {foreach(var voice in voices)if(voice!=null){voice.Source.Stop();voice.Entry=null;voice.Follow=null;}foreach(var loop in loops)if(loop!=null)loop.StopAudio();}
         private void OnDisable()
-        {if(Session!=null)Session.Changed-=RefreshState;StopAll();loops.Clear();if(Current==this)Current=null;}
-        private void OnDestroy(){AuthorityImpact=null;foreach(var voice in voices)if(voice!=null&&voice.Source!=null)Destroy(voice.Source.gameObject);}
+        {CommittedAudioEvents.Emitted-=OnCommitted;if(Session!=null)Session.Changed-=RefreshState;pendingCommitted.Clear();StopAll();loops.Clear();if(Current==this)Current=null;}
+        private void OnDestroy(){CommittedAudioEvents.Emitted-=OnCommitted;pendingCommitted.Clear();AuthorityCommittedAudio=null;AuthorityImpact=null;foreach(var voice in voices)if(voice!=null&&voice.Source!=null)Destroy(voice.Source.gameObject);}
     }
 }
