@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WorkerUpper
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 0
+  - m_Path: AimReference
+    m_Weight: 0
+  - m_Path: Body
+    m_Weight: 0
+  - m_Path: Head
+    m_Weight: 0
+  - m_Path: NozzleReference
+    m_Weight: 0
+  - m_Path: WorkerRig
+    m_Weight: 0
+  - m_Path: WorkerRig/root
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/spine
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/shoulder_support_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/upper_arm_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/upper_arm_L/elbow_support_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/upper_arm_L/forearm_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/upper_arm_L/forearm_L/hand_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_L/upper_arm_L/forearm_L/hand_L/grip_L
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/shoulder_support_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/upper_arm_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/upper_arm_R/elbow_support_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/upper_arm_R/forearm_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/upper_arm_R/forearm_R/hand_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/clavicle_R/upper_arm_R/forearm_R/hand_R/grip_R
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/neck
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/spine/chest/neck/head
+    m_Weight: 1
+  - m_Path: WorkerRig/root/pelvis/thigh_L
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_L/calf_L
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_L/calf_L/foot_L
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_L/knee_support_L
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_R
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_R/calf_R
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_R/calf_R/foot_R
+    m_Weight: 0
+  - m_Path: WorkerRig/root/pelvis/thigh_R/knee_support_R
+    m_Weight: 0

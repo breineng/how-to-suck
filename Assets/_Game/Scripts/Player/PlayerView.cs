@@ -16,7 +16,7 @@ namespace HowToSuck
         private sealed class ModelMount
         {
             public PlayerMotor Motor;
-            public Vector3 Position, Scale;
+            public Vector3 Position, Scale, NozzlePosition;
             public Quaternion Rotation;
             public Transform Intake;
         }
@@ -85,7 +85,10 @@ namespace HowToSuck
             {
                 // Moving the viewpoint does not move the tool's gameplay mount.
                 Vector3 aimOrigin = renderedBase + Vector3.up * Motor.CameraLocalMount.y;
-                boundModel.SetPositionAndRotation(aimOrigin + Motor.CameraPivot.rotation * mount.Position,
+                float pitch = Input != null ? Input.LatestIntent.Pitch : Motor.LastIntent.Pitch;
+                if (!Motor.TryGetNozzleLocalPosition(pitch,out var nozzle)) { boundModel.gameObject.SetActive(false); ReleasePresentation(); return; }
+                Vector3 position = mount.Position + nozzle - mount.NozzlePosition;
+                boundModel.SetPositionAndRotation(aimOrigin + Motor.CameraPivot.rotation * position,
                     Motor.CameraPivot.rotation * mount.Rotation);
             }
         }
@@ -113,6 +116,7 @@ namespace HowToSuck
                         mount = new ModelMount { Motor = Motor,
                             Position = Motor.AuthoritativeAim.InverseTransformPoint(boundModel.position),
                             Rotation = Quaternion.Inverse(Motor.AuthoritativeAim.rotation) * boundModel.rotation,
+                            NozzlePosition = Motor.NozzleAnchor.localPosition,
                             Scale = boundModel.localScale };
                         var receiver = Motor.GetComponent<IntakeReceiver>();
                         if (receiver != null)
