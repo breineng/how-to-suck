@@ -9,22 +9,34 @@ namespace HowToSuck.Networking
         public Button SoloButton,QuitButton,CoopButton;
         public TMP_Text Status,CoopStatus;
         private SoloSessionStartup startup;
+        private bool wired;
         private void Start()
         {
             if(SoloButton==null||QuitButton==null||Status==null){SetButtons(false,false);enabled=false;return;}
-            var roots=FindObjectsByType<SoloSessionStartup>(FindObjectsSortMode.None);
-            if(roots.Length!=1){if(Status!=null)Status.text="Не удалось открыть главное меню.";SetButtons(false,false);return;}
-            startup=roots[0];startup.Changed+=Refresh;
-            SoloButton.onClick.AddListener(ChooseSolo);QuitButton.onClick.AddListener(Quit);
-            if(CoopButton!=null)CoopButton.interactable=false;
+            SoloButton.onClick.AddListener(ChooseSolo);QuitButton.onClick.AddListener(Quit);wired=true;
             if(CoopStatus!=null)CoopStatus.text="Совместная игра пока недоступна в этой сборке.";
-            Refresh();if(SoloButton.IsInteractable()&&EventSystem.current!=null)EventSystem.current.SetSelectedGameObject(SoloButton.gameObject);
+            BindCurrent();
         }
-        private void ChooseSolo()=>startup.StartSolo();
-        private void Quit()=>startup.Quit();
+        private void Update()
+        {
+            // Cancelling a deferred connection can replace its root while ProductEntry stays loaded.
+            if(wired&&(startup==null||!startup.isActiveAndEnabled))BindCurrent();
+        }
+        private void BindCurrent()
+        {
+            var roots=FindObjectsByType<SoloSessionStartup>(FindObjectsSortMode.None);
+            var next=roots.Length==1?roots[0]:null;
+            if(startup!=null&&startup==next)return;
+            if(startup!=null)startup.Changed-=Refresh;
+            startup=next;if(startup!=null)startup.Changed+=Refresh;
+            Refresh();
+        }
+        private void ChooseSolo(){if(startup!=null)startup.StartSolo();}
+        private void Quit(){if(startup!=null)startup.Quit();}
         private void SetButtons(bool solo,bool quit){if(SoloButton!=null)SoloButton.interactable=solo;if(QuitButton!=null)QuitButton.interactable=quit;if(CoopButton!=null)CoopButton.interactable=false;}
         private void Refresh()
         {
+            if(startup==null){SetButtons(false,false);if(Status!=null)Status.text="Открываем главное меню…";return;}
             SetButtons(startup.CanStartSolo,startup.CanQuit);if(Status!=null)Status.text=startup.Status;
             if(EventSystem.current!=null&&EventSystem.current.currentSelectedGameObject==null)
             {
