@@ -30,7 +30,14 @@ namespace HowToSuck
         public void Begin(string id){generation++;CancelAll();runId=id;completed.Clear();records.Clear();running=false;}
         public void SetRunning(bool value){generation++;running=value;if(!value)CancelAll();}
         public void Clear(){SetRunning(false);runId=null;completed.Clear();records.Clear();}
+        // Legacy call retains complete-then-admit behavior for existing fixtures.
         public void Step(double now,IReadOnlyList<IntakeReceiver> receivers)
+        {
+            ulong before = generation;
+            CompleteDue(now);
+            if (generation == before) Admit(now, receivers);
+        }
+        public void CompleteDue(double now)
         {
             if(!running || string.IsNullOrEmpty(runId) || registry.RunId!=runId || double.IsNaN(now) || double.IsInfinity(now))return;
             ulong currentGeneration=generation;
@@ -42,6 +49,11 @@ namespace HowToSuck
                 {snapshot.TargetPosition=snapshot.Receiver.Position;snapshot.TargetRotation=snapshot.Receiver.Rotation;snapshot.EndPosition=snapshot.Receiver.EndPosition;}
                 if(now>=snapshot.StartedAt+snapshot.Duration){active.RemoveAt(i);Finish(snapshot);if(!running || generation!=currentGeneration)return;}
             }
+        }
+        public void Admit(double now,IReadOnlyList<IntakeReceiver> receivers)
+        {
+            if(!running || string.IsNullOrEmpty(runId) || registry.RunId!=runId || double.IsNaN(now) || double.IsInfinity(now))return;
+            if(receivers==null)throw new ArgumentNullException(nameof(receivers));
             requests.Clear();
             foreach(var receiver in receivers)
             {

@@ -7,6 +7,19 @@ namespace HowToSuck
     {
         public ContractDefinition Contract;
         public TruckIntake Truck;
+        public ExtractionZone ExtractionZone;
+
+        // Derived from the authored list; never a second editable loot total.
+        public long AvailableLootValue
+        {
+            get
+            {
+                long total = 0;
+                foreach (var spawn in LootSpawns)
+                    total = checked(total + spawn.Prefab.GetComponent<SuckableObject>().Definition.Value);
+                return total;
+            }
+        }
         public GameObject PlayerPrefab;
         public LootSpawnPoint[] LootSpawns = System.Array.Empty<LootSpawnPoint>();
         public Transform[] PlayerSpawns = new Transform[4];
@@ -87,6 +100,16 @@ namespace HowToSuck
             }
             if (Truck == null) { error = "Location needs its Suck Truck."; return false; }
             if (!Truck.TryValidate(out error)) return false;
+            if (ExtractionZone == null || ExtractionZone.Area != Truck.ExtractionArea)
+            { error = "Location must bind the truck's authored extraction area."; return false; }
+            if (!ExtractionZone.TryValidate(out error)) return false;
+            try
+            {
+                if (AvailableLootValue < Contract.Quota)
+                { error = "Authored loot cannot meet this contract's quota."; return false; }
+            }
+            catch (System.OverflowException)
+            { error = "Authored loot total exceeds the campaign money limit."; return false; }
             error = null;
             return true;
         }

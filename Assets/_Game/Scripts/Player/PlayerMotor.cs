@@ -11,6 +11,8 @@ namespace HowToSuck
         public Transform AuthoritativeAim;
         public Transform NozzleAnchor;
         public PlayerSettings Settings = new PlayerSettings();
+        public bool UseC28Mk1AimProfile;
+        public bool NozzlePoseValid { get; private set; } = true;
 
         public int PlayerId { get; private set; }
         public PlayerIntent LastIntent { get; private set; }
@@ -49,6 +51,20 @@ namespace HowToSuck
             initialized = true;
         }
 
+        public bool TryGetNozzleLocalPosition(float pitch, out Vector3 position)
+        {
+            position = NozzleAnchor != null ? NozzleAnchor.localPosition : Vector3.zero;
+            if (!UseC28Mk1AimProfile) return NozzleAnchor != null;
+            var emitter = GetComponent<VacuumEmitter>();
+            if (Settings == null || Mathf.Abs(Settings.EyeHeight-1.62f)>.0001f ||
+                (transform.lossyScale-Vector3.one).sqrMagnitude>.000001f ||
+                (emitter != null && emitter.Definition != null && emitter.Definition.TierId!="mk1")) return false;
+            var result = NozzleAimMountPolicy.Evaluate(pitch,.45);
+            if (!result.Reachable) return false;
+            position = new Vector3((float)result.X,(float)result.Y,(float)result.Z);
+            return true;
+        }
+
         public Vector3 GetRenderPosition()
         {
             if(!initialized || (transform.position-currentRenderPosition).sqrMagnitude>.000001f)return transform.position;
@@ -80,6 +96,8 @@ namespace HowToSuck
             intent.Yaw = Mathf.Repeat(intent.Yaw, 360f);
             intent.Pitch = Mathf.Clamp(intent.Pitch, -80f, 80f);
             LastIntent = intent;
+            NozzlePoseValid = TryGetNozzleLocalPosition(intent.Pitch, out var nozzlePosition);
+            if (NozzlePoseValid) NozzleAnchor.localPosition = nozzlePosition;
 
             // This is the sole gameplay pose writer. The local camera has a separate pivot.
             transform.rotation = Quaternion.Euler(0f, intent.Yaw, 0f);

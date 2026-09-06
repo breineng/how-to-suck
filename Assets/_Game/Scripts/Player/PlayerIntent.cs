@@ -4,6 +4,7 @@ namespace HowToSuck
 {
     public struct PlayerIntent
     {
+        public string RunId;
         public uint Sequence;
         public uint JumpPressSequence;
         public Vector2 Move;

@@ -11,6 +11,8 @@ namespace HowToSuck
         public InputActionAsset Actions;
         [Min(0f)] public float MouseSensitivity = 0.12f;
         public bool MenuOpen { get; private set; }
+        public bool IsInitialized => initialized;
+        public bool GameplayAvailable { get; private set; } = true;
         public PlayerIntent LatestIntent { get; private set; }
         public event Action<bool> MenuChanged;
 
@@ -23,7 +25,10 @@ namespace HowToSuck
         private bool suppressVacuum, suppressInteract, suppressJump;
         private bool discardLook;
 
-        public void Initialize(int id, IPlayerIntentSink intentSink)
+        // Two-argument overload is retained for isolated input fixtures; live sessions bind a non-empty run.
+        public void Initialize(int id, IPlayerIntentSink intentSink) => Initialize(id, intentSink, null);
+
+        public void Initialize(int id, IPlayerIntentSink intentSink, string runId)
         {
             if (intentSink == null) throw new ArgumentNullException(nameof(intentSink));
             if (initialized) SendNeutral();
@@ -31,8 +36,9 @@ namespace HowToSuck
             playerId = id;
             sink = intentSink;
             // A live reader must keep its counters across rebinding; the authority may still remember them.
-            LatestIntent = new PlayerIntent { Sequence = LatestIntent.Sequence, JumpPressSequence = LatestIntent.JumpPressSequence, Yaw = transform.eulerAngles.y };
+            LatestIntent = new PlayerIntent { RunId = runId, Sequence = LatestIntent.Sequence, JumpPressSequence = LatestIntent.JumpPressSequence, Yaw = transform.eulerAngles.y };
             MenuOpen = false;
+            GameplayAvailable = true;
             focused = Application.isFocused;
             if (Actions == null)
             {
@@ -67,9 +73,19 @@ namespace HowToSuck
             SendNeutral();
         }
 
+        public void SetGameplayAvailable(bool available)
+        {
+            GameplayAvailable = available;
+            if (!available) SetMenuOpen(true);
+            suppressVacuum = suppressInteract = suppressJump = true;
+            discardLook = true;
+            SendNeutral();
+            ApplyActionState();
+        }
+
         public void SetMenuOpen(bool open)
         {
-            if (MenuOpen == open) return;
+            if (MenuOpen == open || (!open && !GameplayAvailable)) return;
             MenuOpen = open;
             suppressVacuum = suppressInteract = suppressJump = true;
             discardLook = true;
@@ -81,8 +97,8 @@ namespace HowToSuck
         private void Update()
         {
             if (!initialized) return;
-            if (focused && pause.WasPressedThisFrame()) SetMenuOpen(!MenuOpen);
-            if (MenuOpen || !focused)
+            if (GameplayAvailable && focused && pause.WasPressedThisFrame()) SetMenuOpen(!MenuOpen);
+            if (!GameplayAvailable || MenuOpen || !focused)
             {
                 SendNeutral();
                 return;
@@ -99,6 +115,7 @@ namespace HowToSuck
             PlayerIntent previous = LatestIntent;
             var intent = new PlayerIntent
             {
+                RunId = previous.RunId,
                 Sequence = unchecked(previous.Sequence + 1),
                 JumpPressSequence = previous.JumpPressSequence,
                 Move = Vector2.ClampMagnitude(move.ReadValue<Vector2>(), 1f),
@@ -133,7 +150,7 @@ namespace HowToSuck
         private void ApplyActionState()
         {
             if (!initialized) return;
-            bool active = isActiveAndEnabled && focused;
+            bool active = isActiveAndEnabled && focused && GameplayAvailable;
             SetEnabled(pause, active);
             bool gameplay = active && !MenuOpen;
             SetEnabled(move, gameplay);

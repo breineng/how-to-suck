@@ -31,11 +31,27 @@ namespace HowToSuck
             if (FailurePercent < 0 || FailurePercent > 100)
                 return Fail($"Contract '{ContractId}' failure payout must be between 0 and 100 percent.", out error);
 
-            if (string.IsNullOrWhiteSpace(SceneName) || !Application.CanStreamedLevelBeLoaded(SceneName))
+            if (string.IsNullOrWhiteSpace(SceneName) || !CanLoadScene(SceneName))
                 return Fail($"Contract '{ContractId}' scene '{SceneName}' cannot be loaded. Add its scene to the enabled build scenes.", out error);
 
             error = null;
             return true;
+        }
+
+        private static bool CanLoadScene(string sceneName)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                string requested = sceneName.Replace((char)92, (char)47);
+                foreach (var scene in UnityEditor.EditorBuildSettings.scenes)
+                    if (scene.enabled && UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.SceneAsset>(scene.path) != null &&
+                        (scene.path == requested || System.IO.Path.ChangeExtension(scene.path, null) == requested ||
+                         System.IO.Path.GetFileNameWithoutExtension(scene.path) == requested)) return true;
+                return false;
+            }
+#endif
+            return Application.CanStreamedLevelBeLoaded(sceneName);
         }
 
         private static bool Fail(string message, out string error)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace HowToSuck
 {
     public sealed class AuthorityWorld : MonoBehaviour
@@ -8,75 +9,194 @@ namespace HowToSuck
         public bool HasAuthority { get; private set; }
         public bool IsRunning { get; private set; }
         public ulong TickCount { get; private set; }
+        public string RunId => Loot.RunId;
         public int PlayerCount => players.Count;
-        public IReadOnlyDictionary<int,PlayerMotor> Players => players;
+        public IReadOnlyDictionary<int, PlayerMotor> Players => players;
         public LootRegistry Loot { get; } = new LootRegistry();
         public IngestionService Ingestion { get; private set; }
-        private readonly Dictionary<int,PlayerMotor> players=new Dictionary<int,PlayerMotor>();
-        private readonly Dictionary<int,PlayerIntentBuffer> inputs=new Dictionary<int,PlayerIntentBuffer>();
-        private readonly Dictionary<int,VacuumEmitter> emitters=new Dictionary<int,VacuumEmitter>();
-        private readonly List<IntakeReceiver> receivers=new List<IntakeReceiver>();
+        public bool AllPlayersInExtraction { get; private set; }
+        public event Action SnapshotChanged;
+
+        private readonly Dictionary<int, PlayerMotor> players = new Dictionary<int, PlayerMotor>();
+        private readonly Dictionary<int, PlayerIntentBuffer> inputs = new Dictionary<int, PlayerIntentBuffer>();
+        private readonly Dictionary<int, VacuumEmitter> emitters = new Dictionary<int, VacuumEmitter>();
+        private readonly List<IntakeReceiver> receivers = new List<IntakeReceiver>();
+        private readonly List<ExtractionPlayerState> extractionPlayers = new List<ExtractionPlayerState>();
         private SuctionSystem suction;
         private IWorldSpawner spawner;
         private TruckIntake truck;
+        private VacuumDefinition playerVacuum;
+        private ExtractionZone extraction;
+        private ContractController contract;
+        private Func<double> clock;
+        private double stepNow;
+        private bool inStep;
+
         public void Initialize(bool authority)
         {
-            HasAuthority=authority;suction=new SuctionSystem(Loot);
-            Ingestion=new IngestionService(Loot,suction,instance=>spawner?.Despawn(instance));
+            if (Ingestion != null) throw new InvalidOperationException("World is already initialized.");
+            HasAuthority = authority;
+            clock = () => Time.realtimeSinceStartupAsDouble;
+            suction = new SuctionSystem(Loot);
+            Ingestion = new IngestionService(Loot, suction, instance => spawner?.Despawn(instance));
+            Ingestion.Collected += OnCollected;
         }
-        public void PrepareWorld(LevelContext level,IWorldSpawner worldSpawner,VacuumDefinition vacuum)
+
+        // The prepared controller supplies the only run ID; the world never invents another ID.
+        public void PrepareWorld(LevelContext level, IWorldSpawner worldSpawner, VacuumDefinition vacuum,
+            ContractController controller, Func<double> authorityClock)
         {
-            spawner=worldSpawner;if(truck!=null)truck.Stop();truck=level.Truck;
-            receivers.RemoveAll(r=>r==null || r.IsTruck);if(truck!=null)receivers.Add(truck.Receiver);
-            Loot.Begin(Guid.NewGuid().ToString("N"));Ingestion.Begin(Loot.RunId);
-            foreach(var spawn in level.LootSpawns)
+            if (!HasAuthority || Ingestion == null) throw new InvalidOperationException("Initialize the authority first.");
+            if (controller == null || controller.State.Phase != ContractPhase.Preparing)
+                throw new InvalidOperationException("Prepare the contract before preparing its world.");
+            if (IsRunning || !string.IsNullOrEmpty(RunId) || players.Count != 0)
+                throw new InvalidOperationException("Clear the previous world before preparing another run.");
+            if (level == null || level.ExtractionZone == null) throw new ArgumentNullException(nameof(level));
+            spawner = worldSpawner ?? throw new ArgumentNullException(nameof(worldSpawner));
+            clock = authorityClock ?? throw new ArgumentNullException(nameof(authorityClock));
+            contract = controller;
+            playerVacuum = vacuum != null ? vacuum : throw new ArgumentNullException(nameof(vacuum));
+            truck = level.Truck;
+            extraction = level.ExtractionZone;
+            extraction.Clear();
+            receivers.RemoveAll(receiver => receiver == null || receiver.IsTruck);
+            if (truck != null) { truck.Stop(); receivers.Add(truck.Receiver); }
+            Loot.Begin(controller.State.RunId);
+            Ingestion.Begin(RunId);
+            foreach (var spawn in level.LootSpawns)
             {
-                var instance=spawner.Spawn(spawn.Prefab,spawn.transform.position,spawn.transform.rotation);
-                var item=instance.GetComponent<SuckableObject>();
-                try{Loot.Register(item);item.SetWorldFrozen(true);}
-                catch{spawner.Despawn(instance);throw;}
+                var instance = spawner.Spawn(spawn.Prefab, spawn.transform.position, spawn.transform.rotation);
+                if (instance == null) throw new InvalidOperationException("Loot spawn failed.");
+                try
+                {
+                    Loot.Register(instance.GetComponent<SuckableObject>());
+                    instance.GetComponent<SuckableObject>().SetWorldFrozen(true);
+                }
+                catch { spawner.Despawn(instance); throw; }
             }
-            foreach(var emitter in emitters.Values)if(emitter!=null)emitter.Definition=vacuum;
         }
+
         public void SetRunning(bool running)
         {
-            IsRunning=running;Ingestion?.SetRunning(running);if(!running && truck!=null)truck.Stop();
-            foreach(var item in Loot.Items.Values)if(item!=null)item.SetWorldFrozen(!running);
-            if(!running)foreach(var source in emitters.Values)if(source!=null)source.Active=false;
+            if (running && (contract == null || !contract.IsRunning || contract.State.RunId != RunId))
+                throw new InvalidOperationException("Only the current running contract can unfreeze the world.");
+            if (IsRunning == running) return;
+            IsRunning = running;
+            // Cancel owned ingestion before enumerating the remaining registry; cancellation removes entries.
+            Ingestion?.SetRunning(running);
+            if (!running && truck != null) truck.Stop();
+            foreach (var item in Loot.Items.Values) if (item != null) item.SetWorldFrozen(!running);
+            if (!running)
+            {
+                foreach (var source in emitters.Values) if (source != null) source.Active = false;
+                foreach (var player in players.Values)
+                    if (player != null) player.GetComponent<PlayerInputReader>()?.SetGameplayAvailable(false);
+            }
         }
+
         public void RegisterPlayer(PlayerMotor motor)
         {
-            players.Add(motor.PlayerId,motor);
-            var buffer=new PlayerIntentBuffer();buffer.Clear(motor.transform.eulerAngles.y,0);inputs.Add(motor.PlayerId,buffer);
-            var emitter=motor.GetComponent<VacuumEmitter>();
-            if(emitter!=null){emitter.Source=motor.NozzleAnchor;emitter.OriginGuard=motor.AuthoritativeAim;emitter.EmitterId=motor.PlayerId;emitters.Add(motor.PlayerId,emitter);}
-            var receiver=motor.GetComponent<IntakeReceiver>();
-            if(receiver!=null){receiver.IntakeId=motor.PlayerId;receiver.PlayerId=motor.PlayerId;receivers.Add(receiver);}
+            if (motor == null || motor.PlayerId <= 0 || string.IsNullOrWhiteSpace(RunId))
+                throw new InvalidOperationException("A player needs the current prepared run before registration.");
+            players.Add(motor.PlayerId, motor);
+            var buffer = new PlayerIntentBuffer();
+            buffer.BindRun(RunId, motor.transform.eulerAngles.y, 0);
+            inputs.Add(motor.PlayerId, buffer);
+            var emitter = motor.GetComponent<VacuumEmitter>();
+            if (emitter != null)
+            {
+                emitter.Source = motor.NozzleAnchor; emitter.OriginGuard = motor.AuthoritativeAim;
+                emitter.EmitterId = motor.PlayerId; emitter.Definition = playerVacuum;
+                emitters.Add(motor.PlayerId, emitter);
+            }
+            var receiver = motor.GetComponent<IntakeReceiver>();
+            if (receiver != null)
+            { receiver.IntakeId = motor.PlayerId; receiver.PlayerId = motor.PlayerId; receivers.Add(receiver); }
         }
+
         public void RemovePlayer(int id)
         {
-            players.Remove(id);inputs.Remove(id);emitters.Remove(id);
-            receivers.RemoveAll(r=>r==null || (!r.IsTruck && r.PlayerId==id));
+            if (emitters.TryGetValue(id, out var emitter) && emitter != null) emitter.Active = false;
+            players.Remove(id); inputs.Remove(id); emitters.Remove(id);
+            receivers.RemoveAll(receiver => receiver == null || (!receiver.IsTruck && receiver.PlayerId == id));
         }
-        public bool SubmitIntent(int id,PlayerIntent intent)=>HasAuthority && IsRunning && inputs.TryGetValue(id,out var buffer) && buffer.TrySubmit(intent,Time.realtimeSinceStartupAsDouble);
+
+        public bool SubmitIntent(int id, PlayerIntent intent) => HasAuthority && IsRunning &&
+            !string.IsNullOrEmpty(RunId) && intent.RunId == RunId &&
+            inputs.TryGetValue(id, out var buffer) && buffer.TrySubmit(intent, clock());
+
+        public bool IsPlayerInExtraction(int id) => extraction != null && extraction.Contains(id);
+
         public void Clear()
         {
-            SetRunning(false);TickCount=0;
-            foreach(var item in Loot.Items.Values)if(item!=null)spawner?.Despawn(item.gameObject);
-            Ingestion?.Clear();truck=null;Loot.Clear();players.Clear();inputs.Clear();emitters.Clear();receivers.Clear();
+            SetRunning(false); TickCount = 0;
+            foreach (var item in Loot.Items.Values) if (item != null) spawner?.Despawn(item.gameObject);
+            Ingestion?.Clear();
+            if (extraction != null) extraction.Clear();
+            truck = null; extraction = null; contract = null; playerVacuum = null;
+            Loot.Clear(); players.Clear(); inputs.Clear(); emitters.Clear(); receivers.Clear();
+            extractionPlayers.Clear(); AllPlayersInExtraction = false; inStep = false;
         }
+
         private void FixedUpdate()
         {
-            if(!HasAuthority || !IsRunning)return;
-            TickCount++;double now=Time.realtimeSinceStartupAsDouble;suction.BeginStep();
-            foreach(var pair in players)
+            if (!HasAuthority || !IsRunning || contract == null) return;
+            double now = clock();
+            if (double.IsNaN(now) || double.IsInfinity(now) || now < contract.State.ObservedAt) return;
+            // Exact equality belongs to timeout, before movement, completion, forces or admissions.
+            if (contract.CheckDeadline(now) || !contract.IsRunning || !IsRunning) return;
+            TickCount++;
+            stepNow = now; inStep = true;
+            try
             {
-                if(pair.Value==null)continue;
-                pair.Value.Step(inputs[pair.Key].Read(now),Time.fixedDeltaTime);
-                if(emitters.TryGetValue(pair.Key,out var emitter)){emitter.Active=pair.Value.LastIntent.VacuumHeld;suction.Apply(emitter);}
+                foreach (var pair in players)
+                {
+                    if (pair.Value == null || !pair.Value.isActiveAndEnabled)
+                    {
+                        if (emitters.TryGetValue(pair.Key, out var inactiveSource) && inactiveSource != null) inactiveSource.Active = false;
+                        continue;
+                    }
+                    pair.Value.Step(inputs[pair.Key].Read(now), Time.fixedDeltaTime);
+                    if (emitters.TryGetValue(pair.Key, out var emitter) && emitter != null)
+                        emitter.Active = pair.Value.LastIntent.VacuumHeld && pair.Value.NozzlePoseValid;
+                }
+                Ingestion.CompleteDue(now);
+                if (!IsRunning || !contract.IsRunning) return;
+                // One shared force budget for all handheld sources and the truck.
+                suction.BeginStep();
+                foreach (var emitter in emitters.Values) if (emitter != null) suction.Apply(emitter);
+                if (truck != null) truck.Step(suction);
+                Ingestion.Admit(now, receivers);
+                if (!IsRunning || !contract.IsRunning) return;
+                extraction.Refresh(players);
+                extractionPlayers.Clear();
+                AllPlayersInExtraction = false;
+                bool allInside = true;
+                foreach (var pair in players)
+                {
+                    var motor = pair.Value;
+                    if (motor == null || !motor.isActiveAndEnabled) continue;
+                    bool inside = extraction.Contains(pair.Key);
+                    allInside &= inside;
+                    extractionPlayers.Add(new ExtractionPlayerState(pair.Key, inside, motor.LastIntent.InteractHeld));
+                }
+                AllPlayersInExtraction = extractionPlayers.Count > 0 && allInside;
+                contract.StepExtraction(now, extractionPlayers);
             }
-            if(truck!=null)truck.Step(suction);
-            Ingestion.Step(now,receivers);
+            finally { inStep = false; SnapshotChanged?.Invoke(); }
+        }
+
+        private void OnCollected(CollectionRecord record)
+        {
+            if (inStep && IsRunning && contract != null && record.RunId == RunId)
+                contract.TryRecordCollection(record, stepNow);
+        }
+
+        private void OnDestroy()
+        {
+            Clear();
+            if (Ingestion != null) Ingestion.Collected -= OnCollected;
+            SnapshotChanged = null;
         }
     }
 }
