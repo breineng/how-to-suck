@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 2965701507982726659}
   - component: {fileID: 8705247936620461750}
   - component: {fileID: 5723063627462580331}
+  - component: {fileID: 7499277885506794306}
   m_Layer: 10
   m_Name: ChairDining
   m_TagString: Untagged
@@ -249,6 +250,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.IngestionView
   Item: {fileID: 8705247936620461750}
+--- !u!114 &7499277885506794306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5405021592073617640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77332adbf09789041ac240f76de62785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.ItemAudioEmitter
 --- !u!1 &6123671460254102701
 GameObject:
   m_ObjectHideFlags: 0

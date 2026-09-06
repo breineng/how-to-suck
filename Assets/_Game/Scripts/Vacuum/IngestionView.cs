@@ -28,7 +28,7 @@ namespace HowToSuck
             }
             // A destroyed receiver keeps its last visible endpoint. Only presentation reads this pose;
             // admission, completion time, collection and the frozen physics root stay authoritative.
-            float t=snapshot.Progress(Time.realtimeSinceStartupAsDouble);
+            float t=snapshot.Progress(snapshot.PresentationNow);
             float entry=Mathf.SmoothStep(0,1,Mathf.InverseLerp(.2f,.65f,t));
             Item.VisualRoot.SetPositionAndRotation(Vector3.Lerp(snapshot.StartPosition,renderedEnd,entry),Quaternion.Slerp(snapshot.StartRotation,renderedRotation,entry));
             Item.VisualRoot.localScale=snapshot.StartScale*Mathf.Lerp(1,.001f,entry);

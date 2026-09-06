@@ -13,12 +13,35 @@ namespace HowToSuck
         public PlayerSettings Settings = new PlayerSettings();
         public PlayerContactSettings ContactSettings = new PlayerContactSettings();
         public bool UseC28Mk1AimProfile;
+        [Range(0f,.6f)] public float MaximumAimMountDisplacement=.6f;
         public bool NozzlePoseValid { get; private set; } = true;
 
+        // Read-only presentation invalidation; no simulation or networking decision uses it.
+        public uint PresentationResetRevision { get; private set; }
         public int PlayerId { get; private set; }
         public PlayerIntent LastIntent { get; private set; }
-        public bool IsGrounded => controller != null && controller.isGrounded;
+        public bool IsGrounded => HasMovementAuthority ? controller != null && controller.isGrounded : replicaGrounded;
+        public bool HasMovementAuthority { get; private set; } = true;
+        private bool roleBound, replicaGrounded;
+        public void BindMovementAuthority(bool authority)
+        {
+            if (roleBound && HasMovementAuthority != authority) throw new System.InvalidOperationException("A player cannot change authority in place.");
+            HasMovementAuthority = authority; roleBound = true;
+            controller = GetComponent<CharacterController>(); controller.enabled = authority;
+        }
+        public void ApplyReplicaPresentation(PlayerIntent intent, bool grounded, float vertical, float planarSpeed = 0f)
+        {
+            if (HasMovementAuthority || !initialized || !intent.IsFinite || float.IsNaN(vertical) || float.IsInfinity(vertical) || float.IsNaN(planarSpeed) || float.IsInfinity(planarSpeed) || planarSpeed < 0f) return;
+            LastIntent = intent; replicaGrounded = grounded; verticalVelocity = vertical; PlanarSpeed = planarSpeed;
+            NozzlePoseValid = TryGetNozzleLocalPosition(intent.Pitch, out var position);
+            if (NozzlePoseValid) NozzleAnchor.localPosition = position;
+            if (AuthoritativeAim != null) AuthoritativeAim.rotation = Quaternion.Euler(intent.Pitch, intent.Yaw, 0);
+            // NetworkTransform owns root pose; no CharacterController.Move, forces or recovery here.
+        }
         public float VerticalVelocity => verticalVelocity;
+        // Measured by the sole authoritative Move, using that exact physics step's duration.
+        // Replicas receive this presentation value; an interpolated render root is never divided by fixed time.
+        public float PlanarSpeed { get; private set; }
         public Vector3 CameraLocalMount => Settings!=null?new Vector3(0,Settings.EyeHeight,Settings.CameraForwardOffset):new Vector3(0,1.62f,0);
 
         private CharacterController controller;
@@ -35,12 +58,15 @@ namespace HowToSuck
         private PlayerContactResponse contactResponse;
         public Vector3 ExternalVelocity => contactResponse != null ? contactResponse.Velocity : Vector3.zero;
 
+        private void OnDisable() {PlanarSpeed=0f;unchecked{PresentationResetRevision++;}}
+
         public void BindContactWorld(AuthorityWorld world)
         { contactWorld = world; ResetContactResponse(); }
         public void ResetContactResponse() => contactResponse?.Reset();
 
         public void SuspendForRecovery(PlayerIntent current)
         {
+            unchecked{PresentationResetRevision++;}
             if (current.IsFinite)
             {
                 if (PlayerIntent.IsNewer(current.JumpPressSequence, consumedJumpSequence))
@@ -48,7 +74,7 @@ namespace HowToSuck
                 LastIntent = current.Neutral();
             }
             else LastIntent = LastIntent.Neutral();
-            verticalVelocity = 0; moving = false; pushImpulseBudget = 0; pushedBodies.Clear();
+            verticalVelocity = 0; PlanarSpeed = 0; moving = false; pushImpulseBudget = 0; pushedBodies.Clear();
             ResetContactResponse();
             previousRenderPosition = currentRenderPosition = transform.position;
             renderPoseFixedTime = Time.fixedTimeAsDouble;
@@ -71,19 +97,22 @@ namespace HowToSuck
 
         public void Initialize(int playerId)
         {
+            unchecked{PresentationResetRevision++;}
             PlayerId = playerId;
             contactResponse = new PlayerContactResponse(ContactSettings ?? new PlayerContactSettings());
             controller = GetComponent<CharacterController>();
             if (Settings == null) Settings = new PlayerSettings();
             controller.height = Mathf.Max(Settings.CapsuleHeight, Settings.CapsuleRadius * 2f);
             controller.radius = Mathf.Max(0.01f, Settings.CapsuleRadius);
-            controller.center = Vector3.up * (controller.height * 0.5f);
+            // Native CharacterController grounding stops one skin width above its geometric bottom.
+            // Keep the shared body/eye/nozzle root at the floor, without shifting the visual rig.
+            controller.center = Vector3.up * (controller.height * 0.5f + controller.skinWidth);
             controller.stepOffset = Mathf.Clamp(Settings.StepOffset, 0f, controller.height);
             controller.slopeLimit = Settings.SlopeLimit;
             controller.minMoveDistance = 0f;
             if (CameraPivot != null) CameraPivot.localPosition = CameraLocalMount;
             if (AuthoritativeAim != null) AuthoritativeAim.localPosition = Vector3.up * Settings.EyeHeight;
-            verticalVelocity = 0f;
+            verticalVelocity = 0f; PlanarSpeed = 0f;
             if (!initialized) consumedJumpSequence = 0;
             LastIntent = new PlayerIntent { Yaw = transform.eulerAngles.y, JumpPressSequence = consumedJumpSequence };
             previousRenderPosition=currentRenderPosition=transform.position;renderPoseFixedTime=Time.fixedTimeAsDouble;
@@ -95,12 +124,25 @@ namespace HowToSuck
             position = NozzleAnchor != null ? NozzleAnchor.localPosition : Vector3.zero;
             if (!UseC28Mk1AimProfile) return NozzleAnchor != null;
             var emitter = GetComponent<VacuumEmitter>();
+            if (emitter != null && emitter.Definition != null && emitter.Definition.TierId!="mk1")
+            {
+                if (Settings == null || Mathf.Abs(Settings.EyeHeight-1.62f)>.0001f ||
+                    (transform.lossyScale-Vector3.one).sqrMagnitude>.000001f) return false;
+                var issued=GetComponent<ToolTierIssue>();
+                return issued!=null && issued.ActiveProfile!=null &&
+                    !float.IsNaN(MaximumAimMountDisplacement) && !float.IsInfinity(MaximumAimMountDisplacement) &&
+                    MaximumAimMountDisplacement>0 && MaximumAimMountDisplacement<=.6f &&
+                    issued.ActiveProfile.MaximumDisplacement<=MaximumAimMountDisplacement &&
+                    issued.TryMount(emitter.Definition.TierId,pitch,out position);
+            }
             if (Settings == null || Mathf.Abs(Settings.EyeHeight-1.62f)>.0001f ||
                 (transform.lossyScale-Vector3.one).sqrMagnitude>.000001f ||
                 (emitter != null && emitter.Definition != null && emitter.Definition.TierId!="mk1")) return false;
-            var result = NozzleAimMountPolicy.Evaluate(pitch,.45);
+            if (float.IsNaN(MaximumAimMountDisplacement) || float.IsInfinity(MaximumAimMountDisplacement) || MaximumAimMountDisplacement<=0 || MaximumAimMountDisplacement>.6f) return false;
+            var result = NozzleAimMountPolicy.Evaluate(pitch,MaximumAimMountDisplacement);
             if (!result.Reachable) return false;
             position = new Vector3((float)result.X,(float)result.Y,(float)result.Z);
+            var stance=GetComponent<PlayerIdleStanceView>();if(stance!=null)position+=stance.Frame(pitch).AdditionalMountAimOffset;
             return true;
         }
 
@@ -114,7 +156,7 @@ namespace HowToSuck
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             // CharacterController does not push rigidbodies itself. Nudge side contacts through physics.
-            if(!moving || Mathf.Abs(hit.normal.y)>.5f || pushVelocity.sqrMagnitude<.001f)return;
+            if(!HasMovementAuthority || !moving || Mathf.Abs(hit.normal.y)>.5f || pushVelocity.sqrMagnitude<.001f)return;
             var body=hit.rigidbody;if(body==null || body.isKinematic)return;
             var item=body.GetComponent<SuckableObject>();
             if(item==null || item.InstanceId==0 || item.State!=SuckableState.Available || item.WorldFrozen || !pushedBodies.Add(body))return;
@@ -127,7 +169,7 @@ namespace HowToSuck
 
         public void Step(PlayerIntent intent, float dt, double? authorityNow = null)
         {
-            if (!initialized || !controller.enabled || !gameObject.activeInHierarchy || !intent.IsFinite ||
+            if (!HasMovementAuthority || !initialized || !controller.enabled || !gameObject.activeInHierarchy || !intent.IsFinite ||
                 float.IsNaN(dt) || float.IsInfinity(dt) || dt <= 0f) return;
 
             previousRenderPosition=(transform.position-currentRenderPosition).sqrMagnitude>.000001f?transform.position:currentRenderPosition;
@@ -161,9 +203,12 @@ namespace HowToSuck
             Vector3 externalVelocity = contactResponse != null ?
                 contactResponse.Step(contactWorld, this, controller, desiredVelocity, dt,
                     authorityNow ?? Time.realtimeSinceStartupAsDouble) : Vector3.zero;
+            Vector3 stepStart = transform.position;
             CollisionFlags collisions;
             try{collisions = controller.Move((desiredVelocity + externalVelocity) * dt);}
             finally{moving=false;currentRenderPosition=transform.position;renderPoseFixedTime=Time.fixedTimeAsDouble;}
+            var travelled = transform.position - stepStart; travelled.y = 0f;
+            PlanarSpeed = travelled.magnitude / dt;
             if ((collisions & CollisionFlags.Above) != 0 && verticalVelocity > 0f) verticalVelocity = 0f;
             if ((collisions & CollisionFlags.Below) != 0 && verticalVelocity < 0f) verticalVelocity = -2f;
         }

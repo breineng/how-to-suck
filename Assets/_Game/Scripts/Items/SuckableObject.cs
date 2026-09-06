@@ -29,6 +29,8 @@ namespace HowToSuck
         private Rigidbody body;
         private Collider[] gameplayColliders = Array.Empty<Collider>();
         private bool initialized;
+        public bool HasPhysicsAuthority { get; private set; } = true;
+        private bool roleBound;
 
         private void Awake() => CachePhysics();
 
@@ -41,6 +43,20 @@ namespace HowToSuck
             gameplayColliders = owned.ToArray();
         }
 
+        // Network adapters bind once in Awake, before registration/state publication. Local items default authoritative.
+        public void BindPhysicsAuthority(bool authority)
+        {
+            if (roleBound && HasPhysicsAuthority != authority) throw new InvalidOperationException("An item cannot change authority in place.");
+            HasPhysicsAuthority = authority; roleBound = true; CachePhysics(); ApplyBodyMode();
+        }
+        public void ApplyReplicaState(string runId, ulong id, SuckableState state, bool frozen)
+        {
+            if (HasPhysicsAuthority) throw new InvalidOperationException("The authority cannot consume item replicas.");
+            if (!Enum.IsDefined(typeof(SuckableState), state)) throw new ArgumentOutOfRangeException(nameof(state));
+            if (!initialized) Initialize(runId, id, true);
+            if (runId != RunId || id != InstanceId) throw new InvalidOperationException("A replica cannot change run or instance identity.");
+            State = state; WorldFrozen = frozen; ApplyBodyMode();
+        }
         public void Initialize(string runId, ulong id, bool frozen = false)
         {
             if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("Loot needs a non-empty run ID.", nameof(runId));
@@ -62,7 +78,7 @@ namespace HowToSuck
 
         public bool TryTransition(SuckableState expected, SuckableState next)
         {
-            if (!initialized || State != expected) return false;
+            if (!HasPhysicsAuthority || !initialized || State != expected) return false;
             bool allowed = expected == SuckableState.Available &&
                     (next == SuckableState.Ingesting || next == SuckableState.Lost) ||
                 expected == SuckableState.Ingesting &&
@@ -77,7 +93,7 @@ namespace HowToSuck
         private void ApplyBodyMode()
         {
             if (Body == null) return;
-            bool kinematic = WorldFrozen || State != SuckableState.Available;
+            bool kinematic = !HasPhysicsAuthority || WorldFrozen || State != SuckableState.Available;
             if (kinematic)
             {
                 // Unity rejects velocity writes on a body that is already kinematic.

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace HowToSuck.Networking
 {
-    public enum SteamApplicationMode { Development480, Production }
+    public enum SteamApplicationMode { Development480, Production, Unconfigured }
     public enum ConnectionMode { None, SoloLoopback, SteamHost, SteamClient, DiagnosticLoopbackHost, DiagnosticLoopbackClient }
     public enum ConnectionPhase { Offline, Starting, Lobby, Preparing, Running, Results, Stopping, Failed }
 
@@ -12,12 +12,13 @@ namespace HowToSuck.Networking
         // ProjectSettings.productGUID is public project identity, not a credential or an authentication secret.
         public const string ProductKey = "hts.79bd2fdafe42bb445986bf55af7bf135";
         public const int MaxPlayers = 4;
-        public const uint ProtocolVersion = 1;
+        public const uint ProtocolVersion = 5; // Adds authoritative Lobby selection separately from active contract/result.
         public const ushort SoloPort = 7777;
         public readonly SteamApplicationMode ApplicationMode;
         public readonly uint AppId;
         public readonly string BuildId;
         public readonly string ContentHash;
+        public bool SteamConfigured => ApplicationMode != SteamApplicationMode.Unconfigured;
         public bool IsDevelopment480 => ApplicationMode == SteamApplicationMode.Development480;
 
         public NetworkConfiguration(SteamApplicationMode mode, uint productionAppId, string buildId, string contentHash,
@@ -32,6 +33,16 @@ namespace HowToSuck.Networking
             if (mode == SteamApplicationMode.Production && (productionAppId == 0 || productionAppId == 480))
                 throw new ArgumentException("Production needs its own nonzero, non480 AppID.", nameof(productionAppId));
             ApplicationMode = mode; AppId = IsDevelopment480 ? 480u : productionAppId;
+            BuildId = buildId; ContentHash = contentHash.ToLowerInvariant();
+        }
+        // Shipping solo has a real build/content identity but no invented Steam AppID.
+        // This explicit factory never relaxes the configured Steam constructor's AppID/480 gates.
+        public static NetworkConfiguration ForSolo(string buildId, string contentHash) => new NetworkConfiguration(buildId, contentHash);
+        private NetworkConfiguration(string buildId, string contentHash)
+        {
+            if (!ValidToken(buildId, 48)) throw new ArgumentException("An explicit ASCII build ID is required.", nameof(buildId));
+            if (!Hex(contentHash, 64)) throw new ArgumentException("A canonical SHA256 content fingerprint is required.", nameof(contentHash));
+            ApplicationMode = SteamApplicationMode.Unconfigured; AppId = 0;
             BuildId = buildId; ContentHash = contentHash.ToLowerInvariant();
         }
         internal static bool ValidToken(string value, int maximum)

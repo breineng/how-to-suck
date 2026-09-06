@@ -5,7 +5,7 @@ namespace HowToSuck.Networking
     // Diagnostic routing only. Never used by the product's solo or Steam menu.
     public sealed class LoopbackSmokeProfile
     {
-        public const ushort Port = 17841;
+        public const ushort Port = 17843; // Isolated clone; original Editor owns 17841.
         public readonly int Slot, PlayerCount;
         public readonly string Nonce;
         public bool IsHost => Slot == 0;

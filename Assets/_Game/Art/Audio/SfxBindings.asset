@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09f232218381a1842a4671da3846b632, type: 3}
+  m_Name: SfxBindings
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.AudioBindings
+  Entries:
+  - Id: 0
+    Clip: {fileID: 8300000, guid: fcea54ecedaf6224a8624fbe6082ebd1, type: 3}
+    Status: 1
+    Gain: 0.5
+    Bus: 1
+    Priority: 130
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 1
+  - Id: 1
+    Clip: {fileID: 8300000, guid: abf3453ff77b73f4eb826b9c7bacc8d3, type: 3}
+    Status: 1
+    Gain: 0.8
+    Bus: 1
+    Priority: 110
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 1
+  - Id: 2
+    Clip: {fileID: 8300000, guid: d172847242efe98409aa6f397cb874c6, type: 3}
+    Status: 1
+    Gain: 0.35
+    Bus: 1
+    Priority: 170
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 3
+    Clip: {fileID: 8300000, guid: 2a0db2b3d5ca3ae4f9b711fb820406b7, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 1
+    Priority: 75
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 4
+    Clip: {fileID: 8300000, guid: 3cf440216ef402e4cb8bca593d0173a1, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 1
+    Priority: 75
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 5
+    Clip: {fileID: 8300000, guid: 5652149cb38ab7340a8fcfa2d75bcb90, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 1
+    Priority: 75
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 6
+    Clip: {fileID: 8300000, guid: 70f6056aa219fbc40808cd3b53e72aaf, type: 3}
+    Status: 1
+    Gain: 0.35
+    Bus: 2
+    Priority: 150
+    MinDistance: 3
+    MaxDistance: 30
+    Loop: 1
+  - Id: 7
+    Clip: {fileID: 8300000, guid: 4ea1ec28c98c01e4ab06201be966e646, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 2
+    Priority: 90
+    MinDistance: 3
+    MaxDistance: 30
+    Loop: 0
+  - Id: 8
+    Clip: {fileID: 8300000, guid: 38ce64b8387a34b4cba8a6a6af78a806, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 2
+    Priority: 90
+    MinDistance: 3
+    MaxDistance: 30
+    Loop: 0
+  - Id: 9
+    Clip: {fileID: 8300000, guid: bb7533677daae0444a8d614de718faa3, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 10
+    Clip: {fileID: 0}
+    Status: 0
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 11
+    Clip: {fileID: 8300000, guid: 77c46d95dcd18b64d840cf697f163a86, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 12
+    Clip: {fileID: 8300000, guid: 70ece57a68d3ab14786009990546f516, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 13
+    Clip: {fileID: 8300000, guid: 20ed67a90e06b864f9a71da17b1f3199, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 14
+    Clip: {fileID: 8300000, guid: 2d36008a6771cf44591921f9eb1fdf62, type: 3}
+    Status: 1
+    Gain: 0.6
+    Bus: 3
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 20
+    Loop: 0
+  - Id: 15
+    Clip: {fileID: 0}
+    Status: 0
+    Gain: 0.5
+    Bus: 4
+    Priority: 24
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 16
+    Clip: {fileID: 8300000, guid: 7fd9372f7841a7641956b9eb91566efc, type: 3}
+    Status: 1
+    Gain: 0.5
+    Bus: 4
+    Priority: 24
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 17
+    Clip: {fileID: 8300000, guid: 5b3da0b2e4caa6b49970475dca3a1462, type: 3}
+    Status: 1
+    Gain: 0.5
+    Bus: 4
+    Priority: 24
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 18
+    Clip: {fileID: 0}
+    Status: 0
+    Gain: 0.5
+    Bus: 4
+    Priority: 24
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  Mixer: {fileID: 24100000, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
+  Vacuum: {fileID: -5213224462465936082, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
+  Truck: {fileID: 5688735172511403975, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
+  Impacts: {fileID: 6633741172372713422, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
+  UI: {fileID: -2182939032446391853, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}

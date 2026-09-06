@@ -567,6 +567,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1335460994704242150}
   - component: {fileID: 1671714974967410161}
+  - component: {fileID: 2351951850470221192}
+  - component: {fileID: 1115408271035125515}
   m_Layer: 12
   m_Name: VacuumMK4View
   m_TagString: Untagged
@@ -613,6 +615,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.VacuumView
   Receiver: {fileID: 0}
   NozzleVisual: {fileID: 7869403948237508455}
+  DeformationSizeReference: 1
+  MouthFollowSegments: 0
+  VisualBottomAnchorRadius: 0
+  ContinuousTruckTube: 0
   HoseSegments:
   - {fileID: 2083275814516519426}
   - {fileID: 8614901587640702843}
@@ -622,6 +628,43 @@ MonoBehaviour:
   - {fileID: 5979159659159145986}
   - {fileID: 173213051139592691}
   - {fileID: 4659779415186005534}
+--- !u!114 &2351951850470221192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3208952230322460392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e51914c425ed5014698c9e11d18b57a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.VacuumGripAnchors
+  Left: {fileID: 2422276282393260401}
+  Right: {fileID: 4688123079312212659}
+  RegripDReady: 1
+  LeftBarCentre: {x: -0.07, y: -0.21, z: -0.29}
+  RightBarCentre: {x: 0.1, y: -0.14, z: -0.43}
+  LeftBarAxis: {x: 1, y: 0, z: 0}
+  RightBarAxis: {x: 0, y: 0.9877629, z: 0.15596257}
+  LeftHandRotation: {x: -0.6772581, y: 0.039243322, z: 0.03621888, w: -0.7338051}
+  RightHandRotation: {x: -0.27596778, y: -0.24329726, z: -0.69101346, w: -0.6222128}
+--- !u!114 &1115408271035125515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3208952230322460392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836bbcb801cb81544a04ddb5907b143b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ToolTierView
+  TierId: mk4
+  MountProfile: {fileID: 11400000, guid: 7a721e1d6e2e7ca4f9668be5cb6aebb1, type: 2}
+  Mouth: {fileID: 9170507754557122548}
+  EndPoint: {fileID: 8925776309909642949}
 --- !u!1 &3321199258421096530
 GameObject:
   m_ObjectHideFlags: 0

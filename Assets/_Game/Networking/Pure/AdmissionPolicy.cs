@@ -8,6 +8,7 @@ namespace HowToSuck.Networking
             bool actualLobbyMember, bool steamIdentityAlreadyPresent, ulong lobbyId, string lobbySession, byte[] payload)
         {
             if (config == null) return "configuration";
+            if (mode == ConnectionMode.SteamHost && !config.SteamConfigured) return "steam_not_configured";
             if (phase != ConnectionPhase.Lobby && !(hostLocal && phase == ConnectionPhase.Starting)) return "contract_in_progress";
             if (alreadyApproved) return "duplicate_connection";
             if (admittedAndReserved >= NetworkConfiguration.MaxPlayers) return "lobby_full";

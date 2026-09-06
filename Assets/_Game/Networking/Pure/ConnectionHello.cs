@@ -47,6 +47,8 @@ namespace HowToSuck.Networking
             Content = "hts_content", Session = "hts_session", Host = "hts_host", Phase = "hts_phase", Contract = "hts_contract";
         public static Dictionary<string, string> Create(NetworkConfiguration config, ulong host, string session)
         {
+            if (config == null) throw new ArgumentNullException(nameof(config));
+            if (!config.SteamConfigured) throw new InvalidOperationException("An actual Steam configuration is required for lobby metadata.");
             if (host == 0 || !NetworkConfiguration.Hex(session, 32)) throw new ArgumentException("Host and session required.");
             return new Dictionary<string, string>
             {
@@ -61,7 +63,7 @@ namespace HowToSuck.Networking
             bool requireLobby, out ulong host, out string session)
         {
             host = 0; session = null;
-            if (config == null || values == null) return false;
+            if (config == null || !config.SteamConfigured || values == null) return false;
             if (!Get(values, Product, NetworkConfiguration.ProductKey) || !Get(values, App, NetworkConfiguration.Number(config.AppId)) ||
                 !Get(values, Protocol, NetworkConfiguration.Number(NetworkConfiguration.ProtocolVersion)) || !Get(values, Build, config.BuildId) ||
                 !Get(values, Content, config.ContentHash) || !values.TryGetValue(Host, out var owner) ||

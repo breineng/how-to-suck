@@ -40,24 +40,29 @@ namespace HowToSuck.Networking
         private SteamLobbyService lobby;
         private string sessionNonce;
         private bool initialized, stopping, hostApprovalRejected;
+        private readonly UnexpectedStopSignal unexpectedStop = new UnexpectedStopSignal();
         private double connectDeadline;
 
         public void Configure(NetworkConfiguration configuration)
         {
             if (initialized) throw new InvalidOperationException("Configure one coordinator once.");
-            if (Manager == null || Loopback == null || SteamTransport == null)
-                throw new InvalidOperationException("Bind one persistent NetworkManager and its two alternative transports.");
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (Manager == null || Loopback == null || (configuration.SteamConfigured && SteamTransport == null))
+                throw new InvalidOperationException("Bind one persistent NetworkManager, loopback, and a Steam transport only for configured Steam sessions.");
             if (Manager.IsListening || Manager.ShutdownInProgress || Manager.ConnectionApprovalCallback != null)
                 throw new InvalidOperationException("The manager already has an active connection owner.");
-            config = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            config = configuration;
             Manager.ConnectionApprovalCallback = Approve;
             Manager.OnClientConnectedCallback += OnConnected;
             Manager.OnClientDisconnectCallback += OnDisconnected;
             Manager.OnClientStopped += OnClientStopped;
             Manager.OnServerStopped += OnServerStopped;
-            SteamTransport.SteamReady = () => steam != null && steam.Initialized;
-            SteamTransport.MayAcceptPeer = peer => Mode == ConnectionMode.SteamHost && Phase == ConnectionPhase.Lobby &&
-                lobby != null && lobby.IsHost && lobby.ContainsMember(peer);
+            if (SteamTransport != null)
+            {
+                SteamTransport.SteamReady = () => config.SteamConfigured && steam != null && steam.Initialized;
+                SteamTransport.MayAcceptPeer = peer => Mode == ConnectionMode.SteamHost && Phase == ConnectionPhase.Lobby &&
+                    lobby != null && lobby.IsHost && lobby.ContainsMember(peer);
+            }
             initialized = true;
         }
         public bool StartSolo()
@@ -121,6 +126,7 @@ namespace HowToSuck.Networking
         }
         private bool EnsureSteam()
         {
+            if (!config.SteamConfigured) { LastError = "Steam не настроен для этой сборки. Одиночная игра доступна."; Changed?.Invoke(); return false; }
             if (steam == null)
             {
                 steam = new SteamRuntime();
@@ -273,7 +279,13 @@ namespace HowToSuck.Networking
         }
         public void StopSession()
         {
-            if (stopping || !initialized) return;
+            // A loss listener can request stop reentrantly. Notify all game owners first; the signal's finally schedules shutdown.
+            if (stopping || !initialized || unexpectedStop.IsNotifying) return;
+            // The old SessionRoot may request stop again during destruction after the first
+            // shutdown already drained. Do not start a second coroutine on that dying root.
+            if (Mode == ConnectionMode.None && Phase == ConnectionPhase.Offline &&
+                (Manager == null || (!Manager.IsListening && !Manager.ShutdownInProgress))) return;
+            stopping = true;
             StartCoroutine(StopRoutine());
         }
         private IEnumerator StopRoutine()
@@ -292,25 +304,34 @@ namespace HowToSuck.Networking
         private bool CanStart(bool requireSteamIdle = true)
         {
             if (!initialized) throw new InvalidOperationException("Configure the coordinator before choosing a mode.");
-            if (stopping || Manager.IsListening || Manager.ShutdownInProgress || (Phase != ConnectionPhase.Offline && Phase != ConnectionPhase.Failed) || (lobby != null && (lobby.LobbyId != 0 || (requireSteamIdle && lobby.Busy))))
+            if (stopping || unexpectedStop.IsNotifying || Manager.IsListening || Manager.ShutdownInProgress || (Phase != ConnectionPhase.Offline && Phase != ConnectionPhase.Failed) || (lobby != null && (lobby.LobbyId != 0 || (requireSteamIdle && lobby.Busy))))
                 return false;
-            LastError = null; return true;
+            unexpectedStop.Reset(); LastError = null; return true;
         }
-        private bool StartFailed(string reason) { LastError = reason; StopSession(); return false; }
+        public void StopUnexpected(string reason) => FailAndStop(reason);
+        private void FailAndStop(string reason)
+        {
+            if (!initialized || stopping || unexpectedStop.WasNotified) return;
+            LastError = reason; connectDeadline = 0;
+            var listeners = new List<Action>();
+            if (SessionLost != null) foreach (Action listener in SessionLost.GetInvocationList()) listeners.Add(listener);
+            // Separate guard is committed before callbacks. Do not set stopping here: callbacks still need
+            // the live authority to freeze/settle/clear, and StopSession must schedule its coroutine afterward.
+            unexpectedStop.Notify(listeners, error => Debug.LogException(error, this), StopSession);
+        }
+        private bool StartFailed(string reason) { FailAndStop(reason); return false; }
         private void OnSteamFailed(string reason)
         {
-            LastError = reason;
-            // A previously initialized Steam callback pump must never terminate a later offline solo game.
-            if (Mode == ConnectionMode.SteamHost || Mode == ConnectionMode.SteamClient) StopSession();
-            else Changed?.Invoke();
+            // A previously initialized Steam pump must never terminate a later offline solo session.
+            if (Mode == ConnectionMode.SteamHost || Mode == ConnectionMode.SteamClient) FailAndStop(reason);
+            else { LastError = reason; Changed?.Invoke(); }
         }
-        private void OnLobbyFailed(string reason) { LastError = reason; if (Phase == ConnectionPhase.Starting) StopSession(); else Changed?.Invoke(); }
-        private void OnHostLost()
+        private void OnLobbyFailed(string reason)
         {
-            if (stopping) return;
-            LastError = "Хозяин покинул сессию. Переноса игрового мира к другому игроку нет.";
-            SessionLost?.Invoke(); StopSession();
+            if (Mode == ConnectionMode.SteamHost || Mode == ConnectionMode.SteamClient) FailAndStop(reason);
+            else { LastError = reason; Changed?.Invoke(); }
         }
+        private void OnHostLost() => FailAndStop("Хозяин покинул сессию. Переноса игрового мира к другому игроку нет.");
         private void OnLobbyMembersChanged()
         {
             if (Mode == ConnectionMode.SteamHost && Manager.IsServer)

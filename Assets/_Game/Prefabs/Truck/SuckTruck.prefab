@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 9127872460983347386}
   - component: {fileID: 6518782354486766579}
   - component: {fileID: 8416700111633709171}
+  - component: {fileID: 8442717263087861012}
   m_Layer: 8
   m_Name: SuckTruck
   m_TagString: Untagged
@@ -174,6 +175,19 @@ MonoBehaviour:
   LampRenderer: {fileID: 588655261726019615}
   LampMaterialIndex: 6
   PoweredEmission: {r: 1.7, g: 0.85, b: 0.18, a: 1}
+--- !u!114 &8442717263087861012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195990803236807054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3464e28564366194d985c5593214420a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.VacuumAudioEmitter
+  IsTruck: 1
 --- !u!1 &374348283790264283
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,33 @@ namespace HowToSuck
         private AudioListener audioListener;
         private Transform boundModel;
         private ModelMount mount;
+        private LocalSettingsController localSettings;
+        private Camera feedbackCamera;
+        private Quaternion feedbackBase;
+        private bool feedbackApplied;
+        public void BindLocalSettings(LocalSettingsController owner)
+        {
+            if(owner!=null&&(owner.Session==null||owner.Session.LocalPlayer!=Motor))
+                throw new System.InvalidOperationException("Personal view settings may only bind the actual local player.");
+            RestoreCameraFeedback();localSettings=owner;BindCamera();
+        }
+        private void RestoreCameraFeedback()
+        {
+            if(feedbackApplied&&feedbackCamera!=null)feedbackCamera.transform.localRotation=feedbackBase;
+            feedbackApplied=false;feedbackCamera=null;
+        }
+        private void ApplyCameraFeedback()
+        {
+            if(!IsLocal||localSettings==null||!localSettings.isActiveAndEnabled||localSettings.Feedback<=0||
+                boundCamera==null||Motor==null||boundCamera.transform==Motor.CameraPivot||Input==null||Input.MenuOpen||
+                !Input.GameplayAvailable||!Input.LatestIntent.VacuumHeld||localSettings.Session.Phase!=SessionPhase.Playing)return;
+            // Optional, default off: the camera child alone receives a tiny cosmetic motor vibration.
+            // CameraPivot, tool mounts, authoritative aim, input and physical actors are never written here.
+            feedbackCamera=boundCamera;feedbackBase=boundCamera.transform.localRotation;feedbackApplied=true;
+            float phase=(float)(Time.unscaledTimeAsDouble%10)*25.132741f,amount=localSettings.Feedback;
+            boundCamera.transform.localRotation=feedbackBase*Quaternion.Euler(Mathf.Sin(phase)*.08f*amount,
+                Mathf.Cos(phase)*.05f*amount,Mathf.Sin(phase*.75f)*.1f*amount);
+        }
         private IntakeReceiver publishedReceiver;
         private Transform publishedIntake;
 
@@ -50,6 +77,7 @@ namespace HowToSuck
         {
             if (boundCamera != Camera)
             {
+                RestoreCameraFeedback();
                 if (boundCamera != null) boundCamera.enabled = false;
                 if (audioListener != null) audioListener.enabled = false;
                 boundCamera = Camera;
@@ -65,11 +93,12 @@ namespace HowToSuck
             }
             boundCamera.enabled = active;
             if (audioListener != null) audioListener.enabled = active;
-            if (Motor != null && Motor.Settings != null) boundCamera.fieldOfView = Motor.Settings.FieldOfView;
+            if (Motor != null && Motor.Settings != null) boundCamera.fieldOfView = IsLocal&&localSettings!=null&&localSettings.isActiveAndEnabled?localSettings.FieldOfView:Motor.Settings.FieldOfView;
         }
 
         private void LateUpdate()
         {
+            RestoreCameraFeedback();
             BindCamera();
             BindLocalTool();
             if (!IsLocal || Motor == null || Motor.CameraPivot == null) return;
@@ -91,6 +120,7 @@ namespace HowToSuck
                 boundModel.SetPositionAndRotation(aimOrigin + Motor.CameraPivot.rotation * position,
                     Motor.CameraPivot.rotation * mount.Rotation);
             }
+            ApplyCameraFeedback();
         }
 
         private void BindLocalTool()
@@ -165,6 +195,7 @@ namespace HowToSuck
         private void OnEnable() => Initialize(IsLocal);
         private void OnDisable()
         {
+            RestoreCameraFeedback();
             Unsubscribe(); ReleasePresentation();
             if (boundCamera != null) boundCamera.enabled = false;
             if (audioListener != null) audioListener.enabled = false;
@@ -178,6 +209,7 @@ namespace HowToSuck
         }
         private void OnDestroy()
         {
+            RestoreCameraFeedback();localSettings=null;
             Unsubscribe(); ReleasePresentation();
             foreach (var value in mounts.Values) if (value.Intake != null) Destroy(value.Intake.gameObject);
             mounts.Clear();

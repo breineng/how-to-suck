@@ -208,7 +208,11 @@ namespace HowToSuck.Networking
         private void LoseHost() { Leave(); HostLost?.Invoke(); }
         private bool Fail(string reason) { Failed?.Invoke(reason); return false; }
         private void RequireSteam()
-        { if (disposed) throw new ObjectDisposedException(nameof(SteamLobbyService)); if (!runtime.Initialized) throw new InvalidOperationException("Initialize Steam explicitly first."); }
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(SteamLobbyService));
+            if (!config.SteamConfigured) throw new InvalidOperationException("Solo configuration cannot create or use a Steam lobby.");
+            if (!runtime.Initialized || runtime.ActualAppId != config.AppId) throw new InvalidOperationException("Initialize Steam explicitly for this exact AppID first.");
+        }
         public void Dispose()
         {
             if (disposed) return;

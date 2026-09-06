@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,45 +15,125 @@ namespace HowToSuck
         public SessionPhase Phase { get; private set; } = SessionPhase.Booting;
         public GameCatalog Catalog { get; private set; }
         public ContractDefinition CurrentContract { get; private set; }
+        private string selectedLobbyContractId="";
+        public string SelectedLobbyContractId=>HasAuthority?selectedLobbyContractId:replica?.SelectedContractId??"";
+        public ContractDefinition SelectedLobbyContract {
+            get {if(Catalog?.Contracts!=null)foreach(var contract in Catalog.Contracts)
+                if(contract!=null&&contract.ContractId==SelectedLobbyContractId)return contract;return null;}
+        }
+        public bool SelectLobbyContract(string requested)
+        {
+            var ids=new List<string>();if(Catalog?.Contracts!=null)foreach(var contract in Catalog.Contracts)if(contract!=null)ids.Add(contract.ContractId);
+            if(!ContractSelectionPolicy.TrySelect(IsInitialized,HasAuthority,Phase,ids,requested,out string selected))return false;
+            if(selectedLobbyContractId==selected)return true;
+            selectedLobbyContractId=selected;Changed?.Invoke();return true;
+        }
+        public bool StartSelectedContract()=>StartContract(SelectedLobbyContract);
+
         public LevelContext CurrentLevel { get; private set; }
         public PlayerMotor LocalPlayer { get; private set; }
-        public CampaignState Campaign { get; private set; }
+        public CampaignState Campaign => Progression?.Campaign;
+        public SaveOpenResult CampaignOpenStatus { get; private set; }
+        private SaveRepository campaignRepository;
+        public bool HasPendingSave => Progression != null && Progression.HasPending;
         public ProgressionService Progression { get; private set; }
         public ContractController Controller { get; private set; }
-        public ContractState ContractState => Controller != null ? Controller.State : default;
+        private INetworkSessionDriver networkDriver;
+        private SessionReplica replica;
+        public bool HasAuthority => networkDriver == null || networkDriver.HasAuthority;
+        public long DisplayedBalance => HasAuthority ? Campaign?.Balance ?? 0 : replica?.Balance ?? 0;
+        public string DisplayedTierId => HasAuthority ? Campaign?.CurrentTierId ?? "" : replica?.CurrentTierId ?? "";
+        public bool DisplayedSavePending => HasAuthority ? HasPendingSave : replica?.PendingPayout ?? false;
+        public bool CanReturnToMenu => !HasAuthority || Progression != null && !Progression.HasPending;
+        public bool CanStartContract => HasAuthority && Phase == SessionPhase.Lobby && Progression != null && Progression.CanStartRun && (networkDriver == null || networkDriver.CanBeginContract);
+        public ContractState ContractState => HasAuthority ? (Controller != null ? Controller.State : default) : (replica?.State ?? default);
         public ContractResult Result { get; private set; }
         public string RunId => ContractState.RunId;
-        public bool CanRetry => Phase == SessionPhase.Results && CurrentContract != null &&
+        public bool CanRetry => HasAuthority && networkDriver == null && Phase == SessionPhase.Results && CurrentContract != null &&
             Result != null && Progression != null && Progression.CanStartRun;
         public string LastError { get; private set; } = "";
         public bool IsInitialized { get; private set; }
         public event Action Changed;
         private ISessionDriver driver;
 
-        public void Initialize(GameCatalog catalog, ISessionDriver sessionDriver)
+        public void Initialize(GameCatalog catalog, ISessionDriver sessionDriver, string ownCampaignDirectory = null)
         {
             if (IsInitialized) return;
             Catalog = catalog;
             driver = sessionDriver ?? throw new ArgumentNullException(nameof(sessionDriver));
             if (World == null) throw new InvalidOperationException("SessionRoot needs AuthorityWorld.");
             IsInitialized = true;
-            Campaign = new CampaignState(Guid.NewGuid().ToString("N"), "mk1", 0);
-            Progression = new ProgressionService(Campaign);
-            Controller = new ContractController(Progression);
-            Controller.Finished += OnContractFinished;
+            networkDriver = driver as INetworkSessionDriver;
             if (Catalog == null) LastError = "Game catalog is missing.";
             else if (!Catalog.TryValidate(out var error)) LastError = error;
+            else if (HasAuthority)
+            {
+                // Replica construction never reaches this branch or opens its own campaign file.
+                var tiers = new List<CampaignTier>();
+                foreach (var tier in Catalog.Vacuums) tiers.Add(new CampaignTier(tier.TierId, tier.Price));
+                campaignRepository = new SaveRepository(ownCampaignDirectory ??
+                    CampaignStoragePaths.ResolveOwnDirectory(), new CampaignTierCatalog(tiers),
+                    () => this != null && HasAuthority && Phase != SessionPhase.ShuttingDown);
+                BindOpenedCampaign(campaignRepository.Open());
+            }
+            if(HasAuthority&&Catalog!=null&&Catalog.TryValidate(out _))selectedLobbyContractId=Catalog.Contracts[0].ContractId;
             Application.runInBackground = true;
             Time.timeScale = 1f;
-            World.Initialize(true);
+            World.Initialize(HasAuthority);
             World.SnapshotChanged += OnWorldSnapshot;
             SceneManager.sceneLoaded += OnSceneLoaded;
-            StartCoroutine(LoadScene(MenuSceneName, false));
+            if (networkDriver != null) networkDriver.Bind(this);
+            else StartCoroutine(LoadScene(MenuSceneName, false));
+        }
+
+        private bool BindOpenedCampaign(SaveOpenResult opened)
+        {
+            CampaignOpenStatus = opened;
+            if (!opened.Ready) return Reject("Не удалось открыть кампанию: " + opened.Error);
+            Progression = new ProgressionService(opened.State, campaignRepository, () => Phase);
+            Controller = new ContractController(Progression);
+            Controller.Finished += OnContractFinished;
+            LastError = opened.Kind == SaveOpenKind.RecoveredBackup ? "Кампания восстановлена из резервной копии. Исходный повреждённый файл сохранён." : "";
+            Changed?.Invoke();
+            return true;
+        }
+        public bool RetryCampaignOpen()
+        {
+            if (!HasAuthority || Progression != null || campaignRepository == null ||
+                Phase != SessionPhase.Lobby && Phase != SessionPhase.Booting) return false;
+            return BindOpenedCampaign(campaignRepository.Open());
+        }
+        // Bind only to an explicit corruption-reset confirmation in task10 UI.
+        public bool StartNewCampaignAfterCorruption(SaveOpenResult observedProblem)
+        {
+            if (!HasAuthority || Progression != null || campaignRepository == null ||
+                Phase != SessionPhase.Lobby || observedProblem == null || observedProblem.Kind != SaveOpenKind.Corrupt ||
+                !ReferenceEquals(observedProblem, CampaignOpenStatus)) return false;
+            return BindOpenedCampaign(campaignRepository.StartNewAfterCorruption(observedProblem));
+        }
+        public bool RetryCampaignSave()
+        {
+            if (!HasAuthority || Progression == null || !Progression.HasPending || Phase == SessionPhase.ShuttingDown) return false;
+            bool committed = Progression.PendingChange != null
+                ? Progression.RetryPending(Progression.PendingChange)
+                : Progression.PendingResult != null && Progression.TryApplyResult(Progression.PendingResult);
+            if (!committed) return Reject(Progression.PendingChange?.Kind == CampaignChangeKind.Purchase
+                ? "Покупка пока не подтверждена. Повторите сохранение в магазине."
+                : "Не удалось сохранить кампанию: " + Progression.LastError);
+            LastError = ""; Changed?.Invoke(); return true;
+        }
+        public bool PurchaseNextTier(string requestedTier)
+        {
+            if (!HasAuthority || Progression == null || Phase != SessionPhase.Lobby) return false;
+            if (!Progression.TryPurchaseNext(requestedTier)) return Reject(Progression.HasPending
+                ? "Покупка пока не подтверждена. Повторите сохранение в магазине."
+                : "Покупка недоступна. Проверьте баланс и текущий уровень в магазине.");
+            LastError = ""; Changed?.Invoke(); return true;
         }
 
         public bool StartContract(ContractDefinition contract)
         {
-            if (!IsInitialized || Phase != SessionPhase.Lobby) return false;
+            if (!IsInitialized || !CanStartContract) return false;
             return BeginContractLoad(contract);
         }
 
@@ -69,9 +151,10 @@ namespace HowToSuck
                 return Reject("This location is not in the game catalog.");
             if (!contract.TryValidate(out error)) return Reject(error);
             if (!Progression.CanStartRun) return Reject("The previous contract result has not been settled.");
-            World.Clear();
+            if (networkDriver != null && !networkDriver.EnterPreparing(contract.ContractId)) return Reject("Players are not ready.");
+            World.Clear(); networkDriver?.ClearPlayers();
             CurrentLevel = null; LocalPlayer = null; Result = null;
-            CurrentContract = contract; LastError = "";
+            CurrentContract = contract; selectedLobbyContractId=contract.ContractId; LastError = "";
             // Reserve before asynchronous loading; exactly this run reaches controller/world/input.
             Controller.Prepare(Guid.NewGuid().ToString("N"), new ContractRules(contract.ContractId,
                 contract.Quota, contract.TimeLimitSeconds, contract.FailurePercent));
@@ -83,6 +166,7 @@ namespace HowToSuck
         // Pause-menu confirmation is the only running-session caller of this explicit abandonment action.
         public bool AbandonToMenu()
         {
+            if (!HasAuthority) { networkDriver?.LeaveGuest(); return true; }
             if (!IsInitialized || Phase != SessionPhase.Playing || !Controller.IsRunning) return false;
             Controller.Abort(driver.Now); // At/after the deadline, timeout still wins inside the controller.
             return Phase == SessionPhase.Results && ReturnToMenu();
@@ -90,10 +174,11 @@ namespace HowToSuck
 
         public bool ReturnToMenu()
         {
+            if (!HasAuthority) { networkDriver?.LeaveGuest(); return true; }
             if (!IsInitialized || Phase == SessionPhase.Loading || Phase == SessionPhase.Booting ||
                 Phase == SessionPhase.Playing || Phase == SessionPhase.ShuttingDown) return false;
-            if (Progression.PendingResult != null) return Reject("The contract payout could not be applied; the result is retained.");
-            World.Clear(); LocalPlayer = null; CurrentLevel = null; CurrentContract = null;
+            if (Progression == null || Progression.HasPending) return Reject("The campaign save is unresolved; confirmed balance remains unchanged.");
+            World.Clear(); networkDriver?.ClearPlayers(); LocalPlayer = null; CurrentLevel = null; CurrentContract = null;
             SetPhase(SessionPhase.Loading);
             StartCoroutine(LoadScene(MenuSceneName, false));
             return true;
@@ -104,6 +189,7 @@ namespace HowToSuck
 
         private IEnumerator LoadScene(string sceneName, bool gameplay)
         {
+            if (Phase == SessionPhase.ShuttingDown) yield break;
             if (!Application.CanStreamedLevelBeLoaded(sceneName))
             {
                 FailPreparation("Scene is unavailable in the build: " + sceneName);
@@ -124,6 +210,7 @@ namespace HowToSuck
                 if (failure != null || !next) break;
                 yield return yielded;
             }
+            if (Phase == SessionPhase.ShuttingDown) yield break;
             if (failure != null || loading == null)
             {
                 FailPreparation("Could not load location: " + (failure?.Message ?? "Missing scene loader."));
@@ -138,7 +225,17 @@ namespace HowToSuck
                 if (CurrentLevel == null) error = "Location has no LevelContext.";
                 else if (!CurrentLevel.TryValidate(out error)) { }
                 else if (CurrentLevel.Contract != CurrentContract) error = "Location definition does not match the selected contract.";
-                if (error == null && !TryPrepareGameplay(out error)) { }
+                if (error == null)
+                {
+                    if (networkDriver == null) { if (!TryPrepareGameplay(out error)) { } }
+                    else
+                    {
+                        string prepareError = null;
+                        yield return PrepareNetworkGameplay(value => prepareError = value);
+                        if (Phase == SessionPhase.ShuttingDown) yield break;
+                        error = prepareError;
+                    }
+                }
                 if (error != null)
                 {
                     FailPreparation(error);
@@ -155,12 +252,68 @@ namespace HowToSuck
         {
             LastError = error;
             // An activation error after Start must release the reserved run as well.
-            if (Controller.IsRunning && Controller.State.RunId == World.RunId) Controller.Abort(driver.Now);
-            World.Clear();
-            Controller.CancelPreparation();
+            if (Controller != null && Controller.IsRunning && Controller.State.RunId == World.RunId) Controller.Abort(driver.Now);
+            World.Clear(); networkDriver?.ClearPlayers();
+            Controller?.CancelPreparation();
             LocalPlayer = null; CurrentLevel = null; CurrentContract = null;
         }
 
+        public void OpenNetworkLobby()
+        {
+            if (!HasAuthority || networkDriver == null || Phase != SessionPhase.Booting) throw new InvalidOperationException("Only the newly connected authority opens the initial lobby.");
+            StartCoroutine(LoadScene(MenuSceneName, false));
+        }
+        public void BindNetworkLocalPlayer(PlayerMotor motor, PlayerInputReader reader)
+        {
+            if (networkDriver == null) throw new InvalidOperationException("No network driver.");
+            LocalPlayer = motor;
+            foreach (var menu in FindObjectsByType<MenuInputController>(FindObjectsInactive.Include, FindObjectsSortMode.None)) menu.Bind(this, reader);
+            BindSceneUi(); Changed?.Invoke();
+        }
+        public void ApplyReplica(SessionReplica value)
+        {
+            if (HasAuthority || value == null) throw new InvalidOperationException("Only a guest consumes a session replica.");
+            replica = value; Result = value.Result; Phase = value.Phase; LastError = value.Error ?? "";
+            CurrentContract = null;
+            if (Catalog != null) foreach (var item in Catalog.Contracts) if (item != null && item.ContractId == value.State.ContractId) CurrentContract = item;
+            World.ApplyReplicaWorld(value.State.RunId, Phase == SessionPhase.Playing && value.State.Phase == ContractPhase.Running,
+                value.ExtractionMask, value.AllInExtraction);
+            Changed?.Invoke();
+        }
+        public void MarkNetworkLost(string reason)
+        {
+            if (HasAuthority && Controller != null && Controller.IsRunning) Controller.Abort(driver.Now);
+            World.Clear(); networkDriver?.ClearPlayers(); LocalPlayer = null;
+            LastError = reason; SetPhase(SessionPhase.ShuttingDown);
+        }
+        private IEnumerator PrepareNetworkGameplay(Action<string> completed)
+        {
+            IEnumerator operation = null; Exception failure = null;
+            try
+            {
+                VacuumDefinition vacuum = null;
+                foreach (var candidate in Catalog.Vacuums) if (candidate != null && candidate.TierId == Campaign.CurrentTierId) vacuum = candidate;
+                if (vacuum == null) throw new InvalidOperationException("Campaign vacuum is missing.");
+                operation = networkDriver.PrepareGameplay(CurrentLevel, vacuum);
+            }
+            catch (Exception error) { failure = error; }
+            while (failure == null && operation != null)
+            {
+                bool next = false; object current = null;
+                try { next = operation.MoveNext(); if (next) current = operation.Current; }
+                catch (Exception error) { failure = error; }
+                if (!next || failure != null) break;
+                yield return current;
+            }
+            try { (operation as IDisposable)?.Dispose(); } catch (Exception error) { failure = failure ?? error; }
+            if (Phase == SessionPhase.ShuttingDown) { completed("Network session stopped during preparation."); yield break; }
+            if (failure == null)
+            {
+                try { Controller.Start(driver.Now); World.SetRunning(true); }
+                catch (Exception error) { failure = error; }
+            }
+            completed(failure?.Message);
+        }
         private bool TryPrepareGameplay(out string error)
         {
             GameObject player = null;
@@ -205,9 +358,12 @@ namespace HowToSuck
             Result = result;
             // The authoritative pending result already exists before this event. Freeze once, then settle once.
             World.SetRunning(false);
+            if (Phase == SessionPhase.ShuttingDown) return;
             if (!Progression.TryApplyResult(result))
-                LastError = "Не удалось начислить выплату. Итог сохранён; новый контракт пока недоступен.";
-            SetPhase(SessionPhase.Results);
+                LastError = "Не удалось сохранить выплату. Результат остаётся в памяти: " + Progression.LastError;
+            else LastError = "";
+            // Preserve the old lifecycle order: reentrant Results listeners run after the single save attempt.
+            if (Phase != SessionPhase.ShuttingDown) SetPhase(SessionPhase.Results);
         }
 
         private void OnWorldSnapshot() => Changed?.Invoke();
@@ -215,15 +371,20 @@ namespace HowToSuck
         private void BindSceneUi()
         {
             foreach (var view in FindObjectsByType<SessionMenuView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
+            foreach (var selector in FindObjectsByType<ContractSelectionView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) selector.Bind(this);
+            foreach (var view in FindObjectsByType<ShopView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
+            foreach (var view in FindObjectsByType<CampaignRecoveryView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
             foreach (var hud in FindObjectsByType<ContractHud>(FindObjectsInactive.Include, FindObjectsSortMode.None)) hud.Bind(this);
             foreach (var view in FindObjectsByType<ResultsView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
         }
-        private void SetPhase(SessionPhase phase) { Phase = phase; Changed?.Invoke(); }
+        private void SetPhase(SessionPhase phase) { Phase = phase; networkDriver?.PhaseChanged(phase); Changed?.Invoke(); }
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             if (World != null) World.SnapshotChanged -= OnWorldSnapshot;
             if (Controller != null) Controller.Finished -= OnContractFinished;
+            Progression?.CloseForShutdown();
+            campaignRepository?.Dispose();
             if (IsInitialized) driver?.Stop();
             Changed = null;
         }

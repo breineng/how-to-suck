@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Game/Production/Scenes/ProductBootstrap.unity
+    guid: 04712634d13c0f843bd05c39f72b4c09
+  - enabled: 1
+    path: Assets/_Game/Production/Scenes/ProductEntry.unity
+    guid: 4c3f89746268bb346b837eada1cbc14d
+  - enabled: 1
+    path: Assets/_Game/Production/Scenes/ProductLobby.unity
+    guid: 07161ddd8baf8cd4ea83d6bcd9999bb4
+  - enabled: 1
+    path: Assets/_Game/Production/Scenes/OldHouseNetwork.unity
+    guid: 548412cdb820b40479c52fd8088c369d
+  - enabled: 1
     path: Assets/_Game/Scenes/Bootstrap.unity
     guid: 72a207c446b43e4449d9ec2950eaf66d
   - enabled: 1
@@ -14,6 +26,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scenes/PrototypeRoom.unity
     guid: 599144d218f987f40803f85f1343ae2c
+  - enabled: 1
+    path: Assets/_Game/Scenes/OldHouse.unity
+    guid: e21a45d3a7c893d428dee9cf4ea34764
+  - enabled: 1
+    path: Assets/_Game/Scenes/Supermarket.unity
+    guid: a1cc5a91e82761d40aac0a8555b7e359
+  - enabled: 1
+    path: Assets/_Game/Production/Scenes/SupermarketNetwork.unity
+    guid: 825e81883eaba5b458a583fcf76b653a
+  - enabled: 1
+    path: Assets/_Game/Scenes/Warehouse.unity
+    guid: 5beddfb6ad4833b46a781d90940fd2f9
+  - enabled: 1
+    path: Assets/_Game/Production/Scenes/WarehouseNetwork.unity
+    guid: 523dd331bffcb0c4d862f962d5d5d541
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}
   m_UseUCBPForAssetBundles: 0

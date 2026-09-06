@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: GameCatalog
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.GameCatalog
   Contracts:
+  - {fileID: 11400000, guid: e13032ec77a68674c83e2658576a643e, type: 2}
   - {fileID: 11400000, guid: b69c8d01bc5155c40833a5e4054f3546, type: 2}
   Vacuums:
   - {fileID: 11400000, guid: effca0e56bf355f48891f9669d036d23, type: 2}
+  - {fileID: 11400000, guid: a162559e31454764f96717c946539a0e, type: 2}
+  - {fileID: 11400000, guid: 19efb0ce0a60f4c4fac99b7f8d89a03e, type: 2}
+  - {fileID: 11400000, guid: 832fbe3571f82174fab021633025f18e, type: 2}

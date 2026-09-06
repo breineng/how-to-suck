@@ -15,6 +15,10 @@ namespace HowToSuck
     public sealed class SuctionSystem
     {
         private readonly LootRegistry registry;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Value-only bounded journal: no observer callback is invoked from the force loop.
+        public SuctionForceJournal DiagnosticAppliedForces { get; } = new SuctionForceJournal();
+#endif
         public SuctionSystem(LootRegistry lootRegistry) {registry=lootRegistry ?? throw new ArgumentNullException(nameof(lootRegistry));}
         private readonly Dictionary<Rigidbody,float> appliedBrakes=new Dictionary<Rigidbody,float>();
         // Called once by the authority before all player and truck sources for this physics tick.
@@ -74,6 +78,9 @@ namespace HowToSuck
                 Vector3 force=-offset/distance*strength*Mathf.Min(1f,distance);
                 if(distance<1f)ApplyBrake(body,brake);
                 body.AddForceAtPosition(force,hit.Point,ForceMode.Force);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                DiagnosticAppliedForces.Record(source.EmitterId,source.GetInstanceID(),hit.Item.InstanceId,body.GetInstanceID(),force,hit.Point,body.gameObject.activeInHierarchy);
+#endif
                 source.LastLoad+=body.mass;
             }
         }

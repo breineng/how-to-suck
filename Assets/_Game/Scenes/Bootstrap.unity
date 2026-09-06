@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 1314695449}
   - component: {fileID: 1314695448}
   - component: {fileID: 1314695447}
+  - component: {fileID: 1314695451}
   m_Layer: 0
   m_Name: SessionRoot
   m_TagString: Untagged
@@ -152,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.GameBootstrap
   Catalog: {fileID: 11400000, guid: 7aa9436f748601e4bb880765e0fccb1e, type: 2}
   Session: {fileID: 1314695448}
+  SessionDriverProvider: {fileID: 0}
 --- !u!114 &1314695448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +195,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1314695451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314695446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a66282dd81f33a499d763989c7a1b4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.GameAudioRoot
+  Bindings: {fileID: 11400000, guid: 136d06b8aad958742a35431a63759561, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

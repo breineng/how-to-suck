@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af8b41614a50f042aa8c128496fd445, type: 3}
+  m_Name: MK4Mount
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ToolTierMountProfile
+  TierId: mk4
+  SourceSha256: 2a4482c9a5135155adf2c606a3e47b7756eeeb3940818e31933606098d29383b
+  ReferencePrefabSha256: 454f16f964e970a36150a7f0893682949600d7c1d726ce932e576a81647fd940
+  NativePoseVerified: 1
+  ReferenceLeft:
+    Centre: {x: 0.045222215, y: -0.027755141, z: -0.18168545}
+    Axis: {x: 0.69138205, y: -9.408563e-10, z: 0.7224894}
+    Contact: {x: 0.008924663, y: -0.027754992, z: -0.21961612}
+    SocketLocal: {x: 0.000000029802337, y: 0.05499996, z: -0.00000020116586}
+    HandRotation: {x: -0.63704395, y: 0.32434338, z: -0.23273432, w: -0.65940225}
+  ReferenceRight:
+    Centre: {x: 0.4402274, y: -0.048363447, z: -0.15829337}
+    Axis: {x: 0.057813, y: 0.9967933, z: -0.05532382}
+    Contact: {x: 0.4402274, y: -0.0483633, z: -0.15829337}
+    SocketLocal: {x: 0.0000004023317, y: 0.055000216, z: 0.000000178814}
+    HandRotation: {x: -0.21866517, y: -0.3097601, z: -0.6420094, w: -0.66637707}
+  TargetLeft:
+    Centre: {x: -0.07, y: -0.21, z: -0.29}
+    Axis: {x: 1, y: 0, z: 0}
+    Contact: {x: -0.07, y: -0.21000001, z: -0.28999993}
+    SocketLocal: {x: 0.000000029802337, y: 0.05499996, z: -0.00000020116586}
+    HandRotation: {x: -0.6772581, y: 0.039243322, z: 0.03621888, w: -0.7338051}
+  TargetRight:
+    Centre: {x: 0.1, y: -0.14, z: -0.43}
+    Axis: {x: 0, y: 0.9877629, z: 0.15596257}
+    Contact: {x: 0.1, y: -0.14000005, z: -0.42999995}
+    SocketLocal: {x: 0.0000004023317, y: 0.055000216, z: 0.000000178814}
+    HandRotation: {x: -0.27596778, y: -0.24329726, z: -0.69101346, w: -0.6222128}
+  EndPoint: {x: 0, y: -0.000000059604645, z: -0.42899996}
+  MaximumDisplacement: 0.6

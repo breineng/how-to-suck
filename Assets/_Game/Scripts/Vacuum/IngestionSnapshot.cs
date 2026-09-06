@@ -17,7 +17,18 @@ namespace HowToSuck
         public Vector3 EndPosition { get; internal set; }
         internal readonly SuckableObject Item;
         internal readonly IntakeReceiver Receiver;
+        public System.Func<double> PresentationClock;
+        public double PresentationNow => PresentationClock != null ? PresentationClock() : Time.realtimeSinceStartupAsDouble;
         public float Progress(double now) => Mathf.Clamp01((float)((now-StartedAt)/Duration));
+        internal IngestionSnapshot(SuckableObject item, IntakeReceiver receiver, int intake, int player, bool truck,
+            double started, float duration, float size, Vector3 start, Quaternion rotation, Vector3 scale,
+            Vector3 target, Quaternion targetRotation, Vector3 end, System.Func<double> clock)
+        {
+            Item=item; Receiver=receiver; RunId=item.RunId; InstanceId=item.InstanceId; TypeId=item.Definition.TypeId;
+            Value=item.Definition.Value; IntakeId=intake; PlayerId=player; IsTruck=truck; StartedAt=started;
+            Duration=duration; RequiredSize=size; StartPosition=start; StartRotation=rotation; StartScale=scale;
+            TargetPosition=target; TargetRotation=targetRotation; EndPosition=end; PresentationClock=clock;
+        }
         internal IngestionSnapshot(SuckableObject item,IntakeReceiver receiver,double now)
         {
             Item=item;Receiver=receiver;RunId=item.RunId;InstanceId=item.InstanceId;TypeId=item.Definition.TypeId;

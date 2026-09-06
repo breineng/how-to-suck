@@ -18,6 +18,7 @@ namespace HowToSuck.Networking
         {
             if (disposed) throw new ObjectDisposedException(nameof(SteamRuntime));
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (!configuration.SteamConfigured) return Fail("Steam не настроен для этой сборки. Одиночная игра доступна.");
             if (Initialized) return !callbackFaulted && ActualAppId == configuration.AppId;
             if (owner != null && owner != this) return Fail("Steam уже обслуживается другим владельцем сессии.");
             owner = this;

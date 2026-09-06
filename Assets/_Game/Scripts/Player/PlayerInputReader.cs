@@ -16,6 +16,27 @@ namespace HowToSuck
         public PlayerIntent LatestIntent { get; private set; }
         public event Action<bool> MenuChanged;
 
+        private LocalSettingsController localSettings;
+        public float EffectiveMouseSensitivity=>localSettings!=null&&localSettings.isActiveAndEnabled?localSettings.Sensitivity:MouseSensitivity;
+        public bool EffectiveInvertY=>localSettings!=null&&localSettings.isActiveAndEnabled&&localSettings.InvertY;
+        public void BindLocalSettings(LocalSettingsController owner)
+        {
+            if(owner!=null&&(owner.Session==null||owner.Session.LocalPlayer!=GetComponent<PlayerMotor>()))
+                throw new InvalidOperationException("Personal input settings may only bind the actual local player.");
+            localSettings=owner;discardLook=true;
+        }
+        private UnityEngine.Object localModalOwner;
+        private int modalReleasedFrame=-1;
+        public bool LocalModalOpen=>localModalOwner!=null;
+        public string GameplayBindingDisplay(string actionName)=>(localActions!=null?localActions:Actions)?.FindAction("Gameplay/"+actionName)?.GetBindingDisplayString()??"—";
+        public void SetLocalModal(UnityEngine.Object owner,bool open)
+        {
+            if(owner==null)throw new ArgumentNullException(nameof(owner));
+            if(open){if(localModalOwner!=null&&localModalOwner!=owner)throw new InvalidOperationException("A personal menu is already open.");localModalOwner=owner;SetMenuOpen(true);}
+            else{if(localModalOwner!=owner)return;localModalOwner=null;modalReleasedFrame=Time.frameCount;}
+            // Closing the child screen leaves the pause menu open and requires release of its UI click.
+            suppressVacuum=suppressInteract=suppressJump=true;discardLook=true;SendNeutral();ApplyActionState();
+        }
         private InputActionAsset localActions;
         private InputAction move, look, sprint, jump, vacuum, interact, pause;
         private IPlayerIntentSink sink;
@@ -85,7 +106,7 @@ namespace HowToSuck
 
         public void SetMenuOpen(bool open)
         {
-            if (MenuOpen == open || (!open && !GameplayAvailable)) return;
+            if (MenuOpen == open || (!open && (!GameplayAvailable || LocalModalOpen))) return;
             MenuOpen = open;
             suppressVacuum = suppressInteract = suppressJump = true;
             discardLook = true;
@@ -97,8 +118,8 @@ namespace HowToSuck
         private void Update()
         {
             if (!initialized) return;
-            if (GameplayAvailable && focused && pause.WasPressedThisFrame()) SetMenuOpen(!MenuOpen);
-            if (!GameplayAvailable || MenuOpen || !focused)
+            if (!LocalModalOpen && modalReleasedFrame!=Time.frameCount && GameplayAvailable && focused && pause.WasPressedThisFrame()) SetMenuOpen(!MenuOpen);
+            if (!GameplayAvailable || MenuOpen || LocalModalOpen || !focused)
             {
                 SendNeutral();
                 return;
@@ -122,8 +143,8 @@ namespace HowToSuck
                 SprintHeld = sprint.IsPressed(),
                 VacuumHeld = !suppressVacuum && vacuum.IsPressed(),
                 InteractHeld = !suppressInteract && interact.IsPressed(),
-                Yaw = Mathf.Repeat(previous.Yaw + delta.x * MouseSensitivity, 360f),
-                Pitch = Mathf.Clamp(previous.Pitch - delta.y * MouseSensitivity, -80f, 80f)
+                Yaw = Mathf.Repeat(previous.Yaw + delta.x * EffectiveMouseSensitivity, 360f),
+                Pitch = Mathf.Clamp(previous.Pitch + LocalSettingsMath.PitchDelta(delta.y,EffectiveMouseSensitivity,EffectiveInvertY), -80f, 80f)
             };
             if (!suppressJump && jump.WasPressedThisFrame())
                 intent.JumpPressSequence = unchecked(intent.JumpPressSequence + 1);
@@ -152,7 +173,7 @@ namespace HowToSuck
             if (!initialized) return;
             bool active = isActiveAndEnabled && focused && GameplayAvailable;
             SetEnabled(pause, active);
-            bool gameplay = active && !MenuOpen;
+            bool gameplay = active && !MenuOpen && !LocalModalOpen;
             SetEnabled(move, gameplay);
             SetEnabled(look, gameplay);
             SetEnabled(sprint, gameplay);

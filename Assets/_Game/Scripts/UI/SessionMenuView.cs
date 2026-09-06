@@ -4,16 +4,34 @@ using UnityEngine.EventSystems;
 
 namespace HowToSuck
 {
-    public sealed class SessionMenuView : MonoBehaviour
+    public sealed class SessionMenuView : MonoBehaviour, ICancelHandler
     {
         public Button StartButton;
         public Button BackButton;
         public Text Status;
+        public bool ModalBlocksLobby {
+            get {
+                foreach(var localMenu in GetComponentsInChildren<LocalMenuView>(true))if(localMenu.IsOpen)return true;
+                foreach(var shop in GetComponentsInChildren<ShopView>(true))if(shop.IsOpen)return true;
+                foreach(var recovery in GetComponentsInChildren<CampaignRecoveryView>(true))if(recovery.Panel!=null&&recovery.Panel.activeInHierarchy)return true;
+                return false;
+            }
+        }
+        public void OnCancel(BaseEventData data)
+        {if(!ModalBlocksLobby&&BackButton!=null&&BackButton.IsInteractable()){Back();data.Use();}}
         private SessionRoot session;
+        private ISessionMenuExit exit;
         public void Bind(SessionRoot root)
         {
             Unbind();
             session = root;
+            exit = null;
+            foreach (var component in root.GetComponents<MonoBehaviour>())
+                if (component is ISessionMenuExit value)
+                {
+                    if (exit != null) throw new System.InvalidOperationException("One menu exit owner per session is required.");
+                    exit = value;
+                }
             session.Changed += Refresh;
             if (StartButton != null) StartButton.onClick.AddListener(StartSelected);
             if (BackButton != null) BackButton.onClick.AddListener(Back);
@@ -22,21 +40,26 @@ namespace HowToSuck
         }
         private void StartSelected()
         {
-            if (session.Catalog != null && session.Catalog.Contracts != null && session.Catalog.Contracts.Length > 0)
-                session.StartContract(session.Catalog.Contracts[0]);
+            if(session!=null&&!ModalBlocksLobby)session.StartSelectedContract();
         }
-        private void Back() => session.ReturnToMenu();
+        private void Back()
+        {
+            if(session==null||ModalBlocksLobby)return;
+            if (exit != null && session.Phase == SessionPhase.Lobby) exit.ExitSessionMenu(session);
+            else session.ReturnToMenu();
+        }
         private void Refresh()
         {
             bool loading = session.Phase == SessionPhase.Loading;
-            if (StartButton != null) StartButton.interactable = session.Phase == SessionPhase.Lobby
+            if (StartButton != null) StartButton.interactable = session.CanStartContract && session.SelectedLobbyContract!=null
                 && session.Catalog != null && session.Catalog.TryValidate(out _);
-            if (BackButton != null) BackButton.interactable = !loading;
-            if (Status != null) Status.text = loading ? "Loading…" : session.LastError;
+            if (BackButton != null) BackButton.interactable = exit != null && session.Phase == SessionPhase.Lobby ? exit.CanExitSessionMenu(session) : !loading && session.Phase != SessionPhase.ShuttingDown;
+            if (Status != null) Status.text = loading ? "Загрузка…" : session.LastError;
         }
         private void Unbind()
         {
             if (session != null) session.Changed -= Refresh;
+            exit = null;
             if (StartButton != null) StartButton.onClick.RemoveListener(StartSelected);
             if (BackButton != null) BackButton.onClick.RemoveListener(Back);
         }

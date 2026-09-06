@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3502db4573177a34195468e55422e66e, type: 3}
+  m_Name: LampTable
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
+  TypeId: lamp_table
+  DisplayName: "\u041D\u0430\u0441\u0442\u043E\u043B\u044C\u043D\u0430\u044F \u043B\u0430\u043C\u043F\u0430"
+  Value: 70
+  RequiredIntakeSize: 0.7
+  CanBeSwallowedByPlayer: 1
+  CanBeSwallowedByTruck: 1
+  Category: Medium

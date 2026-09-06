@@ -37,7 +37,7 @@ namespace HowToSuck
         {
             var snapshot=Receiver!=null?Receiver.Current:null;
             if(snapshot==null){Restore();return;}
-            float t=snapshot.Progress(Time.realtimeSinceStartupAsDouble);
+            float t=snapshot.Progress(snapshot.PresentationNow);
             float size=snapshot.RequiredSize/Mathf.Max(.01f,DeformationSizeReference);
             float peak=Mathf.Clamp(1+size*1.5f,1.2f,3.5f);
             float expand=t<.2f?Mathf.SmoothStep(1,peak,t/.2f):Mathf.Lerp(peak,1,Mathf.SmoothStep(0,1,Mathf.InverseLerp(.65f,1,t)));

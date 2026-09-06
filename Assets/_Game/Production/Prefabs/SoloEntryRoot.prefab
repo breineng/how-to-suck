@@ -1,0 +1,261 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6255298743493005928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8237858868931225995}
+  - component: {fileID: 7266908041246292733}
+  - component: {fileID: 8780696073988365327}
+  - component: {fileID: 1132864051413074690}
+  - component: {fileID: 6977704032833617640}
+  - component: {fileID: 8847184323013480013}
+  - component: {fileID: 4450141265996273225}
+  - component: {fileID: 1628230136085785558}
+  - component: {fileID: 3750036300111406963}
+  - component: {fileID: 3002695138939182505}
+  - component: {fileID: 7812218909044333075}
+  - component: {fileID: 8360497027748943624}
+  m_Layer: 0
+  m_Name: SoloEntryRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8237858868931225995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7266908041246292733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7a801432f3dfe47b1faa4e4a5c8df8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.AuthorityWorld
+--- !u!114 &8780696073988365327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0558855c14827d44494f750e724fe4c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SessionRoot
+  World: {fileID: 7266908041246292733}
+  MenuSceneName: ProductLobby
+--- !u!114 &1132864051413074690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkManager
+  NetworkManagerExpanded: 0
+  NetworkConfig:
+    ProtocolVersion: 0
+    NetworkTransport: {fileID: 6977704032833617640}
+    PlayerPrefab: {fileID: 0}
+    Prefabs:
+      NetworkPrefabsLists:
+      - {fileID: 11400000, guid: 5f3fc5c4473521940a7e76d51a0f2d04, type: 2}
+    TickRate: 30
+    ClientConnectionBufferTimeout: 10
+    ConnectionApproval: 0
+    ConnectionData: 
+    EnableTimeResync: 0
+    TimeResyncInterval: 30
+    EnsureNetworkVariableLengthSafety: 0
+    EnableSceneManagement: 1
+    ForceSamePrefabs: 1
+    RecycleNetworkIds: 1
+    NetworkIdRecycleDelay: 120
+    RpcHashSize: 0
+    LoadSceneTimeOut: 120
+    SpawnTimeout: 10
+    EnableNetworkLogs: 1
+    NetworkTopology: 0
+    UseCMBService: 0
+    AutoSpawnPlayerPrefabClientSide: 1
+    NetworkProfilingMetrics: 1
+    OldPrefabList: []
+  RunInBackground: 1
+  LogLevel: 1
+--- !u!114 &6977704032833617640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Transports.UTP.UnityTransport
+  m_ProtocolType: 0
+  m_UseWebSockets: 0
+  m_UseEncryption: 0
+  m_MaxPacketQueueSize: 128
+  m_MaxPayloadSize: 6144
+  m_HeartbeatTimeoutMS: 500
+  m_ConnectTimeoutMS: 1000
+  m_MaxConnectAttempts: 60
+  m_DisconnectTimeoutMS: 30000
+  ConnectionData:
+    Address: 127.0.0.1
+    Port: 7777
+    WebSocketPath: /
+    ServerListenAddress: 
+    ClientBindPort: 0
+  DebugSimulator:
+    PacketDelayMS: 0
+    PacketJitterMS: 0
+    PacketDropRate: 0
+--- !u!114 &8847184323013480013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcb355da2593d14d9ae3c97c4fa65bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.NetworkConnectionCoordinator
+  Manager: {fileID: 1132864051413074690}
+  Loopback: {fileID: 6977704032833617640}
+  SteamTransport: {fileID: 0}
+--- !u!114 &4450141265996273225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87612bf7af963294988540987b2a5dc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.NgoGameSession
+  Role: 0
+  RoleSource: {fileID: 3750036300111406963}
+  Manager: {fileID: 1132864051413074690}
+  Connection: {fileID: 8847184323013480013}
+  SessionPrefab: {fileID: 3165191204995743122, guid: 87bd0c4d50a7cf94c9c33b32b75b2edb, type: 3}
+  OfflineMenuBootstrapPrefab: {fileID: 6255298743493005928}
+--- !u!114 &1628230136085785558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11df65cf6ca27674a90808dea5205934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.GameBootstrap
+  Catalog: {fileID: 11400000, guid: b7a5863213775364fa0bd202890dafa8, type: 2}
+  Session: {fileID: 8780696073988365327}
+  SessionDriverProvider: {fileID: 4450141265996273225}
+  DeferInitialization: 1
+--- !u!114 &3750036300111406963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aa1d43b3c8333e41920eaecfefba5ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.SoloSessionStartup
+  Bootstrap: {fileID: 1628230136085785558}
+  Game: {fileID: 4450141265996273225}
+  Identity: {fileID: 11400000, guid: 4b9acf89856758942b90b21c1496cae8, type: 2}
+  EntrySceneName: ProductEntry
+--- !u!114 &3002695138939182505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a66282dd81f33a499d763989c7a1b4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.GameAudioRoot
+  Bindings: {fileID: 11400000, guid: 136d06b8aad958742a35431a63759561, type: 2}
+  UseSettingsMixer: 1
+--- !u!114 &7812218909044333075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b06ef59cdc38f4a9b6f1245ae5fa6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalSettingsController
+  Session: {fileID: 8780696073988365327}
+  Audio: {fileID: 3002695138939182505}
+--- !u!114 &8360497027748943624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c24524d21519f1459ca1690780e514a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalMenuNavigation
+  Session: {fileID: 8780696073988365327}
+  Settings: {fileID: 7812218909044333075}
+  Actions: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}
+  Credits: "How to Suck\n\n\u0421\u043E\u0437\u0434\u0430\u043D\u043E \u043D\u0430
+    Unity.\n\u041C\u043E\u0434\u0435\u043B\u0438 \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F
+    \u0441\u043E\u0437\u0434\u0430\u043D\u044B \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u043E
+    \u0434\u043B\u044F \u0438\u0433\u0440\u044B \u0432 Blender.\n\u0417\u0432\u0443\u043A\u043E\u0432\u044B\u0435
+    \u044D\u0444\u0444\u0435\u043A\u0442\u044B: ElevenLabs \u0438 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0430\u044F
+    \u043E\u0431\u0440\u0430\u0431\u043E\u0442\u043A\u0430.\n\n\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u043C\u044B\u0435
+    \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0438:\nUnity Input System
+    \xB7 TextMeshPro\nNetcode for GameObjects \xB7 Unity Transport \xB7 Steamworks.NET\n\n\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438
+    \u0438 \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B
+    \u0438\u0437 \u043C\u0435\u043D\u044E \u0438\u0433\u0440\u044B."

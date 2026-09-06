@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 5167505183331183453}
   - component: {fileID: 2774825036991865681}
   - component: {fileID: 4853875263932487669}
+  - component: {fileID: 4173471055214496467}
   m_Layer: 10
   m_Name: BoxSmall
   m_TagString: Untagged
@@ -122,6 +123,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.IngestionView
   Item: {fileID: 2774825036991865681}
+--- !u!114 &4173471055214496467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540899882493788700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77332adbf09789041ac240f76de62785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.ItemAudioEmitter
 --- !u!1 &3994465393669484942
 GameObject:
   m_ObjectHideFlags: 0

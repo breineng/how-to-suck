@@ -5,7 +5,10 @@
     "HowToSuck.Runtime",
     "Unity.Netcode.Runtime",
     "Unity.Networking.Transport",
-    "com.rlabrecque.steamworks.net"
+    "com.rlabrecque.steamworks.net",
+    "Unity.Collections",
+    "Unity.ugui",
+    "Unity.TextMeshPro"
   ],
   "includePlatforms": [
     "Editor",

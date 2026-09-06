@@ -9,7 +9,9 @@ namespace HowToSuck
         public bool HasAuthority { get; private set; }
         public bool IsRunning { get; private set; }
         public ulong TickCount { get; private set; }
-        public string RunId => Loot.RunId;
+        public string RunId => HasAuthority ? Loot.RunId : replicaRun;
+        private string replicaRun;
+        private byte replicaExtractionMask;
         public int PlayerCount => players.Count;
         public IReadOnlyDictionary<int, PlayerMotor> Players => players;
         public LootRegistry Loot { get; } = new LootRegistry();
@@ -23,6 +25,9 @@ namespace HowToSuck
         private readonly List<IntakeReceiver> receivers = new List<IntakeReceiver>();
         private readonly List<ExtractionPlayerState> extractionPlayers = new List<ExtractionPlayerState>();
         private SuctionSystem suction;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public SuctionForceJournal DiagnosticAppliedForces => suction?.DiagnosticAppliedForces;
+#endif
         private IWorldSpawner spawner;
         private TruckIntake truck;
         private VacuumDefinition playerVacuum;
@@ -74,6 +79,7 @@ namespace HowToSuck
                 {
                     Loot.Register(instance.GetComponent<SuckableObject>());
                     instance.GetComponent<SuckableObject>().SetWorldFrozen(true);
+                    (spawner as IWorldSpawnCommitter)?.CommitSpawn(instance);
                 }
                 catch { spawner.Despawn(instance); throw; }
             }
@@ -81,6 +87,7 @@ namespace HowToSuck
 
         public void SetRunning(bool running)
         {
+            if (!HasAuthority) throw new InvalidOperationException("Only the authority can run simulation.");
             if (running && (contract == null || !contract.IsRunning || contract.State.RunId != RunId))
                 throw new InvalidOperationException("Only the current running contract can unfreeze the world.");
             if (IsRunning == running) return;
@@ -99,11 +106,14 @@ namespace HowToSuck
                         player.GetComponent<PlayerInputReader>()?.SetGameplayAvailable(false);
                     }
             }
+            // Deadline/abort can stop outside the simulated step and bypass its finally notification.
+            // Publish only after every physics/input owner has the final state; in-step changes publish in finally.
+            if (!inStep) SnapshotChanged?.Invoke();
         }
 
         public void RegisterPlayer(PlayerMotor motor)
         {
-            if (motor == null || motor.PlayerId <= 0 || string.IsNullOrWhiteSpace(RunId))
+            if (!HasAuthority || motor == null || motor.PlayerId <= 0 || string.IsNullOrWhiteSpace(RunId))
                 throw new InvalidOperationException("A player needs the current prepared run before registration.");
             players.Add(motor.PlayerId, motor);
             motor.BindContactWorld(this);
@@ -134,10 +144,23 @@ namespace HowToSuck
             !string.IsNullOrEmpty(RunId) && intent.RunId == RunId &&
             inputs.TryGetValue(id, out var buffer) && buffer.TrySubmit(intent, clock());
 
-        public bool IsPlayerInExtraction(int id) => extraction != null && extraction.Contains(id);
+        public bool IsPlayerInExtraction(int id) => HasAuthority ? extraction != null && extraction.Contains(id) :
+            id >= 1 && id <= 4 && (replicaExtractionMask & (1 << (id - 1))) != 0;
+        public void ApplyReplicaWorld(string run, bool running, byte extractionMask, bool allInside)
+        {
+            if (HasAuthority) throw new InvalidOperationException("The authority cannot consume world replicas.");
+            replicaRun = run; IsRunning = running; replicaExtractionMask = extractionMask;
+            AllPlayersInExtraction = allInside; SnapshotChanged?.Invoke();
+        }
 
         public void Clear()
         {
+            if (!HasAuthority)
+            {
+                // NGO owns replica lifetimes. Never despawn or run ingestion cancellation on a guest.
+                replicaRun = null; replicaExtractionMask = 0; IsRunning = false; TickCount = 0;
+                AllPlayersInExtraction = false; return;
+            }
             SetRunning(false); TickCount = 0;
             foreach (var item in Loot.Items.Values) if (item != null) spawner?.Despawn(item.gameObject);
             Ingestion?.Clear();
@@ -186,6 +209,9 @@ namespace HowToSuck
                 Ingestion.CompleteDue(now);
                 if (!IsRunning || !contract.IsRunning) return;
                 // One shared force budget for all handheld sources and the truck.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                suction.DiagnosticAppliedForces.BeginStep(RunId,TickCount);
+#endif
                 suction.BeginStep();
                 foreach (var emitter in emitters.Values) if (emitter != null) suction.Apply(emitter);
                 if (truck != null) truck.Step(suction);

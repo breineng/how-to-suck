@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 6050697534928146954}
   - component: {fileID: 34770826896083497}
   - component: {fileID: 7436993089769301299}
+  - component: {fileID: 390834082267959346}
   m_Layer: 10
   m_Name: Refrigerator
   m_TagString: Untagged
@@ -208,6 +209,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.IngestionView
   Item: {fileID: 34770826896083497}
+--- !u!114 &390834082267959346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592531144466123679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77332adbf09789041ac240f76de62785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.Audio.ItemAudioEmitter
 --- !u!1 &8957144696469037101
 GameObject:
   m_ObjectHideFlags: 0

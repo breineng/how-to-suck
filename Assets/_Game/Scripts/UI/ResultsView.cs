@@ -24,7 +24,12 @@ namespace HowToSuck
             if (MenuButton != null) MenuButton.onClick.AddListener(Menu);
             Refresh();
         }
-        private void Retry() => session?.RetryContract();
+        private void Retry()
+        {
+            if (session == null) return;
+            if (session.HasAuthority && session.HasPendingSave) session.RetryCampaignSave();
+            else session.RetryContract();
+        }
         private void Menu() => session?.ReturnToMenu();
         private void Refresh()
         {
@@ -33,7 +38,8 @@ namespace HowToSuck
             if (ResultsPanel != null) ResultsPanel.SetActive(visible);
             if (!visible) return;
             var result = session.Result;
-            if (!ReferenceEquals(displayed, result))
+            // Confirmed balance can change after saving the same immutable result.
+            if (result != null)
             {
                 displayed = result;
                 string reason = result.Phase == ContractPhase.Succeeded ? "Эвакуация завершена" :
@@ -41,13 +47,25 @@ namespace HowToSuck
                 if (TitleText != null) TitleText.text = reason;
                 if (SummaryText != null)
                     SummaryText.text = $"Собрано: ${result.CollectedMoney:N0}\nКвота: ${result.Quota:N0}\n" +
-                        $"Коэффициент выплаты: {result.PayoutPercent}%\nВыплата: ${result.Payout:N0}\n\nБаланс: ${session.Campaign.Balance:N0}";
+                        $"Коэффициент выплаты: {result.PayoutPercent}%\nВыплата: ${result.Payout:N0}\n\nБаланс: ${session.DisplayedBalance:N0}";
             }
-            if (ErrorText != null) ErrorText.text = session.LastError;
-            if (RetryButton != null) RetryButton.interactable = session.CanRetry;
-            if (MenuButton != null) MenuButton.interactable = session.Progression.PendingResult == null;
-            if (opening && EventSystem.current != null)
-                EventSystem.current.SetSelectedGameObject(session.CanRetry && RetryButton != null ? RetryButton.gameObject : MenuButton?.gameObject);
+            bool retrySave = session.HasAuthority && session.HasPendingSave;
+            var events = EventSystem.current;
+            // UGUI clears selection as soon as a selected Selectable is disabled.
+            bool ownedRetrySelection = events != null && RetryButton != null && events.currentSelectedGameObject == RetryButton.gameObject;
+            if (ErrorText != null) ErrorText.text = retrySave
+                ? "Выплата ещё не сохранена. Повторите сохранение, чтобы продолжить."
+                : session.LastError;
+            if (RetryButton != null)
+            {
+                RetryButton.interactable = retrySave || session.CanRetry;
+                var caption = RetryButton.GetComponentInChildren<TMP_Text>(true);
+                if (caption != null) caption.text = retrySave ? "Сохранить снова" : "Ещё раз";
+            }
+            if (MenuButton != null) MenuButton.interactable = session.CanReturnToMenu;
+            if (events != null && (opening || ownedRetrySelection && RetryButton != null && !RetryButton.interactable))
+                events.SetSelectedGameObject((retrySave || session.CanRetry) && RetryButton != null ? RetryButton.gameObject :
+                    MenuButton != null && MenuButton.interactable ? MenuButton.gameObject : null);
         }
         private void Unbind()
         {

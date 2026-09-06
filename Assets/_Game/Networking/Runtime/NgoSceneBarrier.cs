@@ -23,6 +23,7 @@ namespace HowToSuck.Networking
             var sceneManager = manager.SceneManager;
             var expected = new HashSet<ulong>(manager.ConnectedClientsIds);
             bool completed = false; string failure = null;
+            AsyncOperation localOperation = null;
             string expectedName = System.IO.Path.GetFileNameWithoutExtension(sceneName);
             void OnLoaded(string loaded, LoadSceneMode mode, List<ulong> done, List<ulong> timedOut)
             {
@@ -32,6 +33,12 @@ namespace HowToSuck.Networking
                     foreach (ulong client in expected) if (!done.Contains(client)) { failure = "An admitted player did not finish scene loading."; break; }
                 completed = true;
             }
+            void OnLoadStarted(ulong client, string loaded, LoadSceneMode mode, AsyncOperation operation)
+            {
+                if (operation != null && System.IO.Path.GetFileNameWithoutExtension(loaded) == expectedName && mode == LoadSceneMode.Single)
+                    localOperation = operation;
+            }
+            sceneManager.OnLoad += OnLoadStarted;
             sceneManager.OnLoadEventCompleted += OnLoaded;
             try
             {
@@ -43,15 +50,19 @@ namespace HowToSuck.Networking
                     if (!manager.IsListening || manager.ShutdownInProgress) throw new InvalidOperationException("The network session ended while loading.");
                     if (Time.realtimeSinceStartupAsDouble >= until) throw new TimeoutException("Network scene loading exceeded thirty seconds.");
                     foreach (ulong client in expected)
-                        if (!manager.ConnectedClients.ContainsKey(client)) throw new InvalidOperationException("The loading roster changed.");
+                        if (!manager.ConnectedClients.ContainsKey(client)) failure = failure ?? "The loading roster changed.";
                     yield return null;
                 }
+                // Let the native completion callback and NGO progress-table cleanup unwind before any caller rollback.
+                yield return null;
+                if (localOperation != null && !localOperation.isDone)
+                    throw new InvalidOperationException("Network completion did not settle the local native scene operation.");
                 if (failure != null) throw new InvalidOperationException(failure);
                 if (!manager.IsListening || manager.ShutdownInProgress) throw new InvalidOperationException("The network session ended during scene completion.");
                 foreach (ulong client in expected)
                     if (!manager.ConnectedClients.ContainsKey(client)) throw new InvalidOperationException("The completed loading roster changed.");
             }
-            finally { sceneManager.OnLoadEventCompleted -= OnLoaded; loading = false; }
+            finally { sceneManager.OnLoad -= OnLoadStarted; sceneManager.OnLoadEventCompleted -= OnLoaded; loading = false; }
         }
     }
 }
