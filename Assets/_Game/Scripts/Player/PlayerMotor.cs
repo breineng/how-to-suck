@@ -11,6 +11,7 @@ namespace HowToSuck
         public Transform AuthoritativeAim;
         public Transform NozzleAnchor;
         public PlayerSettings Settings = new PlayerSettings();
+        public PlayerContactSettings ContactSettings = new PlayerContactSettings();
         public bool UseC28Mk1AimProfile;
         public bool NozzlePoseValid { get; private set; } = true;
 
@@ -30,10 +31,48 @@ namespace HowToSuck
         private Vector3 pushVelocity;
         private float pushImpulseBudget;
         private bool moving;
+        private AuthorityWorld contactWorld;
+        private PlayerContactResponse contactResponse;
+        public Vector3 ExternalVelocity => contactResponse != null ? contactResponse.Velocity : Vector3.zero;
+
+        public void BindContactWorld(AuthorityWorld world)
+        { contactWorld = world; ResetContactResponse(); }
+        public void ResetContactResponse() => contactResponse?.Reset();
+
+        public void SuspendForRecovery(PlayerIntent current)
+        {
+            if (current.IsFinite)
+            {
+                if (PlayerIntent.IsNewer(current.JumpPressSequence, consumedJumpSequence))
+                    consumedJumpSequence = current.JumpPressSequence;
+                LastIntent = current.Neutral();
+            }
+            else LastIntent = LastIntent.Neutral();
+            verticalVelocity = 0; moving = false; pushImpulseBudget = 0; pushedBodies.Clear();
+            ResetContactResponse();
+            previousRenderPosition = currentRenderPosition = transform.position;
+            renderPoseFixedTime = Time.fixedTimeAsDouble;
+        }
+
+        public bool RecoverAt(Vector3 position, PlayerIntent current)
+        {
+            if (!initialized || controller == null || !controller.enabled || !gameObject.activeInHierarchy ||
+                contactWorld == null || !contactWorld.HasAuthority || !contactWorld.IsRunning ||
+                !contactWorld.Players.TryGetValue(PlayerId, out var registered) || registered != this ||
+                current.RunId != contactWorld.RunId || !current.IsFinite ||
+                !WorldBoundsRules.Finite(position.x) || !WorldBoundsRules.Finite(position.y) ||
+                !WorldBoundsRules.Finite(position.z)) return false;
+            controller.enabled = false;
+            try { transform.position = position; }
+            finally { controller.enabled = true; }
+            SuspendForRecovery(current);
+            return true;
+        }
 
         public void Initialize(int playerId)
         {
             PlayerId = playerId;
+            contactResponse = new PlayerContactResponse(ContactSettings ?? new PlayerContactSettings());
             controller = GetComponent<CharacterController>();
             if (Settings == null) Settings = new PlayerSettings();
             controller.height = Mathf.Max(Settings.CapsuleHeight, Settings.CapsuleRadius * 2f);
@@ -86,7 +125,7 @@ namespace HowToSuck
             body.AddForceAtPosition(direction*impulse,hit.point,ForceMode.Impulse);
         }
 
-        public void Step(PlayerIntent intent, float dt)
+        public void Step(PlayerIntent intent, float dt, double? authorityNow = null)
         {
             if (!initialized || !controller.enabled || !gameObject.activeInHierarchy || !intent.IsFinite ||
                 float.IsNaN(dt) || float.IsInfinity(dt) || dt <= 0f) return;
@@ -118,8 +157,12 @@ namespace HowToSuck
             float speed = intent.SprintHeld ? Settings.SprintSpeed : Settings.WalkSpeed;
             Vector3 horizontal = transform.right * intent.Move.x + transform.forward * intent.Move.y;
             pushedBodies.Clear();pushVelocity=horizontal*speed;pushImpulseBudget=125f*dt;moving=true;
+            Vector3 desiredVelocity = horizontal * speed + Vector3.up * verticalVelocity;
+            Vector3 externalVelocity = contactResponse != null ?
+                contactResponse.Step(contactWorld, this, controller, desiredVelocity, dt,
+                    authorityNow ?? Time.realtimeSinceStartupAsDouble) : Vector3.zero;
             CollisionFlags collisions;
-            try{collisions = controller.Move((horizontal * speed + Vector3.up * verticalVelocity) * dt);}
+            try{collisions = controller.Move((desiredVelocity + externalVelocity) * dt);}
             finally{moving=false;currentRenderPosition=transform.position;renderPoseFixedTime=Time.fixedTimeAsDouble;}
             if ((collisions & CollisionFlags.Above) != 0 && verticalVelocity > 0f) verticalVelocity = 0f;
             if ((collisions & CollisionFlags.Below) != 0 && verticalVelocity < 0f) verticalVelocity = -2f;

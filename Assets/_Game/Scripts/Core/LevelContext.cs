@@ -8,6 +8,7 @@ namespace HowToSuck
         public ContractDefinition Contract;
         public TruckIntake Truck;
         public ExtractionZone ExtractionZone;
+        public WorldBoundsGuard BoundsGuard;
 
         // Derived from the authored list; never a second editable loot total.
         public long AvailableLootValue
@@ -98,6 +99,8 @@ namespace HowToSuck
                 }
                 if (!item.TryValidate(out error)) return false;
             }
+            if (BoundsGuard == null) { error = "Location needs its world bounds guard."; return false; }
+            if (!BoundsGuard.TryValidate(out error)) return false;
             if (Truck == null) { error = "Location needs its Suck Truck."; return false; }
             if (!Truck.TryValidate(out error)) return false;
             if (ExtractionZone == null || ExtractionZone.Area != Truck.ExtractionArea)

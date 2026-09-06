@@ -27,6 +27,7 @@ namespace HowToSuck
         private TruckIntake truck;
         private VacuumDefinition playerVacuum;
         private ExtractionZone extraction;
+        private WorldBoundsGuard boundsGuard;
         private ContractController contract;
         private Func<double> clock;
         private double stepNow;
@@ -58,11 +59,13 @@ namespace HowToSuck
             playerVacuum = vacuum != null ? vacuum : throw new ArgumentNullException(nameof(vacuum));
             truck = level.Truck;
             extraction = level.ExtractionZone;
+            boundsGuard = level.BoundsGuard;
             extraction.Clear();
             receivers.RemoveAll(receiver => receiver == null || receiver.IsTruck);
             if (truck != null) { truck.Stop(); receivers.Add(truck.Receiver); }
             Loot.Begin(controller.State.RunId);
             Ingestion.Begin(RunId);
+            boundsGuard?.BeginRun(RunId, level.PlayerSpawns);
             foreach (var spawn in level.LootSpawns)
             {
                 var instance = spawner.Spawn(spawn.Prefab, spawn.transform.position, spawn.transform.rotation);
@@ -90,7 +93,11 @@ namespace HowToSuck
             {
                 foreach (var source in emitters.Values) if (source != null) source.Active = false;
                 foreach (var player in players.Values)
-                    if (player != null) player.GetComponent<PlayerInputReader>()?.SetGameplayAvailable(false);
+                    if (player != null)
+                    {
+                        player.ResetContactResponse();
+                        player.GetComponent<PlayerInputReader>()?.SetGameplayAvailable(false);
+                    }
             }
         }
 
@@ -99,6 +106,7 @@ namespace HowToSuck
             if (motor == null || motor.PlayerId <= 0 || string.IsNullOrWhiteSpace(RunId))
                 throw new InvalidOperationException("A player needs the current prepared run before registration.");
             players.Add(motor.PlayerId, motor);
+            motor.BindContactWorld(this);
             var buffer = new PlayerIntentBuffer();
             buffer.BindRun(RunId, motor.transform.eulerAngles.y, 0);
             inputs.Add(motor.PlayerId, buffer);
@@ -117,6 +125,7 @@ namespace HowToSuck
         public void RemovePlayer(int id)
         {
             if (emitters.TryGetValue(id, out var emitter) && emitter != null) emitter.Active = false;
+            if (players.TryGetValue(id, out var motor) && motor != null) motor.BindContactWorld(null);
             players.Remove(id); inputs.Remove(id); emitters.Remove(id);
             receivers.RemoveAll(receiver => receiver == null || (!receiver.IsTruck && receiver.PlayerId == id));
         }
@@ -133,6 +142,9 @@ namespace HowToSuck
             foreach (var item in Loot.Items.Values) if (item != null) spawner?.Despawn(item.gameObject);
             Ingestion?.Clear();
             if (extraction != null) extraction.Clear();
+            foreach (var motor in players.Values) if (motor != null) motor.BindContactWorld(null);
+            if (boundsGuard != null) boundsGuard.Clear();
+            boundsGuard = null;
             truck = null; extraction = null; contract = null; playerVacuum = null;
             Loot.Clear(); players.Clear(); inputs.Clear(); emitters.Clear(); receivers.Clear();
             extractionPlayers.Clear(); AllPlayersInExtraction = false; inStep = false;
@@ -149,6 +161,10 @@ namespace HowToSuck
             stepNow = now; inStep = true;
             try
             {
+                if (boundsGuard != null)
+                    boundsGuard.Step(this, now,
+                        (motor, position) => motor.RecoverAt(position, inputs[motor.PlayerId].Read(now)),
+                        instance => spawner.Despawn(instance));
                 foreach (var pair in players)
                 {
                     if (pair.Value == null || !pair.Value.isActiveAndEnabled)
@@ -156,7 +172,14 @@ namespace HowToSuck
                         if (emitters.TryGetValue(pair.Key, out var inactiveSource) && inactiveSource != null) inactiveSource.Active = false;
                         continue;
                     }
-                    pair.Value.Step(inputs[pair.Key].Read(now), Time.fixedDeltaTime);
+                    if (boundsGuard != null && boundsGuard.RequiresRecovery(pair.Key))
+                    {
+                        pair.Value.SuspendForRecovery(inputs[pair.Key].Read(now));
+                        if (emitters.TryGetValue(pair.Key, out var recoveringSource) && recoveringSource != null)
+                            recoveringSource.Active = false;
+                        continue;
+                    }
+                    pair.Value.Step(inputs[pair.Key].Read(now), Time.fixedDeltaTime, now);
                     if (emitters.TryGetValue(pair.Key, out var emitter) && emitter != null)
                         emitter.Active = pair.Value.LastIntent.VacuumHeld && pair.Value.NozzlePoseValid;
                 }
