@@ -1,0 +1,17 @@
+{
+  "name": "HowToSuck.Diagnostics.Networking",
+  "rootNamespace": "HowToSuck.Networking",
+  "references": [
+    "HowToSuck.Networking",
+    "Unity.Netcode.Runtime",
+    "Unity.Networking.Transport"
+  ],
+  "includePlatforms": [
+    "Editor",
+    "WindowsStandalone64"
+  ],
+  "defineConstraints": [
+    "UNITY_EDITOR || DEVELOPMENT_BUILD"
+  ],
+  "autoReferenced": true
+}

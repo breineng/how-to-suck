@@ -1,0 +1,15 @@
+{
+  "name": "HowToSuck.Networking",
+  "rootNamespace": "HowToSuck.Networking",
+  "references": [
+    "HowToSuck.Runtime",
+    "Unity.Netcode.Runtime",
+    "Unity.Networking.Transport",
+    "com.rlabrecque.steamworks.net"
+  ],
+  "includePlatforms": [
+    "Editor",
+    "WindowsStandalone64"
+  ],
+  "autoReferenced": true
+}
