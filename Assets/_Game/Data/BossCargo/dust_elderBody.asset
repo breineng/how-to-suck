@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3502db4573177a34195468e55422e66e, type: 3}
+  m_Name: dust_elderBody
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
+  TypeId: boss_body_dust_elder
+  DisplayName: "\u041F\u044B\u043B\u044C\u043D\u044B\u0439 \u0441\u0442\u0430\u0440\u043E\u0441\u0442\u0430
+    \xE2\u20AC\u201D \xD0\xBF\xD0\xBE\xD0\xB2\xD0\xB5\xD1\u20AC\xD0\xB6\xD0\xB5\xD0\xBD"
+  Value: 0
+  CargoRole: 1
+  RequiredIntakeSize: 0.4
+  CanBeSwallowedByPlayer: 1
+  CanBeSwallowedByTruck: 1
+  Category: BossBody

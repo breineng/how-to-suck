@@ -52,7 +52,8 @@ namespace HowToSuck
         {
             bool loading = session.Phase == SessionPhase.Loading;
             if (StartButton != null) StartButton.interactable = session.CanStartContract && session.SelectedLobbyContract!=null
-                && session.Catalog != null && session.Catalog.TryValidate(out _);
+                && session.Catalog != null && session.Catalog.TryValidate(out _)
+                && session.DisplayedContractUnlocked(session.SelectedLobbyContract.ContractId);
             if (BackButton != null) BackButton.interactable = exit != null && session.Phase == SessionPhase.Lobby ? exit.CanExitSessionMenu(session) : !loading && session.Phase != SessionPhase.ShuttingDown;
             if (Status != null) Status.text = loading ? "Загрузка…" : session.LastError;
         }

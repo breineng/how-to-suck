@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HowToSuck
 {
-    public enum CampaignChangeKind { Payout, Purchase }
+    public enum CampaignChangeKind { Payout, Purchase, CapacityPurchase }
     public sealed class PendingCampaignChange
     {
         public string OperationId {get;}
@@ -13,6 +13,7 @@ namespace HowToSuck
         public ContractResult Result {get;}
         public string RequestedTier {get;}
         public long Price {get;}
+        public bool IsPurchase=>Kind==CampaignChangeKind.Purchase||Kind==CampaignChangeKind.CapacityPurchase;
         internal PendingCampaignChange(CampaignChangeKind kind,CampaignState expected,CampaignState candidate,
             ContractResult result=null,string tier=null,long price=0)
         {OperationId=Guid.NewGuid().ToString("N");Kind=kind;Expected=expected;Candidate=candidate;Result=result;RequestedTier=tier;Price=price;}
@@ -27,6 +28,8 @@ namespace HowToSuck
         public SaveCommitKind? LastCommitKind {get;private set;}
         public bool IsSaving {get;private set;}
         public bool HasPending=>PendingResult!=null||PendingChange!=null||IsSaving;
+        public bool IsContractUnlocked(string id)=>CampaignContractAccess.IsUnlocked(Campaign,id);
+        public int EffectiveCapacity=>CampaignCapacityRules.Effective(Campaign.CurrentTierId,Campaign.PurchasedExtraSlots);
         public bool CanStartRun=>!closed&&repository.IsAuthority&&CurrentRunId==null&&!HasPending;
         private readonly SaveRepository repository;
         private readonly Func<SessionPhase> phase;
@@ -76,7 +79,8 @@ namespace HowToSuck
                 return PendingChange.Kind==CampaignChangeKind.Payout&&ReferenceEquals(PendingChange.Result,result)&&RetryPending(PendingChange);
             if(result.Payout>long.MaxValue-Campaign.Balance)return Reject("Balance would exceed Int64; result remains pending.");
             var candidate=new CampaignState(Campaign.CampaignId,Campaign.CurrentTierId,
-                checked(Campaign.Balance+result.Payout),result.RunId);
+                checked(Campaign.Balance+result.Payout),result.RunId,Campaign.PurchasedExtraSlots,
+                result.Phase==ContractPhase.Succeeded?CampaignContractAccess.WithSucceeded(Campaign,result.ContractId):Campaign.ClearedContractIds,Campaign.LegacyContractAccess);
             PendingChange=new PendingCampaignChange(CampaignChangeKind.Payout,Campaign,candidate,result);
             return RetryPending(PendingChange);
         }
@@ -86,15 +90,27 @@ namespace HowToSuck
             var next=repository.Tiers.Next(Campaign.CurrentTierId);
             if(next==null||next.Id!=requestedTier)return Reject("Only the next authored tier may be purchased.");
             if(Campaign.Balance<next.Price)return Reject("Insufficient confirmed balance.");
-            var candidate=new CampaignState(Campaign.CampaignId,next.Id,Campaign.Balance-next.Price,Campaign.LastSettledRunId);
+            var candidate=new CampaignState(Campaign.CampaignId,next.Id,Campaign.Balance-next.Price,Campaign.LastSettledRunId,
+                Campaign.PurchasedExtraSlots,Campaign.ClearedContractIds,Campaign.LegacyContractAccess);
             PendingChange=new PendingCampaignChange(CampaignChangeKind.Purchase,Campaign,candidate,tier:next.Id,price:next.Price);
+            return RetryPending(PendingChange);
+        }
+        public bool TryPurchaseExtraSlot(int expectedPurchasedExtraSlots)
+        {
+            if(!Allowed()||phase()!=SessionPhase.Lobby||!CanStartRun)return Reject("Only the host in Lobby with no unresolved result/save can buy capacity.");
+            if(expectedPurchasedExtraSlots!=Campaign.PurchasedExtraSlots)return Reject("The displayed capacity offer is stale.");
+            if(!CampaignCapacityRules.TryNext(Campaign.CurrentTierId,Campaign.PurchasedExtraSlots,out _,out _,out long price))return Reject("This model cannot gain another slot.");
+            if(Campaign.Balance<price)return Reject("Insufficient confirmed balance.");
+            var candidate=new CampaignState(Campaign.CampaignId,Campaign.CurrentTierId,Campaign.Balance-price,Campaign.LastSettledRunId,
+                Campaign.PurchasedExtraSlots+1,Campaign.ClearedContractIds,Campaign.LegacyContractAccess);
+            PendingChange=new PendingCampaignChange(CampaignChangeKind.CapacityPurchase,Campaign,candidate,price:price);
             return RetryPending(PendingChange);
         }
         public bool RetryPending(PendingCampaignChange expectedOperation)
         {
             if(!Allowed()||expectedOperation==null||!ReferenceEquals(expectedOperation,PendingChange))
                 return Reject("The exact current pending operation is required.");
-            if(PendingChange.Kind==CampaignChangeKind.Purchase&&phase()!=SessionPhase.Lobby)
+            if(PendingChange.IsPurchase&&phase()!=SessionPhase.Lobby)
                 return Reject("Purchase retry requires the same own Lobby.");
             if(PendingChange.Kind==CampaignChangeKind.Payout&&(controller==null||!ReferenceEquals(PendingChange.Result,PendingResult)||
                 !ReferenceEquals(controller.FinalResult,PendingResult)||PendingResult.RunId!=CurrentRunId))

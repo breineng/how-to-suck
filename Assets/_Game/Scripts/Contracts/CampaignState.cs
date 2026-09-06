@@ -11,16 +11,27 @@ namespace HowToSuck
         public string CurrentTierId { get; }
         public long Balance { get; }
         public string LastSettledRunId { get; }
-        public CampaignState(string campaignId, string currentTierId="mk1", long balance=0, string lastSettledRunId=null)
+        public int PurchasedExtraSlots { get; }
+        public IReadOnlyList<string> ClearedContractIds { get; }
+        public bool LegacyContractAccess { get; }
+        public CampaignState(string campaignId, string currentTierId="mk1", long balance=0, string lastSettledRunId=null,
+            int purchasedExtraSlots=0,IEnumerable<string> clearedContractIds=null,bool legacyContractAccess=false)
         {
             SaveIdentity.RequireGuid(campaignId,nameof(campaignId));
             SaveIdentity.RequireTier(currentTierId);
             if(balance<0)throw new ArgumentOutOfRangeException(nameof(balance));
             if(lastSettledRunId!=null)SaveIdentity.RequireGuid(lastSettledRunId,nameof(lastSettledRunId));
+            if(!CampaignCapacityRules.ValidBonus(purchasedExtraSlots))throw new ArgumentOutOfRangeException(nameof(purchasedExtraSlots));
+            var history=(clearedContractIds??Array.Empty<string>()).ToArray();
+            if(history.Length>64||history.Count(id=>!CampaignContractAccess.IsKnown(id))>58||history.Distinct(StringComparer.Ordinal).Count()!=history.Length)throw new ArgumentException("Bounded unique cleared contract IDs required.");
+            foreach(string id in history)SaveIdentity.RequireTier(id); // Same canonical stable-ID syntax; preserve future valid IDs without granting route access.
+            Array.Sort(history,StringComparer.Ordinal);
+            PurchasedExtraSlots=purchasedExtraSlots;ClearedContractIds=Array.AsReadOnly(history);LegacyContractAccess=legacyContractAccess;
             CampaignId=campaignId;CurrentTierId=currentTierId;Balance=balance;LastSettledRunId=lastSettledRunId;
         }
         public bool SameValues(CampaignState other)=>other!=null&&CampaignId==other.CampaignId&&
-            CurrentTierId==other.CurrentTierId&&Balance==other.Balance&&LastSettledRunId==other.LastSettledRunId;
+            CurrentTierId==other.CurrentTierId&&Balance==other.Balance&&LastSettledRunId==other.LastSettledRunId&&
+            PurchasedExtraSlots==other.PurchasedExtraSlots&&LegacyContractAccess==other.LegacyContractAccess&&ClearedContractIds.SequenceEqual(other.ClearedContractIds);
     }
     public static class SaveIdentity
     {

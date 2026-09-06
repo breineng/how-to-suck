@@ -11,11 +11,12 @@ namespace HowToSuck
         public ContractResult FinalResult { get; private set; }
         public ContractState State => new ContractState(runId, rules?.ContractId, phase,
             collectedMoney, rules?.Quota ?? 0, ledger.Count, startedAt, deadline,
-            lastNow, initiatorId, HoldProgress);
+            lastNow, initiatorId, HoldProgress, boss?.Snapshot ?? default);
         public bool IsRunning => phase == ContractPhase.Running;
+        public string RequiredBossId => rules?.RequiredBossId;
 
         private readonly ProgressionService progression;
-        private readonly Func<BossKey, bool> bossDeliveryValidator;
+        private BossObjective boss;
         private readonly HashSet<ulong> ledger = new HashSet<ulong>();
         private readonly HashSet<int> previousRoster = new HashSet<int>();
         private readonly Dictionary<int, ExtractionPlayerState> uniqueRoster =
@@ -27,10 +28,9 @@ namespace HowToSuck
         private double startedAt, deadline, lastNow, holdStartedAt;
         private int initiatorId;
 
-        public ContractController(ProgressionService progression, Func<BossKey, bool> bossDeliveryValidator = null)
+        public ContractController(ProgressionService progression)
         {
             this.progression = progression ?? throw new ArgumentNullException(nameof(progression));
-            this.bossDeliveryValidator = bossDeliveryValidator;
             progression.Attach(this);
         }
 
@@ -43,6 +43,7 @@ namespace HowToSuck
                 throw new InvalidOperationException("The existing run is still active.");
             progression.ReserveRun(this, newRunId);
             runId = newRunId; rules = contract; phase = ContractPhase.Preparing;
+            boss = new BossObjective(runId, rules.RequiredBossId);
             collectedMoney = 0; startedAt = 0; deadline = 0; lastNow = 0;
             FinalResult = null; ledger.Clear(); previousRoster.Clear(); uniqueRoster.Clear();
             ResetHold();
@@ -52,6 +53,8 @@ namespace HowToSuck
         {
             if (phase != ContractPhase.Preparing)
                 throw new InvalidOperationException("Prepare the run world before starting its timer.");
+            if (boss == null || boss.Status != BossObjectiveStatus.Active)
+                throw new InvalidOperationException("Assign the actual current boss before starting the main contract.");
             double newDeadline = now + rules.TimeLimitSeconds;
             if (!Finite(now) || !Finite(newDeadline) || newDeadline <= now)
                 throw new ArgumentOutOfRangeException(nameof(now), "The deadline must be finite and later than now.");
@@ -59,13 +62,16 @@ namespace HowToSuck
             phase = ContractPhase.Running;
         }
 
-        public void Begin(string newRunId, ContractRules contract, double now)
+        public void Begin(string newRunId, ContractRules contract, BossKey currentBoss, double now)
         {
             // Validate time before reserving the run; failed convenience calls are atomic.
             if (contract == null) throw new ArgumentNullException(nameof(contract));
+            if (!currentBoss.IsValid || currentBoss.RunId != newRunId || currentBoss.ContractBossId != contract.RequiredBossId)
+                throw new ArgumentException("Current boss must match the prepared run and contract.", nameof(currentBoss));
             double end = now + contract.TimeLimitSeconds;
             if (!Finite(now) || !Finite(end) || end <= now) throw new ArgumentOutOfRangeException(nameof(now));
             Prepare(newRunId, contract);
+            if (!TryAssignBoss(currentBoss)) throw new InvalidOperationException("Validated boss assignment failed.");
             Start(now);
         }
 
@@ -74,9 +80,26 @@ namespace HowToSuck
         {
             if (phase != ContractPhase.Preparing) return false;
             progression.CancelPreparation(this, runId);
-            phase = ContractPhase.None; runId = null; rules = null;
+            phase = ContractPhase.None; runId = null; rules = null; boss = null;
             collectedMoney = 0; ledger.Clear(); ResetHold();
             previousRoster.Clear(); uniqueRoster.Clear();
+            return true;
+        }
+
+        public bool TryAssignBoss(BossKey key) => phase == ContractPhase.Preparing && boss != null && boss.TryAssign(key);
+
+        public bool TryDefeatBoss(BossKey key, double now)
+        {
+            if (!ObserveRunning(now) || ExpireIfDue(now)) return false;
+            return boss != null && boss.TryDefeat(key);
+        }
+
+        // Accepted suit depletion is deduplicated by the combat owner before this method.
+        public bool ApplyDeadlinePenalty(double seconds, double now)
+        {
+            if (!ObserveRunning(now) || ExpireIfDue(now) || !Finite(seconds) || seconds <= 0) return false;
+            deadline = Math.Max(now, deadline - seconds);
+            ExpireIfDue(now);
             return true;
         }
 
@@ -97,14 +120,17 @@ namespace HowToSuck
                 return false;
             ledger.Add(record.InstanceId);
             collectedMoney += record.Value;
+            // No callbacks intervene between validation, ledger commit and this exact objective transition.
+            if (record.CargoRole == CargoRole.BossBody && !boss.TryDeliver(record.BossKey))
+                throw new InvalidOperationException("Current boss changed inside delivery commit.");
             return true;
         }
 
         private bool ValidDeliveryCargo(DeliveryRecord record)
         {
             if (record.CargoRole == CargoRole.OrdinaryLoot) return record.Value > 0 && !record.BossKey.IsValid;
-            if (record.CargoRole != CargoRole.BossBody || record.Value != 0 || !record.BossKey.IsValid || record.BossKey.RunId != runId || bossDeliveryValidator == null) return false;
-            return bossDeliveryValidator(record.BossKey);
+            if (record.CargoRole != CargoRole.BossBody || record.Value != 0 || !record.BossKey.IsValid || record.BossKey.RunId != runId || boss == null) return false;
+            return boss.CanDeliver(record.BossKey);
         }
 
         // True when this call completes the run. Empty roster resets the hold;
@@ -133,7 +159,7 @@ namespace HowToSuck
                 previousRoster.Clear();
                 foreach (int id in uniqueRoster.Keys) previousRoster.Add(id);
             }
-            if (uniqueRoster.Count == 0 || collectedMoney < rules.Quota)
+            if (uniqueRoster.Count == 0 || collectedMoney < rules.Quota || boss == null || !boss.Snapshot.IsDelivered)
             { ResetHold(); return false; }
             foreach (var player in uniqueRoster.Values)
                 if (!player.IsInside) { ResetHold(); return false; }
@@ -192,7 +218,7 @@ namespace HowToSuck
             phase = terminal; ResetHold();
             var result = new ContractResult(progression.Campaign.CampaignId, runId,
                 rules.ContractId, terminal, collectedMoney, rules.Quota, rules.FailurePercent,
-                startedAt, deadline, now);
+                startedAt, deadline, now, boss?.Snapshot ?? default);
             FinalResult = result;
             progression.Publish(this, result);
             // State/pending commit precedes callbacks. A callback may settle/start

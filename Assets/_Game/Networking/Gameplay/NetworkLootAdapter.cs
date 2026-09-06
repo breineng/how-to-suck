@@ -16,7 +16,10 @@ namespace HowToSuck.Networking
         private NgoGameSession game;
         private ReplicaIngestionBinding ingestion;
         private uint revision;
-        private string run;
+        private string run,type;
+        private ulong instanceId;private CargoRole cargoRole;private BossKey bossKey;
+        private LootWire acceptedSnapshot;private bool hasAcceptedSnapshot;
+        public bool HasAcceptedCurrentSnapshot=>IsSpawned&&(IsServer||hasAcceptedSnapshot&&acceptedSnapshot.Equals(Snapshot.Value));
         private Func<double> presentationClock;
         private void Awake()
         {
@@ -48,16 +51,20 @@ namespace HowToSuck.Networking
         public override void OnNetworkSpawn()
         {
             var state=Snapshot.Value;run=state.Run.ToString();revision=state.Revision;
-            if(!Guid.TryParseExact(run,"N",out _)||revision==0||state.InstanceId==0||state.Type.ToString()!=Item.Definition.TypeId)
-                throw new InvalidOperationException("Invalid initial loot snapshot.");
+            if(Item.Definition==null)throw new InvalidOperationException("Loot prefab definition is missing.");
+            type=IsServer?Item.TypeId:Item.Definition.TypeId;cargoRole=IsServer?Item.CargoRole:Item.Definition.CargoRole;instanceId=state.InstanceId;
+            GameplayStateValidation.RequireLoot(state,run,revision,instanceId,type,cargoRole);
+            bossKey=GameplayStateValidation.Provenance(state).BossKey;
             if(!IsServer)Apply(state);
             Snapshot.OnValueChanged+=OnSnapshot;game.Register(this);
             if(IsServer)game.Session.World.SnapshotChanged+=Publish;
         }
         private LootWire Capture()
         {
-            var s=new LootWire{Run=new FixedString64Bytes(Item.RunId),Type=new FixedString64Bytes(Item.Definition.TypeId),
-                Revision=revision,InstanceId=Item.InstanceId,State=(byte)Item.State,Frozen=Item.WorldFrozen};
+            var s=new LootWire{Run=new FixedString64Bytes(Item.RunId),Type=new FixedString64Bytes(Item.TypeId),
+                Revision=revision,InstanceId=Item.InstanceId,State=(byte)Item.State,Frozen=Item.WorldFrozen,
+                CargoRole=(byte)Item.CargoRole,BossRun=new FixedString64Bytes(Item.BossKey.RunId??""),BossId=new FixedString64Bytes(Item.BossKey.ContractBossId??""),BossInstance=Item.BossKey.InstanceId,
+                StoredOwner=Item.StoredOwner,LastStorageOwner=Item.LastStorageOwner,LastStorageTier=new FixedString64Bytes(Item.LastStorageTierId??""),ActiveShotId=Item.ActiveShotId};
             var x=Item.Ingestion;
             if(x!=null)
             {
@@ -72,10 +79,14 @@ namespace HowToSuck.Networking
         private void OnSnapshot(LootWire old,LootWire value){if(!IsServer)Apply(value);}
         private void Apply(LootWire s)
         {
-            if(s.Run.ToString()!=run||s.Revision!=revision||s.Type.ToString()!=Item.Definition.TypeId)throw new InvalidOperationException("Loot identity changed.");
-            Item.ApplyReplicaState(run,s.InstanceId,(SuckableState)s.State,s.Frozen);
-            if(!s.Ingesting){ingestion.Dispose();return;}
-            ApplyIngestion(s);
+            GameplayStateValidation.RequireLoot(s,run,revision,instanceId,type,cargoRole);
+            var provenance=GameplayStateValidation.Provenance(s);
+            if(!bossKey.Equals(provenance.BossKey))throw new InvalidOperationException("Loot boss identity changed in place.");
+            // SuckableObject validates provenance, binds a replica boss key, then initializes exactly once.
+            Item.ApplyReplicaState(run,s.InstanceId,(SuckableState)s.State,s.Frozen,provenance);
+            if(!s.Ingesting)ingestion.Dispose();else ApplyIngestion(s);
+            if(!IsSpawned||game.IsStopping)return;
+            acceptedSnapshot=s;hasAcceptedSnapshot=true;
         }
         private void ApplyIngestion(LootWire s)
         {
@@ -86,11 +97,11 @@ namespace HowToSuck.Networking
         }
         private void Update()
         {
-            if(IsSpawned&&!IsServer&&Snapshot.Value.Ingesting)ApplyIngestion(Snapshot.Value);
+            if(IsSpawned&&!IsServer&&hasAcceptedSnapshot&&acceptedSnapshot.Ingesting)ApplyIngestion(acceptedSnapshot);
         }
         public override void OnNetworkDespawn()
         {
-            Snapshot.OnValueChanged-=OnSnapshot;ingestion?.Dispose();
+            Snapshot.OnValueChanged-=OnSnapshot;ingestion?.Dispose();hasAcceptedSnapshot=false;acceptedSnapshot=default;
             if(game!=null){game.Session.World.SnapshotChanged-=Publish;game.Unregister(this);}
         }
     }

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: OldHouseNetwork
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ContractDefinition
   ContractId: old_house
-  DisplayName: Old House
+  DisplayName: "\u0421\u0442\u0430\u0440\u044B\u0439 \u0434\u043E\u043C I"
+  RequiredBossId: dust_elder
   RecommendedTierId: mk1
   SceneName: OldHouseNetwork
   Quota: 1500
-  TimeLimitSeconds: 420
+  TimeLimitSeconds: 540
   FailurePercent: 25

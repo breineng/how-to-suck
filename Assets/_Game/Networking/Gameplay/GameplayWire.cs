@@ -65,6 +65,15 @@ namespace HowToSuck.Networking
         public bool Vacuum;
         public bool Interact;
         public bool Frozen;
+        public int StorageCount;
+        public int StorageReserved;
+        public int StorageCapacity;
+        public FixedString64Bytes StorageNextType;
+        public byte StorageNextRole;
+        public int SuitSegments;
+        public bool SuitRecoveryPending;
+        public double SuitInvulnerableUntil;
+        public double SuitObservedAt;
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
             s.SerializeValue(ref Run);
@@ -83,6 +92,15 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Vacuum);
             s.SerializeValue(ref Interact);
             s.SerializeValue(ref Frozen);
+            s.SerializeValue(ref StorageCount);
+            s.SerializeValue(ref StorageReserved);
+            s.SerializeValue(ref StorageCapacity);
+            s.SerializeValue(ref StorageNextType);
+            s.SerializeValue(ref StorageNextRole);
+            s.SerializeValue(ref SuitSegments);
+            s.SerializeValue(ref SuitRecoveryPending);
+            s.SerializeValue(ref SuitInvulnerableUntil);
+            s.SerializeValue(ref SuitObservedAt);
         }
         public bool Equals(PlayerWire x) =>
             Run.Equals(x.Run) &&
@@ -100,7 +118,16 @@ namespace HowToSuck.Networking
             Sprint.Equals(x.Sprint) &&
             Vacuum.Equals(x.Vacuum) &&
             Interact.Equals(x.Interact) &&
-            Frozen.Equals(x.Frozen);
+            Frozen.Equals(x.Frozen) &&
+            StorageCount.Equals(x.StorageCount) &&
+            StorageReserved.Equals(x.StorageReserved) &&
+            StorageCapacity.Equals(x.StorageCapacity) &&
+            StorageNextType.Equals(x.StorageNextType) &&
+            StorageNextRole.Equals(x.StorageNextRole) &&
+            SuitSegments.Equals(x.SuitSegments) &&
+            SuitRecoveryPending.Equals(x.SuitRecoveryPending) &&
+            SuitInvulnerableUntil.Equals(x.SuitInvulnerableUntil) &&
+            SuitObservedAt.Equals(x.SuitObservedAt);
     }
     public struct LootWire : INetworkSerializable, IEquatable<LootWire>
     {
@@ -123,6 +150,14 @@ namespace HowToSuck.Networking
         public Vector3 Target;
         public Quaternion TargetRotation;
         public Vector3 End;
+        public byte CargoRole;
+        public FixedString64Bytes BossRun;
+        public FixedString64Bytes BossId;
+        public ulong BossInstance;
+        public int StoredOwner;
+        public int LastStorageOwner;
+        public FixedString64Bytes LastStorageTier;
+        public ulong ActiveShotId;
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
             s.SerializeValue(ref Run);
@@ -144,6 +179,14 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Target);
             s.SerializeValue(ref TargetRotation);
             s.SerializeValue(ref End);
+            s.SerializeValue(ref CargoRole);
+            s.SerializeValue(ref BossRun);
+            s.SerializeValue(ref BossId);
+            s.SerializeValue(ref BossInstance);
+            s.SerializeValue(ref StoredOwner);
+            s.SerializeValue(ref LastStorageOwner);
+            s.SerializeValue(ref LastStorageTier);
+            s.SerializeValue(ref ActiveShotId);
         }
         public bool Equals(LootWire x) =>
             Run.Equals(x.Run) &&
@@ -164,7 +207,15 @@ namespace HowToSuck.Networking
             Scale.Equals(x.Scale) &&
             Target.Equals(x.Target) &&
             TargetRotation.Equals(x.TargetRotation) &&
-            End.Equals(x.End);
+            End.Equals(x.End) &&
+            CargoRole.Equals(x.CargoRole) &&
+            BossRun.Equals(x.BossRun) &&
+            BossId.Equals(x.BossId) &&
+            BossInstance.Equals(x.BossInstance) &&
+            StoredOwner.Equals(x.StoredOwner) &&
+            LastStorageOwner.Equals(x.LastStorageOwner) &&
+            LastStorageTier.Equals(x.LastStorageTier) &&
+            ActiveShotId.Equals(x.ActiveShotId);
     }
     public struct SessionWire : INetworkSerializable, IEquatable<SessionWire>
     {
@@ -197,6 +248,14 @@ namespace HowToSuck.Networking
         public bool CanStart;
         public bool TruckActive;
         public FixedString512Bytes Error;
+        public bool HasCampaignProgression;
+        public int PurchasedExtraSlots;
+        public byte ClearedContractMask;
+        public bool LegacyContractAccess;
+        public FixedString64Bytes BossRun;
+        public FixedString64Bytes BossId;
+        public ulong BossInstance;
+        public byte BossStatus;
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
             s.SerializeValue(ref Revision);
@@ -228,6 +287,14 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref CanStart);
             s.SerializeValue(ref TruckActive);
             s.SerializeValue(ref Error);
+            s.SerializeValue(ref HasCampaignProgression);
+            s.SerializeValue(ref PurchasedExtraSlots);
+            s.SerializeValue(ref ClearedContractMask);
+            s.SerializeValue(ref LegacyContractAccess);
+            s.SerializeValue(ref BossRun);
+            s.SerializeValue(ref BossId);
+            s.SerializeValue(ref BossInstance);
+            s.SerializeValue(ref BossStatus);
         }
         public bool Equals(SessionWire x) =>
             Revision.Equals(x.Revision) &&
@@ -258,6 +325,14 @@ namespace HowToSuck.Networking
             ExpectedPlayers.Equals(x.ExpectedPlayers) &&
             CanStart.Equals(x.CanStart) &&
             TruckActive.Equals(x.TruckActive) &&
-            Error.Equals(x.Error);
+            Error.Equals(x.Error) &&
+            HasCampaignProgression.Equals(x.HasCampaignProgression) &&
+            PurchasedExtraSlots.Equals(x.PurchasedExtraSlots) &&
+            ClearedContractMask.Equals(x.ClearedContractMask) &&
+            LegacyContractAccess.Equals(x.LegacyContractAccess) &&
+            BossRun.Equals(x.BossRun) &&
+            BossId.Equals(x.BossId) &&
+            BossInstance.Equals(x.BossInstance) &&
+            BossStatus.Equals(x.BossStatus);
     }
 }

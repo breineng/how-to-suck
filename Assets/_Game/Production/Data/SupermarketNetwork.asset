@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: SupermarketNetwork
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ContractDefinition
   ContractId: supermarket
-  DisplayName: Supermarket
+  DisplayName: "\u0421\u0443\u043F\u0435\u0440\u043C\u0430\u0440\u043A\u0435\u0442
+    I"
+  RequiredBossId: rubbish_boulder
   RecommendedTierId: mk2
   SceneName: SupermarketNetwork
   Quota: 3500
-  TimeLimitSeconds: 540
+  TimeLimitSeconds: 720
   FailurePercent: 25

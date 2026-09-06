@@ -25,17 +25,23 @@ namespace HowToSuck
         public long Balance;
         public string CurrentTierId; // Confirmed host tier for readonly Lobby/shop presentation.
         public string SelectedContractId; // Host Lobby choice, separate from active contract/result.
+        public bool HasCampaignProgression;
+        public int PurchasedExtraSlots;
+        public byte ClearedContractMask;
+        public bool LegacyContractAccess;
         public bool PendingPayout, AllInExtraction;
         public byte ExtractionMask;
         public string Error;
         public static ContractState StateCopy(string run, string contract, ContractPhase phase, long money,
-            long quota, int count, double started, double deadline, double observed, int initiator, double hold) =>
-            new ContractState(run, contract, phase, money, quota, count, started, deadline, observed, initiator, hold);
+            long quota, int count, double started, double deadline, double observed, int initiator, double hold, BossObjectiveSnapshot boss) =>
+            new ContractState(run, contract, phase, money, quota, count, started, deadline, observed, initiator, hold,boss);
         public static ContractResult ResultCopy(string campaign, string run, string contract, ContractPhase phase,
-            long money, long quota, int percent, long payout, double started, double deadline, double finished)
+            long money, long quota, int percent, long payout, double started, double deadline, double finished, BossObjectiveSnapshot boss)
         {
-            var copy = new ContractResult(campaign, run, contract, phase, money, quota, percent, started, deadline, finished);
-            if (copy.Payout != payout) throw new InvalidOperationException("Inconsistent replicated result.");
+            SaveIdentity.RequireGuid(campaign,nameof(campaign));GameplayReplicaPolicy.RequireRun(run);
+            GameplayReplicaPolicy.BossSnapshot(run,boss.Key.ContractBossId,boss.Key,boss.Status);
+            var copy = new ContractResult(campaign, run, contract, phase, money, quota, percent, started, deadline, finished,boss);
+            if (copy.Payout != payout || copy.PayoutPercent != percent) throw new InvalidOperationException("Inconsistent replicated result.");
             return copy;
         }
     }

@@ -105,7 +105,7 @@ namespace HowToSuck
             }
             lost.Clear();
             foreach(var item in world.Loot.Items.Values)
-                if(item!=null && item.RunId==runId && item.State==SuckableState.Available &&
+                if(item!=null && item.RunId==runId && item.State==SuckableState.Available && item.CargoRole==CargoRole.OrdinaryLoot &&
                     Outside(item.transform.position))lost.Add(item);
             foreach(var item in lost)
             {
@@ -118,6 +118,15 @@ namespace HowToSuck
             lost.Clear();
         }
 
+        public bool TryFindRecoveryPosition(PlayerMotor player,out Vector3 position)
+        {
+            position=default;
+            if(string.IsNullOrEmpty(runId)||player==null||!player.HasMovementAuthority)return false;
+            Physics.SyncTransforms();var capsule=player.GetComponent<CharacterController>();
+            bool found=WorldBoundsRules.TryChooseSafe(anchors,rings,spacing,maxProbes,
+                (NVector3 desired,out NVector3 result)=>Probe(player,capsule,desired,out result),out var chosen,out var probes);
+            TotalCandidateProbes+=probes;if(found)position=World07Geometry.Unity(chosen);return found;
+        }
         private bool Outside(Vector3 point) => WorldBoundsRules.Outside(World07Geometry.Numerics(point),
             World07Geometry.Numerics(area.min),World07Geometry.Numerics(area.max),lowerY);
 
@@ -137,12 +146,12 @@ namespace HowToSuck
             while(true)
             {
                 count=Physics.OverlapCapsuleNonAlloc(bottom,top,radius,occupied,
-                    LayerMask.GetMask("World","Items","Player"),QueryTriggerInteraction.Ignore);
+                    LayerMask.GetMask("World","Items","Player","Enemies"),QueryTriggerInteraction.Ignore);
                 if(count<occupied.Length)break;
                 if(occupied.Length>=8192)
                 {
                     occupied=Physics.OverlapCapsule(bottom,top,radius,
-                        LayerMask.GetMask("World","Items","Player"),QueryTriggerInteraction.Ignore);
+                        LayerMask.GetMask("World","Items","Player","Enemies"),QueryTriggerInteraction.Ignore);
                     count=occupied.Length;break;
                 }
                 Array.Resize(ref occupied,occupied.Length*2);

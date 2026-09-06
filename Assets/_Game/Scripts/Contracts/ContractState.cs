@@ -11,8 +11,9 @@ namespace HowToSuck
         public long Quota { get; }
         public double TimeLimitSeconds { get; }
         public int FailurePercent { get; }
+        public string RequiredBossId { get; }
 
-        public ContractRules(string contractId, long quota, double timeLimitSeconds, int failurePercent)
+        public ContractRules(string contractId, long quota, double timeLimitSeconds, int failurePercent, string requiredBossId)
         {
             if (string.IsNullOrWhiteSpace(contractId) || contractId != contractId.Trim())
                 throw new ArgumentException("A stable contract ID is required.", nameof(contractId));
@@ -21,6 +22,9 @@ namespace HowToSuck
                 throw new ArgumentOutOfRangeException(nameof(timeLimitSeconds));
             if (failurePercent < 0 || failurePercent > 100)
                 throw new ArgumentOutOfRangeException(nameof(failurePercent));
+            if (string.IsNullOrWhiteSpace(requiredBossId) || requiredBossId != requiredBossId.Trim())
+                throw new ArgumentException("A main contract requires its explicit boss identity.", nameof(requiredBossId));
+            RequiredBossId = requiredBossId;
             ContractId = contractId;
             Quota = quota;
             TimeLimitSeconds = timeLimitSeconds;
@@ -52,6 +56,10 @@ namespace HowToSuck
         public double ObservedAt { get; }
         public int ExtractionInitiatorId { get; }
         public double ExtractHoldProgress { get; }
+        public long DeliveredValue => CollectedMoney;
+        public int DeliveredCargoCount => CollectedInstanceCount;
+        public BossObjectiveSnapshot Boss { get; }
+        public bool ObjectivesComplete => QuotaReached && Boss.IsDelivered;
         public bool QuotaReached => Quota > 0 && CollectedMoney >= Quota;
         public bool IsTerminal => Phase == ContractPhase.Succeeded ||
             Phase == ContractPhase.Failed || Phase == ContractPhase.Aborted;
@@ -60,9 +68,9 @@ namespace HowToSuck
 
         internal ContractState(string runId, string contractId, ContractPhase phase,
             long money, long quota, int count, double startedAt, double deadline,
-            double observedAt, int initiatorId, double holdProgress)
+            double observedAt, int initiatorId, double holdProgress, BossObjectiveSnapshot boss = default)
         {
-            RunId = runId; ContractId = contractId; Phase = phase;
+            RunId = runId; ContractId = contractId; Phase = phase; Boss = boss;
             CollectedMoney = money; Quota = quota; CollectedInstanceCount = count;
             StartedAt = startedAt; Deadline = deadline; ObservedAt = observedAt;
             ExtractionInitiatorId = initiatorId; ExtractHoldProgress = holdProgress;

@@ -5,7 +5,7 @@ using TMPro;
 namespace HowToSuck
 {
     [DisallowMultipleComponent]
-    public sealed class ShopView : MonoBehaviour, ICancelHandler
+    public sealed partial class ShopView : MonoBehaviour, ICancelHandler
     {
         public GameObject Panel;
         public Button OpenButton,BuyButton,RetryButton,CloseButton;
@@ -20,6 +20,7 @@ namespace HowToSuck
             Unbind();session=root;
             if(session==null)return;
             session.Changed+=Refresh;
+            if(CapacityBuyButton!=null)CapacityBuyButton.onClick.AddListener(BuyCapacity);
             OpenButton.onClick.AddListener(Open);BuyButton.onClick.AddListener(Buy);
             RetryButton.onClick.AddListener(Retry);CloseButton.onClick.AddListener(Close);
             Refresh();
@@ -38,7 +39,7 @@ namespace HowToSuck
             var p=session!=null?session.Progression:null;
             return ShopOfferPolicy.Evaluate(session!=null&&session.Phase==SessionPhase.Lobby,session!=null&&session.HasAuthority,
                 current!=null,p!=null&&p.IsSaving,session!=null&&session.DisplayedSavePending,
-                p?.PendingChange?.Kind==CampaignChangeKind.Purchase,p!=null&&p.CanStartRun,
+                p?.PendingChange?.IsPurchase==true,p!=null&&p.CanStartRun,
                 session!=null?session.DisplayedBalance:0,next!=null,next!=null?next.Price:0);
         }
         private void Open()
@@ -66,9 +67,11 @@ namespace HowToSuck
             if(working||!opened||!Definitions(out var current,out var next)||!Offer(current,next).CanRetry)return;
             working=true;Refresh();string prior=current.TierId;
             bool purchase=session.Progression.PendingChange?.Kind==CampaignChangeKind.Purchase;
+            bool capacity=session.Progression.PendingChange?.Kind==CampaignChangeKind.CapacityPurchase;
+            int priorBonus=session.Campaign.PurchasedExtraSlots;
             try {
                 if(session.RetryCampaignSave()) {
-                    if(purchase)Confirmed(prior);else notice="Сохранение завершено. Можно продолжать.";
+                    if(purchase)Confirmed(prior);else if(capacity)ConfirmedCapacity(priorBonus);else notice="Сохранение завершено. Можно продолжать.";
                 }
             }finally{working=false;Refresh();FocusAction();}
         }
@@ -95,7 +98,7 @@ namespace HowToSuck
             NextText.text=next!=null?"Следующий уровень: "+next.DisplayName:"Максимальный уровень";
             var shown=next!=null?next:current;
             StatsText.text=$"Мощность: {shown.Power:N0}\nРазмер приёмника: {shown.IntakeSize:0.##}";
-            PriceText.text=next!=null?$"Цена: ${next.Price:N0}":"Все улучшения приобретены";
+            PriceText.text=next!=null?$"Модель: ${next.Price:N0}":"Последняя модель уже приобретена";
             bool retryVisible=offer.CanRetry||offer.Kind==ShopOfferKind.Saving;
             bool actionWasSelected=EventSystem.current!=null&&(EventSystem.current.currentSelectedGameObject==BuyButton.gameObject||EventSystem.current.currentSelectedGameObject==RetryButton.gameObject);
             BuyButton.gameObject.SetActive(!retryVisible);
@@ -115,13 +118,14 @@ namespace HowToSuck
                 case ShopOfferKind.PendingPurchase:MessageText.text="Покупка пока не подтверждена. Показаны последние подтверждённые баланс и оборудование. Проверьте свободное место и доступ к папке сохранений, затем нажмите «Сохранить снова».";break;
                 case ShopOfferKind.PendingResult:MessageText.text="Предыдущая выплата ещё не сохранена. Сначала повторите сохранение.";break;
                 case ShopOfferKind.Insufficient:MessageText.text=notice??$"Не хватает ${offer.MissingFunds:N0}. Завершайте контракты, чтобы заработать.";break;
-                case ShopOfferKind.MaximumTier:MessageText.text=notice??"Последний уровень уже приобретён. Новых покупок нет.";break;
+                case ShopOfferKind.MaximumTier:MessageText.text=notice??"Последняя модель уже приобретена. Вместимость улучшается отдельно.";break;
                 case ShopOfferKind.Available:MessageText.text=notice??"Покупка списывает деньги один раз и сохраняется для всей кампании.";break;
                 default:MessageText.text="Магазин доступен между контрактами после сохранения кампании.";break;
             }
+            RefreshCapacity(current,next);
         }
         private void FocusAction()
-        {if(opened)Select(BuyButton.IsInteractable()?BuyButton:RetryButton.IsInteractable()?RetryButton:CloseButton);}
+        {if(opened)Select(BuyButton.IsInteractable()?BuyButton:CapacityBuyButton!=null&&CapacityBuyButton.IsInteractable()?CapacityBuyButton:RetryButton.IsInteractable()?RetryButton:CloseButton);}
         private static void Select(Button button)
         {if(EventSystem.current!=null&&button!=null)EventSystem.current.SetSelectedGameObject(button.gameObject);}
         private void OnEnable(){Refresh();}
@@ -129,6 +133,7 @@ namespace HowToSuck
         private void Unbind()
         {
             if(session!=null)session.Changed-=Refresh;
+            if(CapacityBuyButton!=null)CapacityBuyButton.onClick.RemoveListener(BuyCapacity);
             if(OpenButton!=null)OpenButton.onClick.RemoveListener(Open);if(BuyButton!=null)BuyButton.onClick.RemoveListener(Buy);
             if(RetryButton!=null)RetryButton.onClick.RemoveListener(Retry);if(CloseButton!=null)CloseButton.onClick.RemoveListener(Close);
             session=null;opened=working=false;notice=null;if(Panel!=null)Panel.SetActive(false);

@@ -63,11 +63,14 @@ namespace HowToSuck
             if(selected==null){NameText.text="Выбор карты";IndexText.text="";DetailsText.text=session!=null&&session.HasAuthority?"Доступная карта не найдена.":"Ожидаем выбор хозяина…";RecommendationText.text="";RoleText.text="Карту и начало контракта выбирает хозяин.";return;}
             NameText.text=selected.DisplayName;IndexText.text=(index+1)+" / "+entries.Length;
             int seconds=Mathf.CeilToInt(selected.TimeLimitSeconds);
-            DetailsText.text=$"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% собранной суммы\nДосрочный выход: без выплаты";
+            DetailsText.text=$"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса";
             string current=TierName(session.DisplayedTierId),recommended=TierName(selected.RecommendedTierId);
             RecommendationText.text=(current!=null?"Оборудование команды: "+current:"Ожидаем оборудование команды…")+
                 (recommended!=null?"\nРекомендуется "+recommended+". Можно играть с любым уровнем.":"\nКарта доступна с любым уровнем оборудования.");
-            RoleText.text=session.HasAuthority?"Выберите карту и начните контракт.":"Выбор хозяина · ожидаем начала контракта";
+            bool unlocked=session.DisplayedContractUnlocked(selected.ContractId);
+            string prerequisite=CampaignContractAccess.Prerequisite(selected.ContractId),priorName=prerequisite;
+            if(entries!=null)foreach(var entry in entries)if(entry!=null&&entry.ContractId==prerequisite)priorName=entry.DisplayName;
+            RoleText.text=!unlocked?"Чтобы открыть, завершите «"+priorName+"»":session.HasAuthority?"Выберите главу и начните контракт.":"Выбор хозяина · ожидаем начала контракта";
         }
         private void Unbind()
         {

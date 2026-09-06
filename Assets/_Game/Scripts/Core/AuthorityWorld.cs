@@ -16,8 +16,14 @@ namespace HowToSuck
         public IReadOnlyDictionary<int, PlayerMotor> Players => players;
         public LootRegistry Loot { get; } = new LootRegistry();
         public IngestionService Ingestion { get; private set; }
+        public ItemFireService ItemFire { get; private set; }
+        public EnemySimulationService Combat {get;private set;}
         public bool AllPlayersInExtraction { get; private set; }
         public event Action SnapshotChanged;
+        public event Action RunStarted,WorldCleared;
+        public event Action<int> PlayerRemoved;
+        public event Action<DeliveryRecord> DeliveryCommitted;
+        public string PreparedTierId => playerVacuum != null ? playerVacuum.TierId : null;
         private readonly Dictionary<int, PlayerStorage> storages = new Dictionary<int, PlayerStorage>();
         public IReadOnlyDictionary<int, PlayerStorage> Storages => new System.Collections.ObjectModel.ReadOnlyDictionary<int, PlayerStorage>(storages);
         private int preparedStorageCapacity = 1;
@@ -49,11 +55,13 @@ namespace HowToSuck
             suction = new SuctionSystem(Loot);
             Ingestion = new IngestionService(Loot, suction, instance => spawner?.Despawn(instance));
             Ingestion.Delivered += OnDelivered;
+            ItemFire = new ItemFireService(Loot, () => HasAuthority && IsRunning);
+            Combat = new EnemySimulationService(this);
         }
 
         // The prepared controller supplies the only run ID; the world never invents another ID.
         public void PrepareWorld(LevelContext level, IWorldSpawner worldSpawner, VacuumDefinition vacuum,
-            ContractController controller, Func<double> authorityClock, int storageCapacity = 1)
+            ContractController controller, Func<double> authorityClock, int storageCapacity = 1, int crewSize = 1)
         {
             if (!HasAuthority || Ingestion == null) throw new InvalidOperationException("Initialize the authority first.");
             if (controller == null || controller.State.Phase != ContractPhase.Preparing)
@@ -75,6 +83,7 @@ namespace HowToSuck
             if (truck != null) { truck.Stop(); receivers.Add(truck.Receiver); }
             Loot.Begin(controller.State.RunId);
             Ingestion.Begin(RunId);
+            ItemFire.Begin(RunId);
             boundsGuard?.BeginRun(RunId, level.PlayerSpawns);
             foreach (var spawn in level.LootSpawns)
             {
@@ -83,11 +92,13 @@ namespace HowToSuck
                 try
                 {
                     Loot.Register(instance.GetComponent<SuckableObject>());
+                    ItemFire.Track(instance.GetComponent<SuckableObject>());
                     instance.GetComponent<SuckableObject>().SetWorldFrozen(true);
                     (spawner as IWorldSpawnCommitter)?.CommitSpawn(instance);
                 }
                 catch { spawner.Despawn(instance); throw; }
             }
+            Combat.Prepare(level,spawner,controller,crewSize);
         }
 
         public void SetRunning(bool running)
@@ -97,6 +108,8 @@ namespace HowToSuck
                 throw new InvalidOperationException("Only the current running contract can unfreeze the world.");
             if (IsRunning == running) return;
             IsRunning = running;
+            ItemFire?.SetRunning(running);
+            Combat?.SetRunning(running);
             // Cancel reservations before freezing the preserved registry instances.
             Ingestion?.SetRunning(running);
             if (!running && truck != null) truck.Stop();
@@ -113,6 +126,7 @@ namespace HowToSuck
             }
             // Deadline/abort can stop outside the simulated step and bypass its finally notification.
             // Publish only after every physics/input owner has the final state; in-step changes publish in finally.
+            if (running) RunStarted?.Invoke();
             if (!inStep) SnapshotChanged?.Invoke();
         }
 
@@ -123,6 +137,8 @@ namespace HowToSuck
             if (storages.ContainsKey(motor.PlayerId)) throw new InvalidOperationException("Previous owner storage must finish this run before player ID reuse.");
             var storage = new PlayerStorage(RunId, motor.PlayerId, preparedStorageCapacity);
             players.Add(motor.PlayerId, motor); storages.Add(motor.PlayerId, storage);
+            ItemFire.RegisterPlayer(motor.PlayerId);
+            Combat.RegisterPlayer(motor.PlayerId);
             motor.BindContactWorld(this);
             var buffer = new PlayerIntentBuffer();
             buffer.BindRun(RunId, motor.transform.eulerAngles.y, 0);
@@ -141,11 +157,15 @@ namespace HowToSuck
 
         public void RemovePlayer(int id)
         {
+            bool wasRegistered = players.ContainsKey(id);
             if (storages.TryGetValue(id, out var storage)) storage.Detach();
             Ingestion?.CancelOwner(id);
+            ItemFire?.RemovePlayer(id);
+            Combat?.RemovePlayer(id);
             if (emitters.TryGetValue(id, out var emitter) && emitter != null) emitter.Active = false;
             if (players.TryGetValue(id, out var motor) && motor != null) motor.BindContactWorld(null);
             players.Remove(id); inputs.Remove(id); emitters.Remove(id);
+            if (wasRegistered) PlayerRemoved?.Invoke(id);
             receivers.RemoveAll(receiver => receiver == null || (!receiver.IsTruck && receiver.PlayerId == id));
         }
 
@@ -164,6 +184,7 @@ namespace HowToSuck
 
         public void Clear()
         {
+            WorldCleared?.Invoke();
             if (!HasAuthority)
             {
                 // NGO owns replica lifetimes. Never despawn or run ingestion cancellation on a guest.
@@ -171,6 +192,8 @@ namespace HowToSuck
                 AllPlayersInExtraction = false; return;
             }
             SetRunning(false); TickCount = 0;
+            Combat?.Clear();
+            ItemFire?.Clear();
             foreach (var item in Loot.Items.Values) if (item != null) spawner?.Despawn(item.gameObject);
             Ingestion?.Clear();
             if (extraction != null) extraction.Clear();
@@ -193,8 +216,10 @@ namespace HowToSuck
             if (contract.CheckDeadline(now) || !contract.IsRunning || !IsRunning) return;
             TickCount++;
             stepNow = now; inStep = true;
+            Combat.BeginStep(now);
             try
             {
+                Combat.StepRecovery();
                 if (boundsGuard != null)
                     boundsGuard.Step(this, now,
                         (motor, position) => motor.RecoverAt(position, inputs[motor.PlayerId].Read(now)),
@@ -206,7 +231,7 @@ namespace HowToSuck
                         if (emitters.TryGetValue(pair.Key, out var inactiveSource) && inactiveSource != null) inactiveSource.Active = false;
                         continue;
                     }
-                    if (boundsGuard != null && boundsGuard.RequiresRecovery(pair.Key))
+                    if (Combat.RequiresRecovery(pair.Key) || boundsGuard != null && boundsGuard.RequiresRecovery(pair.Key))
                     {
                         pair.Value.SuspendForRecovery(inputs[pair.Key].Read(now));
                         if (emitters.TryGetValue(pair.Key, out var recoveringSource) && recoveringSource != null)
@@ -217,6 +242,19 @@ namespace HowToSuck
                     if (emitters.TryGetValue(pair.Key, out var emitter) && emitter != null)
                         emitter.Active = pair.Value.LastIntent.VacuumHeld && pair.Value.NozzlePoseValid;
                 }
+                // Collision callbacks from the previous native simulation are consumed only after the deadline gate.
+                ItemFire.StepContacts(now);
+                if (!IsRunning || !contract.IsRunning) return;
+                foreach (var pair in players)
+                {
+                    emitters.TryGetValue(pair.Key, out var fireSource);
+                    storages.TryGetValue(pair.Key, out var storage);
+                    bool allowed = pair.Value != null && pair.Value.isActiveAndEnabled &&
+                        !Combat.RequiresRecovery(pair.Key) && (boundsGuard == null || !boundsGuard.RequiresRecovery(pair.Key));
+                    ItemFire.ProcessPlayer(pair.Key, inputs[pair.Key].Read(now), pair.Value, storage, fireSource, now, allowed);
+                }
+                Combat.StepActors(Time.fixedDeltaTime);
+                if (!IsRunning || !contract.IsRunning) return;
                 Ingestion.CompleteDue(now);
                 if (!IsRunning || !contract.IsRunning) return;
                 // One shared force budget for all handheld sources and the truck.
@@ -226,6 +264,7 @@ namespace HowToSuck
                 suction.BeginStep();
                 foreach (var emitter in emitters.Values) if (emitter != null) suction.Apply(emitter);
                 if (truck != null) truck.Step(suction);
+                suction.Flush();
                 Ingestion.Admit(now, receivers);
                 if (!IsRunning || !contract.IsRunning) return;
                 extraction.Refresh(players);
@@ -243,20 +282,27 @@ namespace HowToSuck
                 AllPlayersInExtraction = extractionPlayers.Count > 0 && allInside;
                 contract.StepExtraction(now, extractionPlayers);
             }
-            finally { inStep = false; SnapshotChanged?.Invoke(); }
+            finally { suction.CancelStep(); Combat.EndStep(); inStep = false; SnapshotChanged?.Invoke(); }
         }
 
+        internal bool TryRecoverCombatPlayer(PlayerMotor motor,Vector3 position,double now)
+        {
+            if(!inStep||now!=stepNow||!IsRunning||motor==null||!players.TryGetValue(motor.PlayerId,out var current)||current!=motor||!inputs.TryGetValue(motor.PlayerId,out var buffer))return false;
+            var intent=buffer.Read(now);storages.TryGetValue(motor.PlayerId,out var storage);emitters.TryGetValue(motor.PlayerId,out var emitter);
+            ItemFire.ProcessPlayer(motor.PlayerId,intent,motor,storage,emitter,now,false);
+            return motor.RecoverAt(position,intent);
+        }
         private void OnDelivered(DeliveryRecord record)
         {
-            if (inStep && IsRunning && contract != null && record.RunId == RunId)
-                contract.TryRecordDelivery(record, stepNow);
+            if (inStep && IsRunning && contract != null && record.RunId == RunId && contract.TryRecordDelivery(record, stepNow))
+                DeliveryCommitted?.Invoke(record);
         }
 
         private void OnDestroy()
         {
             Clear();
             if (Ingestion != null) Ingestion.Delivered -= OnDelivered;
-            SnapshotChanged = null;
+            SnapshotChanged = null; RunStarted = null; WorldCleared = null; PlayerRemoved = null; DeliveryCommitted = null;
         }
     }
 }

@@ -14,6 +14,16 @@ namespace HowToSuck.Networking
         private string acknowledgedRun;
         private double nextPublish;
         private ContractResult previousResult;
+        private SessionWire previousResultWire;
+        private SessionWire acceptedState;private bool hasAcceptedState;
+        public bool HasAcceptedCurrentSnapshot=>IsSpawned&&(IsServer||hasAcceptedState&&acceptedState.Equals(Snapshot.Value));
+        private bool TryGetCurrentState(out SessionWire state)
+        {
+            state=default;
+            if(!HasAcceptedCurrentSnapshot)return false;
+            state=IsServer?Snapshot.Value:acceptedState;return true;
+        }
+        private string observedBossRun;private BossObjectiveSnapshot observedBoss;
         public bool LocalReady {get;private set;}
         public override void OnNetworkSpawn()
         {
@@ -26,12 +36,15 @@ namespace HowToSuck.Networking
         public void Publish()
         {
             if(!IsServer||!IsSpawned||game==null)return;
-            var session=game.Session;var state=session.ContractState;var result=session.Result;
+            var session=game.Session;var state=session.ContractState;var result=session.Result;var boss=state.Boss;
             byte mask=0;
             foreach(var pair in session.World.Players)if(pair.Key>=1&&pair.Key<=4&&session.World.IsPlayerInExtraction(pair.Key))mask|=(byte)(1<<(pair.Key-1));
             Snapshot.Value=new SessionWire{Revision=game.Driver.Revision,Run=new FixedString64Bytes(state.RunId??""),
                 Contract=new FixedString64Bytes(state.ContractId??""),Campaign=new FixedString64Bytes(session.Campaign?.CampaignId??""),
                 CampaignTier=new FixedString64Bytes(session.Campaign?.CurrentTierId??""),SelectedContract=new FixedString64Bytes(session.SelectedLobbyContractId),
+                HasCampaignProgression=session.Campaign!=null,PurchasedExtraSlots=session.Campaign?.PurchasedExtraSlots??0,
+                ClearedContractMask=CampaignContractAccess.ClearedMask(session.Campaign?.ClearedContractIds),LegacyContractAccess=session.Campaign?.LegacyContractAccess??false,
+                BossRun=new FixedString64Bytes(boss.Key.RunId??""),BossId=new FixedString64Bytes(boss.Key.ContractBossId??""),BossInstance=boss.Key.InstanceId,BossStatus=(byte)boss.Status,
                 Phase=(byte)session.Phase,ContractPhase=(byte)state.Phase,Money=state.CollectedMoney,Quota=state.Quota,
                 Balance=session.Campaign?.Balance??0,Count=state.CollectedInstanceCount,Started=state.StartedAt,Deadline=state.Deadline,
                 Observed=state.ObservedAt,Initiator=state.ExtractionInitiatorId,Hold=state.ExtractHoldProgress,
@@ -52,7 +65,7 @@ namespace HowToSuck.Networking
             if(!IsSpawned)return;
             if(IsServer&&Time.realtimeSinceStartupAsDouble>=nextPublish)
             {nextPublish=Time.realtimeSinceStartupAsDouble+.05;Publish();}
-            var state=Snapshot.Value;
+            if(!TryGetCurrentState(out var state))return;
             if(state.ContractPhase!=(byte)ContractPhase.Preparing||state.Revision==0||
                 acknowledgedRevision==state.Revision&&acknowledgedRun==state.Run.ToString())return;
             if(!game.TryVerifyPrepared(state,out var ownObject))return;
@@ -68,10 +81,10 @@ namespace HowToSuck.Networking
         }
         public void SetLocalReady(bool ready)
         {
-            if(!IsSpawned||Snapshot.Value.Phase!=(byte)SessionPhase.Lobby)return;
+            if(!TryGetCurrentState(out var state)||state.Phase!=(byte)SessionPhase.Lobby)return;
             if(IsServer)
             {if(game.Connection.SetReadyFromServerRpc(NetworkManager.LocalClientId,ready))LocalReady=ready;}
-            else ReadyRpc(ready,Snapshot.Value.Revision);
+            else ReadyRpc(ready,state.Revision);
         }
         [Rpc(SendTo.Server,InvokePermission=RpcInvokePermission.Everyone)]
         private void ReadyRpc(bool ready,uint revision,RpcParams rpc=default)
@@ -82,7 +95,7 @@ namespace HowToSuck.Networking
         }
         [Rpc(SendTo.SpecifiedInParams,InvokePermission=RpcInvokePermission.Server)]
         private void ReadyAcceptedRpc(bool ready,uint revision,RpcParams rpc=default)
-        {if(!IsServer&&revision==Snapshot.Value.Revision&&Snapshot.Value.Phase==(byte)SessionPhase.Lobby)LocalReady=ready;}
+        {if(!IsServer&&TryGetCurrentState(out var state)&&revision==state.Revision&&state.Phase==(byte)SessionPhase.Lobby)LocalReady=ready;}
         private void OnSnapshot(SessionWire old,SessionWire state)
         {
             if(IsServer)return;
@@ -105,23 +118,42 @@ namespace HowToSuck.Networking
             if(game.Session.Catalog?.Contracts!=null)foreach(var entry in game.Session.Catalog.Contracts)
                 if(entry!=null&&entry.ContractId==selectedContract)knownSelection=true;
             if(!knownSelection)throw new InvalidOperationException("Host-selected contract is absent from the local catalog.");
+            ContractDefinition active=null;
+            if(game.Session.Catalog?.Contracts!=null)foreach(var entry in game.Session.Catalog.Contracts)
+                if(entry!=null&&entry.ContractId==value.Contract.ToString())active=entry;
+            var boss=GameplayStateValidation.RequireSession(value,active?.RequiredBossId,active!=null?active.FailurePercent:0);
+            if(observedBossRun==value.Run.ToString())GameplayReplicaPolicy.RequireBossAdvance(observedBoss,boss);
             var state=SessionReplica.StateCopy(value.Run.ToString(),value.Contract.ToString(),(ContractPhase)value.ContractPhase,
-                value.Money,value.Quota,value.Count,value.Started,value.Deadline,value.Observed,value.Initiator,value.Hold);
+                value.Money,value.Quota,value.Count,value.Started,value.Deadline,value.Observed,value.Initiator,value.Hold,boss);
+            // A missing result must not erase the immutable result already accepted for this run.
+            if(previousResult!=null&&previousResult.RunId==state.RunId&&
+                (!value.HasResult||!GameplayStateValidation.SameTerminalResult(previousResultWire,value)))
+                throw new InvalidOperationException("A terminal result changed or disappeared in place.");
             if(value.HasResult)
             {
-                if(previousResult==null||previousResult.RunId!=state.RunId)
+                if(previousResult==null||previousResult.RunId!=state.RunId){
                     previousResult=SessionReplica.ResultCopy(value.Campaign.ToString(),state.RunId,state.ContractId,state.Phase,
-                        value.Money,value.Quota,value.PayoutPercent,value.Payout,value.Started,value.Deadline,value.Finished);
+                        value.Money,value.Quota,value.PayoutPercent,value.Payout,value.Started,value.Deadline,value.Finished,boss);
+                    previousResultWire=value;
+                }
             }
-            else previousResult=null;
+            else {previousResult=null;previousResultWire=default;}
+            observedBossRun=value.Run.ToString();observedBoss=boss;
             game.ApplyTruckPresentation(value.TruckActive);
             game.Session.ApplyReplica(new SessionReplica{Phase=(SessionPhase)value.Phase,State=state,Result=previousResult,
-                Balance=value.Balance,CurrentTierId=campaignTier,SelectedContractId=selectedContract,PendingPayout=value.PendingPayout,ExtractionMask=value.ExtractionMask,
+                Balance=value.Balance,CurrentTierId=campaignTier,SelectedContractId=selectedContract,
+                HasCampaignProgression=value.HasCampaignProgression,PurchasedExtraSlots=value.PurchasedExtraSlots,
+                ClearedContractMask=value.ClearedContractMask,LegacyContractAccess=value.LegacyContractAccess,
+                PendingPayout=value.PendingPayout,ExtractionMask=value.ExtractionMask,
                 AllInExtraction=value.AllInExtraction,Error=value.Error.ToString()});
+            // Commit only after all validation and guest application. A rejected raw value never drives ACK/Ready.
+            if(!IsSpawned||game.IsStopping)return;
+            acceptedState=value;hasAcceptedState=true;
         }
         public override void OnNetworkDespawn()
         {
-            Snapshot.OnValueChanged-=OnSnapshot;
+            hasAcceptedState=false;acceptedState=default;
+            Snapshot.OnValueChanged-=OnSnapshot;previousResult=null;previousResultWire=default;observedBossRun=null;observedBoss=default;
             if(game!=null){game.Session.Changed-=Publish;game.Connection.Changed-=Publish;game.ReleaseControl(this);}
         }
     }

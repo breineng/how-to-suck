@@ -8,6 +8,8 @@ namespace HowToSuck
         [Tooltip("Stable authored identifier. Do not change after the contract is published.")]
         public string ContractId;
         public string DisplayName;
+        [Tooltip("Stable identity of the required boss for this contract.")]
+        public string RequiredBossId;
         [Tooltip("Optional equipment recommendation shown in Lobby; never a map access requirement.")]
         public string RecommendedTierId;
         [Tooltip("Scene name or build-settings scene path, without the .unity extension.")]
@@ -23,6 +25,9 @@ namespace HowToSuck
 
             if (string.IsNullOrWhiteSpace(DisplayName))
                 return Fail($"Contract '{ContractId}' needs a display name.", out error);
+
+            if (string.IsNullOrWhiteSpace(RequiredBossId) || RequiredBossId != RequiredBossId.Trim())
+                return Fail($"Contract '{ContractId}' requires an explicit boss identity.", out error);
 
             if (Quota <= 0)
                 return Fail($"Contract '{ContractId}' must have a positive quota.", out error);

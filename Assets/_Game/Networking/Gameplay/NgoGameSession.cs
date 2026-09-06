@@ -25,6 +25,7 @@ namespace HowToSuck.Networking
         public IReadOnlyCollection<NetworkLootAdapter> Items=>items.Values;
         private readonly Dictionary<ulong,NetworkPlayerAdapter> players=new Dictionary<ulong,NetworkPlayerAdapter>();
         private readonly Dictionary<ulong,NetworkLootAdapter> items=new Dictionary<ulong,NetworkLootAdapter>();
+        private readonly Dictionary<ulong,EnemyNetworkAdapter> enemies=new Dictionary<ulong,EnemyNetworkAdapter>();
         private static NgoGameSession current;
         private bool stopping;
         public bool IsStopping=>stopping;
@@ -79,6 +80,10 @@ namespace HowToSuck.Networking
         {if(items.ContainsKey(item.NetworkObjectId))throw new InvalidOperationException("Duplicate loot network ID.");items.Add(item.NetworkObjectId,item);}
         internal void Unregister(NetworkLootAdapter item)
         {if(items.TryGetValue(item.NetworkObjectId,out var old)&&old==item)items.Remove(item.NetworkObjectId);}
+        internal void Register(EnemyNetworkAdapter enemy)
+        {if(enemies.ContainsKey(enemy.NetworkObjectId))throw new InvalidOperationException("Duplicate enemy network ID.");enemies.Add(enemy.NetworkObjectId,enemy);}
+        internal void Unregister(EnemyNetworkAdapter enemy)
+        {if(enemies.TryGetValue(enemy.NetworkObjectId,out var old)&&old==enemy)enemies.Remove(enemy.NetworkObjectId);}
         public IntakeReceiver FindReceiver(int intake)
         {
             if(intake==TruckIntake.DefaultIntakeId)return observedLevel!=null&&observedLevel.Truck!=null?observedLevel.Truck.Receiver:null;
@@ -96,18 +101,35 @@ namespace HowToSuck.Networking
         public bool TryVerifyPrepared(SessionWire state,out ulong ownedObject)
         {
             ownedObject=0;
+            if(!HasAuthority&&(Control==null||!Control.HasAcceptedCurrentSnapshot||!state.Equals(Control.Snapshot.Value)))return false;
             if(state.Revision==0||state.ExpectedPlayers<1||state.ExpectedPlayers>4||players.Count!=state.ExpectedPlayers||items.Count!=state.ExpectedItems||
                 !players.TryGetValue(Manager.LocalClientId,out var local)||local==null||!local.IsOwner||!local.Input.IsInitialized||local.Input.GameplayAvailable)return false;
-            if(observedLevel==null||observedLevel.Contract.ContractId!=state.Contract.ToString())return false;
+            if(observedLevel==null)return false;
+            var variant=observedLevel.FindContractVariant(state.Contract.ToString());
+            var encounter=observedLevel.FindEnemyEncounter(state.Contract.ToString());
+            if(variant==null||!observedLevel.TryValidateContract(variant,out _)||encounter==null||encounter.Spawns==null||enemies.Count!=encounter.Spawns.Length)return false;
+            var enemyIds=new HashSet<ulong>();int bosses=0;
+            foreach(var enemy in enemies.Values)
+            {
+                if(enemy==null||!enemy.IsSpawned||!HasAuthority&&!enemy.HasAcceptedCurrentSnapshot)return false;
+                var e=enemy.Snapshot.Value;
+                if(!enemy.IsSpawned||!e.Run.Equals(state.Run)||e.Revision!=state.Revision||!e.Frozen||e.Phase!=(byte)EnemyPhase.Idle||
+                    !enemyIds.Add(e.InstanceId)||enemy.Actor.HasAuthority!=HasAuthority||enemy.Actor.Health!=enemy.Actor.MaximumHealth)return false;
+                if(e.BossInstanceId!=0)
+                {bosses++;if(e.BossInstanceId!=state.BossInstance||!e.BossRun.Equals(state.BossRun)||!e.BossType.Equals(state.BossId))return false;}
+            }
+            if(bosses!=1||state.BossStatus!=(byte)BossObjectiveStatus.Active)return false;
             var ids=new HashSet<int>();var lootIds=new HashSet<ulong>();
             foreach(var player in players.Values)
             {
+                if(player==null||!player.IsSpawned||!HasAuthority&&!player.HasAcceptedCurrentSnapshot)return false;
                 var s=player.Snapshot.Value;
                 if(!player.IsSpawned||!s.Run.Equals(state.Run)||s.Revision!=state.Revision||!s.Frozen||!ids.Add(s.PlayerId)||
                     player.Motor.HasMovementAuthority!=HasAuthority||(!HasAuthority&&player.GetComponent<CharacterController>().enabled))return false;
             }
             foreach(var item in items.Values)
             {
+                if(item==null||!item.IsSpawned||!HasAuthority&&!item.HasAcceptedCurrentSnapshot)return false;
                 var s=item.Snapshot.Value;
                 if(!item.IsSpawned||!s.Run.Equals(state.Run)||s.Revision!=state.Revision||!s.Frozen||s.State!=(byte)SuckableState.Available||
                     !lootIds.Add(s.InstanceId)||item.Item.HasPhysicsAuthority!=HasAuthority||!item.Item.Body.isKinematic)return false;

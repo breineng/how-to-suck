@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 8360497027748943624}
   - component: {fileID: 5043766512590134010}
   - component: {fileID: 1575694621810921810}
+  - component: {fileID: 7845551343399893379}
+  - component: {fileID: 9105597138798021424}
   m_Layer: 0
   m_Name: SoloEntryRoot
   m_TagString: Untagged
@@ -291,3 +293,28 @@ MonoBehaviour:
   Settings: {fileID: 7812218909044333075}
   Session: {fileID: 8780696073988365327}
   Actions: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}
+--- !u!114 &7845551343399893379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a32e98464c57c45afee3c991c84ce9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.AchievementSessionBridge
+  Catalog: {fileID: 11400000, guid: 4abbed054c0f22149826f7ccdaf34d9f, type: 2}
+--- !u!114 &9105597138798021424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d3205be4ade664e8d9d7b47eaede53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.SteamAchievementBinding

@@ -11,6 +11,8 @@ namespace HowToSuck
         public ContractPhase Phase { get; }
         public long CollectedMoney { get; }
         public long Quota { get; }
+        public long DeliveredValue => CollectedMoney;
+        public BossObjectiveSnapshot Boss { get; }
         public int PayoutPercent { get; }
         public long Payout { get; }
         public double StartedAt { get; }
@@ -19,7 +21,7 @@ namespace HowToSuck
 
         internal ContractResult(string campaignId, string runId, string contractId,
             ContractPhase phase, long collectedMoney, long quota, int failurePercent,
-            double startedAt, double deadline, double finishedAt)
+            double startedAt, double deadline, double finishedAt, BossObjectiveSnapshot boss = default)
         {
             if (phase != ContractPhase.Succeeded && phase != ContractPhase.Failed &&
                 phase != ContractPhase.Aborted)
@@ -27,6 +29,9 @@ namespace HowToSuck
             if (collectedMoney < 0) throw new ArgumentOutOfRangeException(nameof(collectedMoney));
             if (failurePercent < 0 || failurePercent > 100)
                 throw new ArgumentOutOfRangeException(nameof(failurePercent));
+            if (phase == ContractPhase.Succeeded && (quota <= 0 || collectedMoney < quota || !boss.IsDelivered || boss.Key.RunId != runId))
+                throw new ArgumentException("Success requires delivered quota and the delivered current-run boss.");
+            Boss = boss;
             CampaignId = campaignId; RunId = runId; ContractId = contractId; Phase = phase;
             CollectedMoney = collectedMoney; Quota = quota;
             PayoutPercent = phase == ContractPhase.Succeeded ? 100 :

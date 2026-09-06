@@ -70,7 +70,7 @@ namespace HowToSuck.Networking
             Revision=checked(Revision+1);ExpectedItems=level.LootSpawns.Length;ExpectedPlayers=loadingRoster.Count;
             barrier=new RunPreparationBarrier(session.RunId,loadingRoster,Revision,ExpectedItems,Now);
             foreach(var id in loadingRoster)barrier.RecordSceneLoaded(id); // NgoSceneBarrier already verified these exact scene acknowledgments.
-            session.World.PrepareWorld(level,this,vacuum,session.Controller,()=>Now);
+            session.World.PrepareWorld(level,this,vacuum,session.Controller,()=>Now,session.Progression.EffectiveCapacity,loadingRoster.Count);
             for(int index=0;index<loadingRoster.Count;index++)
             {
                 var id=loadingRoster[index];var point=level.PlayerSpawns[index];

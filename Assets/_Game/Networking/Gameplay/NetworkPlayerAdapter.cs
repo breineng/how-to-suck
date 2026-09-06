@@ -16,10 +16,15 @@ namespace HowToSuck.Networking
         public PlayerInputReader Input {get;private set;}
         private NgoGameSession game;
         private PlayerView view;
+        private PlayerStorageView storageView;
+        private PlayerSuitView suitView;
+        private System.Collections.Generic.IReadOnlyDictionary<int,PlayerStorage> storageIndex;
         private uint revision;
         private string run,tier;
         private IntentWire pending;
         private bool hasPending,available;
+        private PlayerWire acceptedSnapshot;private bool hasAcceptedSnapshot;
+        public bool HasAcceptedCurrentSnapshot=>IsSpawned&&(IsServer||hasAcceptedSnapshot&&acceptedSnapshot.Equals(Snapshot.Value));
         private double nextSend,receiveAt,tokens=8;
         private void Awake()
         {
@@ -31,6 +36,9 @@ namespace HowToSuck.Networking
             if(Input==null||view==null)throw new InvalidOperationException("Network player needs its existing input/view components.");
             // Prefab also serializes IsLocal=false/camera off/input disabled; no one-frame remote camera or input.
             Input.enabled=false;view.Initialize(false);Motor.BindMovementAuthority(game.HasAuthority);
+            storageView=GetComponent<PlayerStorageView>()??gameObject.AddComponent<PlayerStorageView>();
+            suitView=GetComponent<PlayerSuitView>()??gameObject.AddComponent<PlayerSuitView>();
+            if(game.HasAuthority)storageIndex=game.Session.World.Storages; // One read-only wrapper; source dictionary is the authoritative world. 
             var animation=GetComponent<PlayerAnimationView>();
             if(animation==null||animation.Animator==null||animation.Body==null||animation.Head==null||animation.RemoteTool==null)
                 throw new InvalidOperationException("Use the authored full-body player with both tool presentations.");
@@ -41,7 +49,7 @@ namespace HowToSuck.Networking
             if(!game.HasAuthority||IsSpawned||playerId<1||playerId>4||worldRevision==0||!Guid.TryParseExact(runId,"N",out _))
                 throw new InvalidOperationException("Invalid prepared player.");
             run=runId;revision=worldRevision;tier=tierId;OwnerConnectionId=owner;
-            Motor.Initialize(playerId);ConfigureTool(tierId,playerId);
+            storageView.Bind(run,playerId);suitView.Bind(run,playerId);Motor.Initialize(playerId);ConfigureTool(tierId,playerId);
         }
         private void ConfigureTool(string tierId,int playerId)
         {
@@ -80,6 +88,7 @@ namespace HowToSuck.Networking
             if(s.Revision==0||s.PlayerId<1||s.PlayerId>4||!Guid.TryParseExact(s.Run.ToString(),"N",out _))
                 throw new InvalidOperationException("Player arrived before its prepared state.");
             run=s.Run.ToString();revision=s.Revision;tier=s.Tier.ToString();OwnerConnectionId=OwnerClientId;
+            GameplayStateValidation.RequirePlayer(s,run,revision,s.PlayerId,tier);storageView.Bind(run,s.PlayerId);suitView.Bind(run,s.PlayerId);
             if(!IsServer){Motor.Initialize(s.PlayerId);ConfigureTool(tier,s.PlayerId);Apply(s);}
             view.Initialize(IsOwner);game.Register(this);
             Snapshot.OnValueChanged+=OnSnapshot;
@@ -93,18 +102,35 @@ namespace HowToSuck.Networking
         private PlayerWire Capture()
         {
             var i=Motor.LastIntent;
+            if(!game.HasAuthority||storageIndex==null||!storageIndex.TryGetValue(Motor.PlayerId,out var storage)||storage.RunId!=run||storage.OwnerId!=Motor.PlayerId)
+                throw new InvalidOperationException("Publish storage only from this authority world and registered owner.");
+            string nextType="";CargoRole nextRole=CargoRole.OrdinaryLoot;
+            if(storage.Count>0){if(!storage.TryPeek(out _,out var item))throw new InvalidOperationException("Committed FIFO has no matching stored item.");nextType=item.TypeId;nextRole=item.CargoRole;}
+            var stored=new PlayerStorageSnapshot(storage.RunId,storage.OwnerId,storage.Count,storage.Reserved,storage.Capacity,nextType,nextRole);
+            if(game.Session.World.Combat==null)throw new InvalidOperationException("No authoritative suit service for registered player.");
+            var suit=new PlayerSuitPresentation(game.Session.World.Combat.SuitSnapshot(Motor.PlayerId),game.Driver.Now,!game.Session.World.IsRunning);
+            if(suit.State.RunId!=run||suit.State.OwnerId!=Motor.PlayerId)throw new InvalidOperationException("Publish the actual registered owner's current-run suit.");
+            suitView.RequireAcceptable(suit);storageView.Apply(stored);suitView.Apply(suit);
             return new PlayerWire{Run=new FixedString64Bytes(run),Tier=new FixedString64Bytes(tier),Revision=revision,PlayerId=Motor.PlayerId,
                 Sequence=i.Sequence,Jump=i.JumpPressSequence,Move=i.Move,Yaw=i.Yaw,Pitch=i.Pitch,Vertical=Motor.VerticalVelocity,
-                PlanarSpeed=game.Session.World.IsRunning?Motor.PlanarSpeed:0f,Grounded=Motor.IsGrounded,Sprint=i.SprintHeld,Vacuum=i.VacuumHeld,Interact=i.InteractHeld,Frozen=!game.Session.World.IsRunning};
+                PlanarSpeed=game.Session.World.IsRunning?Motor.PlanarSpeed:0f,Grounded=Motor.IsGrounded,Sprint=i.SprintHeld,Vacuum=i.VacuumHeld,Interact=i.InteractHeld,Frozen=!game.Session.World.IsRunning,
+                StorageCount=stored.Count,StorageReserved=stored.Reserved,StorageCapacity=stored.Capacity,
+                StorageNextType=new FixedString64Bytes(stored.NextTypeId),StorageNextRole=(byte)stored.NextCargoRole,
+                SuitSegments=suit.State.Segments,SuitRecoveryPending=suit.State.RecoveryPending,
+                SuitInvulnerableUntil=suit.State.InvulnerableUntil,SuitObservedAt=suit.ObservedAt};
         }
         private void Publish(){if(IsServer&&IsSpawned)Snapshot.Value=Capture();}
         private void OnSnapshot(PlayerWire old,PlayerWire value){if(!IsServer)Apply(value);}
         private void Apply(PlayerWire s)
         {
-            if(s.Run.ToString()!=run||s.Revision!=revision||s.PlayerId!=Motor.PlayerId)throw new InvalidOperationException("Player identity changed in place.");
+            GameplayStateValidation.RequirePlayer(s,run,revision,Motor.PlayerId,tier);
+            var suit=GameplayStateValidation.Suit(s);suitView.RequireAcceptable(suit);
+            storageView.Apply(GameplayStateValidation.Storage(s));suitView.Apply(suit);
             GetComponent<VacuumEmitter>().Active=s.Vacuum&&!s.Frozen;
             Motor.ApplyReplicaPresentation(new PlayerIntent{RunId=run,Sequence=s.Sequence,JumpPressSequence=s.Jump,Move=s.Move,
                 Yaw=s.Yaw,Pitch=s.Pitch,SprintHeld=s.Sprint,VacuumHeld=s.Vacuum,InteractHeld=s.Interact},s.Grounded,s.Vertical,s.PlanarSpeed);
+            if(!IsSpawned||game.IsStopping)return;
+            acceptedSnapshot=s;hasAcceptedSnapshot=true;
         }
         public void SubmitIntent(int playerId,PlayerIntent intent)
         {
@@ -146,11 +172,12 @@ namespace HowToSuck.Networking
         }
         public override void OnNetworkDespawn()
         {
+            hasAcceptedSnapshot=false;acceptedSnapshot=default;
             Snapshot.OnValueChanged-=OnSnapshot;
             if(game!=null){game.Session.World.SnapshotChanged-=Publish;game.Unregister(this);}
             if(Input!=null){Input.SetGameplayAvailable(false);Input.enabled=false;}
             if(view!=null)view.Initialize(false);
-            GetComponent<ToolTierIssue>()?.Release();
+            GetComponent<ToolTierIssue>()?.Release();storageView?.Clear();suitView?.Clear();storageIndex=null;
             hasPending=false;pending=default;available=false; // No owner intent survives despawn.
         }
     }

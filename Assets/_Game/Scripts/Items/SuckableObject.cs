@@ -69,13 +69,20 @@ namespace HowToSuck
             if ((roleBound || initialized) && HasPhysicsAuthority != authority) throw new InvalidOperationException("An item cannot change authority in place.");
             HasPhysicsAuthority = authority; roleBound = true; CachePhysics(); ApplyBodyMode();
         }
-        public void ApplyReplicaState(string runId, ulong id, SuckableState state, bool frozen)
+        public void ApplyReplicaState(string runId, ulong id, SuckableState state, bool frozen, LootReplicaProvenance provenance)
         {
             if (HasPhysicsAuthority) throw new InvalidOperationException("The authority cannot consume item replicas.");
             if (!Enum.IsDefined(typeof(SuckableState), state)) throw new ArgumentOutOfRangeException(nameof(state));
+            if(id==0)throw new ArgumentException("Replica instance must be nonzero.");
+            GameplayReplicaPolicy.RequireLoot(runId,state,initialized?TypeId:Definition?.TypeId,
+                initialized?CargoRole:Definition!=null?Definition.CargoRole:(CargoRole)(-1),provenance);
+            if (initialized && !BossKey.Equals(provenance.BossKey)) throw new InvalidOperationException("Replica boss identity changed in place.");
+            if (!initialized && provenance.CargoRole == CargoRole.BossBody) BindReplicaBossCargo(provenance.BossKey);
             if (!initialized) Initialize(runId, id, true);
             if (runId != RunId || id != InstanceId) throw new InvalidOperationException("A replica cannot change run or instance identity.");
             if (State == SuckableState.Ingesting && state != State) RestoreVisualPose();
+            StoredOwner=provenance.StoredOwner;LastStorageOwner=provenance.LastStorageOwner;LastStorageTierId=provenance.LastStorageTierId;
+            ActiveShotId=provenance.ActiveShotId;ShotOwner=ActiveShotId!=0?LastStorageOwner:0;
             State = state; WorldFrozen = frozen; ApplyBodyMode();
         }
         public void Initialize(string runId, ulong id, bool frozen = false)
@@ -134,6 +141,7 @@ namespace HowToSuck
         {
             if (HasPhysicsAuthority || initialized || !key.IsValid || Definition == null || Definition.CargoRole != CargoRole.BossBody)
                 throw new InvalidOperationException("Invalid replica boss cargo binding.");
+            if (boundBossKey.IsValid && !boundBossKey.Equals(key)) throw new InvalidOperationException("Replica boss identity cannot be rebound.");
             boundBossKey = key;
         }
         public void CancelFlightProvenance() { ActiveShotId = 0; ShotOwner = 0; }

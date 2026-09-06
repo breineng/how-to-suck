@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92b37f9d09d43f146a490a3d646d0d6f, type: 3}
   m_Name: SoloBuildIdentity
   m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.SoloBuildIdentity
-  Ready: 0
+  Ready: 1
   EntryRootPrefab: {fileID: 6255298743493005928, guid: 5ce68f99d1cd24e469fc522dc43a7322, type: 3}
   BuildId: hts-solo-dev-20260906-v1
-  ContentHash: c985e2e2cb49c7f796096a294e873e9398aa52173deeb2ed7d50e776f8a42acb
+  ContentHash: 4b4f3cb13060ad40a6f484ed6fc14db34e6eddb0362d4e582495a7fe012f36a2

@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b43fba5ffb9f49549b796e5083cf3c61, type: 3}
+  m_Name: Achievements
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.AchievementCatalog
+  Entries:
+  - Id: first_swallow
+    ApiName: ACH_FIRST_SWALLOW
+    Title: "\u041F\u0435\u0440\u0432\u044B\u0439 \u0433\u043B\u043E\u0442\u043E\u043A"
+    Description: "\u0421\u0434\u0430\u0442\u044C \u0433\u0440\u0443\u0437\u043E\u0432\u0438\u043A\u0443
+      \u0432\u0435\u0449\u044C, \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u0432\u044B
+      \u043F\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u043E
+      \u0445\u0440\u0430\u043D\u0438\u043B\u0438 \u0432 \u0441\u0432\u043E\u0451\u043C
+      \u043F\u044B\u043B\u0435\u0441\u043E\u0441\u0435."
+    LockedIcon: {fileID: 21300000, guid: 2958dd43712af2a4781563fbe5a4bdeb, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: f400af655d8f52a42ab43fba5f33520a, type: 3}
+  - Id: old_house
+    ApiName: ACH_OLD_HOUSE_CLEAR
+    Title: "\u0414\u043E\u043C \u0432\u0432\u0435\u0440\u0445 \u0434\u043D\u043E\u043C"
+    Description: "\u0423\u0441\u043F\u0435\u0448\u043D\u043E \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C
+      \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442 \u0434\u043E\u043C\u0430:
+      \u0441\u0434\u0430\u0442\u044C \u043A\u0432\u043E\u0442\u0443 \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: 4107cbf7b66453b4e8949952271f7890, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: 3a0a7e19d8700934eb59a51f8360d2eb, type: 3}
+  - Id: supermarket
+    ApiName: ACH_SUPERMARKET_CLEAR
+    Title: "\u0427\u0438\u0441\u0442\u044B\u0435 \u043F\u043E\u043B\u043A\u0438"
+    Description: "\u0423\u0441\u043F\u0435\u0448\u043D\u043E \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C
+      \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442 \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430:
+      \u0441\u0434\u0430\u0442\u044C \u043A\u0432\u043E\u0442\u0443 \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: 813a8db0cbb04f34b908869294b1590f, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: f703873af08412d4293875e1275c7838, type: 3}
+  - Id: warehouse
+    ApiName: ACH_WAREHOUSE_CLEAR
+    Title: "\u0413\u0435\u043D\u0435\u0440\u0430\u043B\u044C\u043D\u0430\u044F \u0443\u0431\u043E\u0440\u043A\u0430"
+    Description: "\u0423\u0441\u043F\u0435\u0448\u043D\u043E \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C
+      \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442 \u0441\u043A\u043B\u0430\u0434\u0430:
+      \u0441\u0434\u0430\u0442\u044C \u043A\u0432\u043E\u0442\u0443 \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: 42f0e9838910e594cac6e7a62d8f8646, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: 7eab0288d8f961d42a14766e68c81270, type: 3}
+  - Id: full_crew
+    ApiName: ACH_FULL_CREW
+    Title: "\u0427\u0435\u0442\u044B\u0440\u0435 \u0445\u043E\u0431\u043E\u0442\u0430"
+    Description: "\u0412\u0447\u0435\u0442\u0432\u0435\u0440\u043E\u043C \u043F\u0440\u043E\u0439\u0442\u0438
+      \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442 \u043E\u0442 \u043D\u0430\u0447\u0430\u043B\u0430
+      \u0434\u043E \u0443\u0441\u043F\u0435\u0445\u0430, \u0441\u0434\u0430\u0432
+      \u043A\u0432\u043E\u0442\u0443 \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: 2ca43702c7b4e7b429a2bb6680c3395b, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: 6aa02ae6ae2e98d4e85947dddcc4207b, type: 3}
+  - Id: mk4_run
+    ApiName: ACH_MK4_CREW
+    Title: "\u042D\u0442\u043E \u0432\u043E\u043E\u0431\u0449\u0435 \u0437\u0430\u043A\u043E\u043D\u043D\u043E?"
+    Description: "\u041F\u0440\u043E\u0439\u0442\u0438 \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442
+      \u0441 MK4 \u043E\u0442 \u043D\u0430\u0447\u0430\u043B\u0430 \u0434\u043E \u0443\u0441\u043F\u0435\u0445\u0430,
+      \u0441\u0434\u0430\u0432 \u043A\u0432\u043E\u0442\u0443 \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: 0ccb6649eb16a154ab6e407b75e137bf, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: c94e1d1bf7b565d4fa13865cd04d7408, type: 3}
+  - Id: piano_swallow
+    ApiName: ACH_PIANO_SNACK
+    Title: "\u041C\u0443\u0437\u044B\u043A\u0430\u043B\u044C\u043D\u0430\u044F \u043F\u0430\u0443\u0437\u0430"
+    Description: "\u0421\u0434\u0430\u0442\u044C \u043E\u0431\u044B\u0447\u043D\u043E\u0435
+      \u043F\u0438\u0430\u043D\u0438\u043D\u043E, \u043A\u043E\u0442\u043E\u0440\u043E\u0435
+      \u0432\u044B \u043F\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u043E
+      \u0445\u0440\u0430\u043D\u0438\u043B\u0438 \u0441 MK4."
+    LockedIcon: {fileID: 21300000, guid: 0007fec4fa0f48544a16220cc1f33436, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: b820a99a18430104db5182d38fb74419, type: 3}
+  - Id: double_quota
+    ApiName: ACH_GREED_PAID
+    Title: "\u0416\u0430\u0434\u043D\u043E\u0441\u0442\u044C \u043E\u043A\u0443\u043F\u0438\u043B\u0430\u0441\u044C"
+    Description: "\u0423\u0441\u043F\u0435\u0448\u043D\u043E \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u0442\u044C
+      \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442, \u0441\u0434\u0430\u0432
+      \u043D\u0435 \u043C\u0435\u043D\u044C\u0448\u0435 \u0434\u0432\u043E\u0439\u043D\u043E\u0439
+      \u043A\u0432\u043E\u0442\u044B \u0438 \u043F\u043E\u0431\u0435\u0436\u0434\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0431\u043E\u0441\u0441\u0430."
+    LockedIcon: {fileID: 21300000, guid: e4ecb15faacdc45488eff9cf9b4dacd8, type: 3}
+    UnlockedIcon: {fileID: 21300000, guid: e041d5233a9e6ec459d9a154ce8991b2, type: 3}

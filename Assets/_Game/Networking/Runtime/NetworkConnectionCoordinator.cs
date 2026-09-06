@@ -37,6 +37,7 @@ namespace HowToSuck.Networking
         private readonly List<ulong> expired = new List<ulong>();
         private NetworkConfiguration config;
         private SteamRuntime steam;
+        public SteamRuntime ActiveSteamRuntime => steam; // Existing lifetime owner; this accessor never initializes Steam.
         private SteamLobbyService lobby;
         private string sessionNonce;
         private bool initialized, stopping, hostApprovalRejected;

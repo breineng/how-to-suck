@@ -6,6 +6,23 @@ namespace HowToSuck
     public sealed class LevelContext : MonoBehaviour
     {
         public ContractDefinition Contract;
+        public ContractDefinition[] ContractVariants=System.Array.Empty<ContractDefinition>();
+        public EnemyEncounter[] EnemyEncounters=System.Array.Empty<EnemyEncounter>();
+        public Transform[] CargoDropPoints=System.Array.Empty<Transform>();
+        public ContractDefinition FindContractVariant(string id)
+        {
+            ContractDefinition result=null;
+            foreach(var value in ContractVariants)
+                if(value!=null&&value.ContractId==id){if(result!=null)return null;result=value;}
+            return result;
+        }
+        public EnemyEncounter FindEnemyEncounter(string id)
+        {
+            EnemyEncounter result=null;
+            foreach(var value in EnemyEncounters)
+                if(value!=null&&value.ContractId==id){if(result!=null)return null;result=value;}
+            return result;
+        }
         public TruckIntake Truck;
         public ExtractionZone ExtractionZone;
         public WorldBoundsGuard BoundsGuard;
@@ -27,21 +44,24 @@ namespace HowToSuck
 
         private bool showBootstrapHint;
 
-        public bool TryValidate(out string error)
+        public bool TryValidate(out string error)=>TryValidateContract(Contract,out error);
+        public bool TryValidateContract(ContractDefinition selected,out string error)
         {
-            if (Contract == null)
+            if(ContractVariants==null||selected==null||System.Array.IndexOf(ContractVariants,selected)<0||FindContractVariant(selected.ContractId)!=selected)
+            {error="Selected contract is not an exact authored variant of this level.";return false;}
+            if (selected == null)
             {
                 error = $"Level '{gameObject.scene.name}' is missing its contract definition.";
                 return false;
             }
 
-            if (!Contract.TryValidate(out error))
+            if (!selected.TryValidate(out error))
                 return false;
 
-            string expected = System.IO.Path.GetFileNameWithoutExtension(Contract.SceneName);
+            string expected = System.IO.Path.GetFileNameWithoutExtension(selected.SceneName);
             if (!string.Equals(gameObject.scene.name, expected, System.StringComparison.Ordinal))
             {
-                error = $"Level '{gameObject.scene.name}' references contract scene '{Contract.SceneName}'.";
+                error = $"Level '{gameObject.scene.name}' references contract scene '{selected.SceneName}'.";
                 return false;
             }
 
@@ -108,7 +128,7 @@ namespace HowToSuck
             if (!ExtractionZone.TryValidate(out error)) return false;
             try
             {
-                if (AvailableLootValue < Contract.Quota)
+                if (AvailableLootValue < selected.Quota)
                 { error = "Authored loot cannot meet this contract's quota."; return false; }
             }
             catch (System.OverflowException)

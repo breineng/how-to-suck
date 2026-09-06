@@ -20,16 +20,89 @@ namespace HowToSuck
         public SuctionForceJournal DiagnosticAppliedForces { get; } = new SuctionForceJournal();
 #endif
         public SuctionSystem(LootRegistry lootRegistry) {registry=lootRegistry ?? throw new ArgumentNullException(nameof(lootRegistry));}
-        private readonly Dictionary<Rigidbody,float> appliedBrakes=new Dictionary<Rigidbody,float>();
-        // Called once by the authority before all player and truck sources for this physics tick.
-        public void BeginStep() {appliedBrakes.Clear();}
-        private void ApplyBrake(Rigidbody body,float requested)
+        private readonly struct PendingForce
         {
-            appliedBrakes.TryGetValue(body,out float applied);
-            float total=Mathf.Min(applied+requested,body.mass*.95f/Time.fixedDeltaTime);
-            if(total>applied)body.AddForce(-body.linearVelocity*(total-applied),ForceMode.Force);
-            appliedBrakes[body]=total;
+            public readonly VacuumEmitter Source;public readonly VacuumDefinition Definition;public readonly SuckableObject Item;
+            public readonly Vector3 Force,Point;public readonly float Distance;public readonly double Stiffness;
+            public readonly int SourceId,EmitterId;
+            public PendingForce(VacuumEmitter source,SuckableObject item,Vector3 force,Vector3 point,float distance,double stiffness)
+            {Source=source;Definition=source.Definition;Item=item;Force=force;Point=point;Distance=distance;Stiffness=stiffness;SourceId=source.GetInstanceID();EmitterId=source.EmitterId;}
         }
+        private sealed class BodyBatch
+        {public Rigidbody Body;public readonly List<PendingForce> Forces=new List<PendingForce>(5);}
+        private readonly Dictionary<Rigidbody,BodyBatch> pending=new Dictionary<Rigidbody,BodyBatch>();
+        private readonly List<BodyBatch> bodies=new List<BodyBatch>();
+        private readonly Stack<BodyBatch> pool=new Stack<BodyBatch>();
+        private bool collecting;private float step;
+        // Every real force caller uses one Begin -> all player/truck Apply -> Flush transaction.
+        // Collect/TryFindSurface remain read-only and do not require a transaction.
+        public void BeginStep()=>BeginStep(Time.fixedDeltaTime);
+        public void BeginStep(float deltaTime)
+        {
+            if(collecting)throw new InvalidOperationException("Finish or cancel the previous suction force batch.");
+            if(!SuctionStabilityMath.Finite(deltaTime)||deltaTime<=0)throw new ArgumentOutOfRangeException(nameof(deltaTime));
+            collecting=true;step=deltaTime;
+        }
+        public void CancelStep()
+        {
+            foreach(var batch in bodies){batch.Forces.Clear();batch.Body=null;pool.Push(batch);}
+            bodies.Clear();pending.Clear();collecting=false;
+        }
+        private bool Live(PendingForce hit,Rigidbody body)=>body!=null&&!body.isKinematic&&hit.Source!=null&&hit.Source.isActiveAndEnabled&&
+            hit.Source.Active&&hit.Source.Definition==hit.Definition&&hit.Definition!=null&&hit.Item!=null&&
+            hit.Item.Body==body&&(hit.Item.State==SuckableState.Available||hit.Item.State==SuckableState.InFlight)&&!hit.Item.WorldFrozen&&hit.Item.RunId==registry.RunId&&
+            registry.Items.TryGetValue(hit.Item.InstanceId,out var item)&&item==hit.Item;
+        private void Queue(VacuumEmitter source,SuctionContact contact,Vector3 force,double stiffness)
+        {
+            var body=contact.Item.Body;
+            if(!pending.TryGetValue(body,out var batch)){
+                batch=pool.Count>0?pool.Pop():new BodyBatch();batch.Body=body;pending.Add(body,batch);bodies.Add(batch);
+            }
+            batch.Forces.Add(new PendingForce(source,contact.Item,force,contact.Point,contact.Distance,stiffness));
+        }
+        private void ApplyActual(PendingForce hit,Rigidbody body,Vector3 force,Vector3 point)
+        {
+            if(force.x==0f&&force.y==0f&&force.z==0f)return;
+            body.AddForceAtPosition(force,point,ForceMode.Force);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Both attraction and any COM stabilizer are actual applied vectors, with their real
+            // point and source identity. Never journal the unsolved requested force.
+            DiagnosticAppliedForces.Record(hit.EmitterId,hit.SourceId,hit.Item.InstanceId,body.GetInstanceID(),force,point,body.gameObject.activeInHierarchy);
+#endif
+        }
+        public void Flush()
+        {
+            if(!collecting)throw new InvalidOperationException("Begin the shared suction step before flushing.");
+            try{
+                // Canonical summation order makes caller order irrelevant, including opposing sources.
+                bodies.Sort((a,b)=>(a.Body!=null?a.Body.GetInstanceID():0).CompareTo(b.Body!=null?b.Body.GetInstanceID():0));
+                foreach(var batch in bodies){
+                    var body=batch.Body;if(body==null)continue;
+                    for(int i=batch.Forces.Count-1;i>=0;i--)if(!Live(batch.Forces[i],body))batch.Forces.RemoveAt(i);
+                    if(batch.Forces.Count==0)continue;
+                    batch.Forces.Sort((a,b)=>{int c=a.EmitterId.CompareTo(b.EmitterId);return c!=0?c:a.SourceId.CompareTo(b.SourceId);});
+                    float nearest=float.PositiveInfinity;double stiffness=0;var total=new SuctionStepVector(0,0,0);
+                    foreach(var hit in batch.Forces){nearest=Mathf.Min(nearest,hit.Distance);stiffness+=hit.Stiffness;total+=D(hit.Force);}
+                    body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
+                    // Far field remains the exact existing physical force, not a mass-normalized motor.
+                    if(nearest>=Mathf.Max(1f,2f*body.linearVelocity.magnitude*step)){
+                        foreach(var hit in batch.Forces)ApplyActual(hit,body,hit.Force,hit.Point);
+                        continue;
+                    }
+                    var solution=SuctionStabilityMath.Solve(body.mass,stiffness,step,nearest,D(body.linearVelocity),total);
+                    foreach(var hit in batch.Forces)ApplyActual(hit,body,hit.Force*(float)solution.AttractionGain,hit.Point);
+                    // Distribute the common stabilizer for honest source attribution. Applying at
+                    // the actual COM adds no artificial torque; the surface attraction still does.
+                    Vector3 remainder=U(solution.CorrectionForce);Vector3 correction=remainder;
+                    for(int i=0;i<batch.Forces.Count;i++){
+                        var hit=batch.Forces[i];Vector3 share=i==batch.Forces.Count-1?remainder:correction*(float)(hit.Stiffness/stiffness);
+                        remainder-=share;ApplyActual(hit,body,share,body.worldCenterOfMass);
+                    }
+                }
+            }finally{CancelStep();}
+        }
+        private static SuctionStepVector D(Vector3 value)=>new SuctionStepVector(value.x,value.y,value.z);
+        private static Vector3 U(SuctionStepVector value)=>new Vector3((float)value.X,(float)value.Y,(float)value.Z);
         private Collider[] overlap=new Collider[128];
         private readonly HashSet<Rigidbody> seen=new HashSet<Rigidbody>();
         private readonly List<SuctionContact> contacts=new List<SuctionContact>(128);
@@ -52,7 +125,7 @@ namespace HowToSuck
                 var collider=overlap[i];var body=collider.attachedRigidbody;
                 if(body==null || !seen.Add(body))continue;
                 var item=body.GetComponent<SuckableObject>();
-                if(item==null || item.InstanceId==0 || item.RunId!=registry.RunId || !registry.Items.TryGetValue(item.InstanceId,out var registered) || registered!=item || item.State!=SuckableState.Available || item.WorldFrozen)continue;
+                if(item==null || item.InstanceId==0 || item.RunId!=registry.RunId || !registry.Items.TryGetValue(item.InstanceId,out var registered) || registered!=item || (item.State!=SuckableState.Available && item.State!=SuckableState.InFlight) || item.WorldFrozen)continue;
                 if(TryFindSurface(source,item,out Vector3 point))
                     contacts.Add(new SuctionContact(item,point,Vector3.Distance(source.Position,point)));
             }
@@ -61,26 +134,21 @@ namespace HowToSuck
         }
         public void Apply(VacuumEmitter source)
         {
+            if(!collecting)throw new InvalidOperationException("Begin the shared suction step before applying sources.");
+            if(source==null)return;
             var found=Collect(source);source.LastAffectedCount=found.Count;source.LastLoad=0;
             foreach(var hit in found)
             {
-                var body=hit.Item.Body;
-                if(body==null || body.isKinematic)continue;
+                var body=hit.Item.Body;if(body==null||body.isKinematic)continue;
                 Vector3 offset=hit.Point-source.Position;float distance=offset.magnitude;
-                // Close-range physical drag prevents waiting light objects shooting past a busy mouth.
-                float brake=Mathf.Min(2f*Mathf.Sqrt(source.Definition.Power*body.mass),body.mass*.95f/Time.fixedDeltaTime);
-                if(distance<.025f){ApplyBrake(body,brake);source.LastLoad+=body.mass;continue;}
+                // Preserve the existing zero-distance drag-only branch, but solve it in the same batch.
+                if(distance<.025f){Queue(source,hit,Vector3.zero,source.Definition.Power);source.LastLoad+=body.mass;continue;}
                 float edge=Mathf.Cos(source.HalfAngle*Mathf.Deg2Rad);
                 float dot=Vector3.Dot(source.Forward,offset/distance);
                 float center=Mathf.InverseLerp(edge,1f,dot);
                 float strength=source.Definition.Power*(.3f+.7f*(1f-distance/source.Range))*(.25f+.75f*center);
-                body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
                 Vector3 force=-offset/distance*strength*Mathf.Min(1f,distance);
-                if(distance<1f)ApplyBrake(body,brake);
-                body.AddForceAtPosition(force,hit.Point,ForceMode.Force);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                DiagnosticAppliedForces.Record(source.EmitterId,source.GetInstanceID(),hit.Item.InstanceId,body.GetInstanceID(),force,hit.Point,body.gameObject.activeInHierarchy);
-#endif
+                Queue(source,hit,force,strength*Mathf.Min(1f,distance)/distance);
                 source.LastLoad+=body.mass;
             }
         }

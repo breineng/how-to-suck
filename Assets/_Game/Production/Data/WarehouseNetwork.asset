@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: WarehouseNetwork
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ContractDefinition
   ContractId: warehouse
-  DisplayName: Warehouse
+  DisplayName: "\u0421\u043A\u043B\u0430\u0434 I"
+  RequiredBossId: workshop_tangle
   RecommendedTierId: mk3
   SceneName: WarehouseNetwork
   Quota: 7000
-  TimeLimitSeconds: 660
+  TimeLimitSeconds: 900
   FailurePercent: 25

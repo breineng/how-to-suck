@@ -104,8 +104,8 @@ MonoBehaviour:
     MaxDistance: 20
     Loop: 0
   - Id: 10
-    Clip: {fileID: 0}
-    Status: 0
+    Clip: {fileID: 8300000, guid: 033c2fa50abfbf14d9cd5d8497254f96, type: 3}
+    Status: 1
     Gain: 0.6
     Bus: 3
     Priority: 180
@@ -149,8 +149,8 @@ MonoBehaviour:
     MaxDistance: 20
     Loop: 0
   - Id: 15
-    Clip: {fileID: 0}
-    Status: 0
+    Clip: {fileID: 8300000, guid: 7c4c811be9db6e146b30191d6870e05b, type: 3}
+    Status: 1
     Gain: 0.5
     Bus: 4
     Priority: 24
@@ -176,8 +176,8 @@ MonoBehaviour:
     MaxDistance: 12
     Loop: 0
   - Id: 18
-    Clip: {fileID: 0}
-    Status: 0
+    Clip: {fileID: 8300000, guid: 11d3ebfe64d025f48b3b740d1e47a85e, type: 3}
+    Status: 1
     Gain: 0.5
     Bus: 4
     Priority: 24

@@ -46,7 +46,8 @@ namespace HowToSuck
                     result.Phase == ContractPhase.Failed ? "Время истекло" : "Контракт прерван";
                 if (TitleText != null) TitleText.text = reason;
                 if (SummaryText != null)
-                    SummaryText.text = $"Собрано: ${result.CollectedMoney:N0}\nКвота: ${result.Quota:N0}\n" +
+                    SummaryText.text = $"Сдано в грузовик: ${result.DeliveredValue:N0}\nКвота: ${result.Quota:N0}\n" +
+                        (result.Boss.IsDelivered?"Босс доставлен\n":"Босс не доставлен\n") +
                         $"Коэффициент выплаты: {result.PayoutPercent}%\nВыплата: ${result.Payout:N0}\n\nБаланс: ${session.DisplayedBalance:N0}";
             }
             bool retrySave = session.HasAuthority && session.HasPendingSave;

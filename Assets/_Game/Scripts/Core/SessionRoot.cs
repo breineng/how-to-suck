@@ -43,6 +43,10 @@ namespace HowToSuck
         public bool HasAuthority => networkDriver == null || networkDriver.HasAuthority;
         public long DisplayedBalance => HasAuthority ? Campaign?.Balance ?? 0 : replica?.Balance ?? 0;
         public string DisplayedTierId => HasAuthority ? Campaign?.CurrentTierId ?? "" : replica?.CurrentTierId ?? "";
+        public int? DisplayedExtraSlots => HasAuthority ? Campaign?.PurchasedExtraSlots :
+            replica != null && replica.HasCampaignProgression && CampaignCapacityRules.ValidBonus(replica.PurchasedExtraSlots) ? (int?)replica.PurchasedExtraSlots : null;
+        public bool DisplayedContractUnlocked(string id) => HasAuthority ? Progression != null && Progression.IsContractUnlocked(id) :
+            replica != null && replica.HasCampaignProgression && CampaignContractAccess.IsUnlocked(id,CampaignContractAccess.FromMask(replica.ClearedContractMask),replica.LegacyContractAccess);
         public bool DisplayedSavePending => HasAuthority ? HasPendingSave : replica?.PendingPayout ?? false;
         public bool CanReturnToMenu => !HasAuthority || Progression != null && !Progression.HasPending;
         public bool CanStartContract => HasAuthority && Phase == SessionPhase.Lobby && Progression != null && Progression.CanStartRun && (networkDriver == null || networkDriver.CanBeginContract);
@@ -80,6 +84,7 @@ namespace HowToSuck
             Application.runInBackground = true;
             Time.timeScale = 1f;
             World.Initialize(HasAuthority);
+            GetComponent<AchievementSessionBridge>()?.Bind(this, ownCampaignDirectory);
             World.SnapshotChanged += OnWorldSnapshot;
             SceneManager.sceneLoaded += OnSceneLoaded;
             if (networkDriver != null) networkDriver.Bind(this);
@@ -117,9 +122,17 @@ namespace HowToSuck
             bool committed = Progression.PendingChange != null
                 ? Progression.RetryPending(Progression.PendingChange)
                 : Progression.PendingResult != null && Progression.TryApplyResult(Progression.PendingResult);
-            if (!committed) return Reject(Progression.PendingChange?.Kind == CampaignChangeKind.Purchase
+            if (!committed) return Reject(Progression.PendingChange?.IsPurchase == true
                 ? "Покупка пока не подтверждена. Повторите сохранение в магазине."
                 : "Не удалось сохранить кампанию: " + Progression.LastError);
+            LastError = ""; Changed?.Invoke(); return true;
+        }
+        public bool PurchaseExtraSlot(int expectedPurchasedExtraSlots)
+        {
+            if (!HasAuthority || Progression == null || Phase != SessionPhase.Lobby) return false;
+            if (!Progression.TryPurchaseExtraSlot(expectedPurchasedExtraSlots)) return Reject(Progression.HasPending
+                ? "Покупка вместимости пока не подтверждена. Повторите сохранение в магазине."
+                : "Покупка вместимости недоступна. Проверьте цену, баланс и максимум модели.");
             LastError = ""; Changed?.Invoke(); return true;
         }
         public bool PurchaseNextTier(string requestedTier)
@@ -151,13 +164,16 @@ namespace HowToSuck
                 return Reject("This location is not in the game catalog.");
             if (!contract.TryValidate(out error)) return Reject(error);
             if (!Progression.CanStartRun) return Reject("The previous contract result has not been settled.");
+            // The shipped route is gated by history, never equipment tier. Non-route engineering fixtures remain explicit fixtures.
+            if (CampaignContractAccess.IsKnown(contract.ContractId) && !Progression.IsContractUnlocked(contract.ContractId))
+                return Reject("Сначала завершите предыдущий контракт маршрута.");
             if (networkDriver != null && !networkDriver.EnterPreparing(contract.ContractId)) return Reject("Players are not ready.");
             World.Clear(); networkDriver?.ClearPlayers();
             CurrentLevel = null; LocalPlayer = null; Result = null;
             CurrentContract = contract; selectedLobbyContractId=contract.ContractId; LastError = "";
             // Reserve before asynchronous loading; exactly this run reaches controller/world/input.
             Controller.Prepare(Guid.NewGuid().ToString("N"), new ContractRules(contract.ContractId,
-                contract.Quota, contract.TimeLimitSeconds, contract.FailurePercent));
+                contract.Quota, contract.TimeLimitSeconds, contract.FailurePercent, contract.RequiredBossId));
             SetPhase(SessionPhase.Loading);
             StartCoroutine(LoadScene(contract.SceneName, true));
             return true;
@@ -223,8 +239,7 @@ namespace HowToSuck
                 CurrentLevel = FindFirstObjectByType<LevelContext>();
                 string error = null;
                 if (CurrentLevel == null) error = "Location has no LevelContext.";
-                else if (!CurrentLevel.TryValidate(out error)) { }
-                else if (CurrentLevel.Contract != CurrentContract) error = "Location definition does not match the selected contract.";
+                else if (!CurrentLevel.TryValidateContract(CurrentContract,out error)) { }
                 if (error == null)
                 {
                     if (networkDriver == null) { if (!TryPrepareGameplay(out error)) { } }
@@ -326,7 +341,7 @@ namespace HowToSuck
                 foreach (var candidate in Catalog.Vacuums)
                     if (candidate != null && candidate.TierId == Campaign.CurrentTierId) { vacuum = candidate; break; }
                 if (vacuum == null) throw new InvalidOperationException("Campaign vacuum is missing from the catalog.");
-                World.PrepareWorld(CurrentLevel, spawner, vacuum, Controller, () => driver.Now);
+                World.PrepareWorld(CurrentLevel, spawner, vacuum, Controller, () => driver.Now, Progression.EffectiveCapacity, 1);
                 var spawn = CurrentLevel.PlayerSpawns[0];
                 player = spawner.Spawn(CurrentLevel.PlayerPrefab, spawn.position, spawn.rotation);
                 if (player == null) throw new InvalidOperationException("Player spawn failed.");
@@ -359,6 +374,7 @@ namespace HowToSuck
             // The authoritative pending result already exists before this event. Freeze once, then settle once.
             World.SetRunning(false);
             if (Phase == SessionPhase.ShuttingDown) return;
+            GetComponent<AchievementSessionBridge>()?.OnAuthorityFinished(result);
             if (!Progression.TryApplyResult(result))
                 LastError = "Не удалось сохранить выплату. Результат остаётся в памяти: " + Progression.LastError;
             else LastError = "";
