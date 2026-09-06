@@ -16,6 +16,9 @@ namespace HowToSuck
   public TMP_Text MasterValue,VacuumValue,TruckValue,ImpactsValue,UIValue,SensitivityValue,FovValue,FeedbackValue;
   public Toggle InvertY;
   public Button ApplyButton,DefaultsButton,ReloadButton,ResetFileButton,ConfirmResetButton,CancelResetButton,CloseButton;
+  public GameObject AdvancedButtons;
+  public Button VideoOpenButton,BindingsOpenButton;
+  public LocalVideoView VideoScreen;public LocalBindingView BindingScreen;
   public bool IsOpen {get;private set;}
   public LocalMenuNavigation Navigation {get;private set;}
   private int page;private bool refreshing,baseInteractable,baseRaycasts,confirming;
@@ -27,6 +30,8 @@ namespace HowToSuck
    ApplyButton.onClick.AddListener(Apply);DefaultsButton.onClick.AddListener(Defaults);ReloadButton.onClick.AddListener(Reload);
    ResetFileButton.onClick.AddListener(AskReset);ConfirmResetButton.onClick.AddListener(ConfirmReset);CancelResetButton.onClick.AddListener(CancelReset);CloseButton.onClick.AddListener(Back);
    foreach(var slider in Sliders())slider.onValueChanged.AddListener(Preview);InvertY.onValueChanged.AddListener(PreviewBool);
+   if(VideoOpenButton!=null)VideoOpenButton.onClick.AddListener(OpenVideo);if(BindingsOpenButton!=null)BindingsOpenButton.onClick.AddListener(OpenBindings);
+   if(VideoScreen!=null)VideoScreen.Bind(owner.Video);if(BindingScreen!=null)BindingScreen.Bind(owner.Bindings);
    owner.Settings.Changed+=Refresh;Panel.SetActive(false);ResetConfirmation.SetActive(false);
   }
   Slider[] Sliders()=>new[]{Master,Vacuum,Truck,Impacts,UI,Sensitivity,Fov,Feedback};
@@ -51,10 +56,14 @@ namespace HowToSuck
   private void AskReset(){if(!IsOpen)return;confirming=true;Refresh();Select(CancelResetButton);}
   private void ConfirmReset(){if(!confirming)return;bool saved=Navigation.Settings.ResetDefaultsAndSave();confirming=false;Refresh();if(saved)Status.text="Сброшены только личные настройки. Кампания сохранена.";Select(CloseButton);}
   private void CancelReset(){confirming=false;Refresh();Select(ResetFileButton.gameObject.activeInHierarchy?ResetFileButton:CloseButton);}
-  private void Back()=>Close(true);
+  public void OpenVideo(){if(IsOpen&&VideoScreen!=null&&Navigation.Video!=null)SetPage(3);}
+  public void OpenBindings(){if(IsOpen&&BindingScreen!=null&&Navigation.Bindings!=null)SetPage(4);}
+  private void SetPage(int target){if(page==3&&VideoScreen!=null)VideoScreen.Close();if(page==4&&BindingScreen!=null)BindingScreen.Close();page=target;Refresh();Select(CloseButton);}
+  private void Back(){if(page>=3)SetPage(0);else Close(true);}
   public void Close(bool restoreSelection)
   {
    if(!IsOpen)return;IsOpen=false;confirming=false;
+   if(VideoScreen!=null)VideoScreen.Close();if(BindingScreen!=null)BindingScreen.Close();
    if(Navigation!=null&&Navigation.Settings!=null&&Navigation.Settings.isActiveAndEnabled)Navigation.Settings.CancelPreview();
    if(input!=null)input.SetLocalModal(this,false);input=null;
    if(BaseGroup!=null){BaseGroup.interactable=baseInteractable;BaseGroup.blocksRaycasts=baseRaycasts;}
@@ -62,13 +71,15 @@ namespace HowToSuck
    if(restoreSelection&&EventSystem.current!=null&&previousSelection!=null&&previousSelection.activeInHierarchy)EventSystem.current.SetSelectedGameObject(previousSelection);
    previousSelection=null;
   }
-  public void OnCancel(BaseEventData data){if(!IsOpen)return;if(confirming)CancelReset();else Close(true);data.Use();}
+  public void OnCancel(BaseEventData data){if(!IsOpen)return;if(confirming)CancelReset();else if(page==3&&VideoScreen!=null&&VideoScreen.CancelCurrent()){}else if(page==4&&BindingScreen!=null&&BindingScreen.CancelCurrent()){}else Back();data.Use();}
   private void Refresh()
   {
    if(!IsOpen||Navigation==null)return;refreshing=true;
    try{
-    var settings=Navigation.Settings;var d=settings.DraftCopy();Title.text=page==0?"Настройки":page==1?"Управление и справка":"Титры";
-    SettingsPanel.SetActive(page==0);InformationPanel.SetActive(page!=0);ResetConfirmation.SetActive(confirming);CloseLabel.text=page==0?"Отмена / назад":"Назад";
+    var settings=Navigation.Settings;var d=settings.DraftCopy();Title.text=page==0?"Настройки":page==1?"Управление и справка":page==2?"Титры":page==3?"Видео":"Клавиши";
+    SettingsPanel.SetActive(page==0);InformationPanel.SetActive(page==1||page==2);ResetConfirmation.SetActive(confirming);CloseLabel.text=page==0?"Отмена / назад":"Назад";
+    if(AdvancedButtons!=null)AdvancedButtons.SetActive(page==0&&Navigation.Video!=null&&Navigation.Bindings!=null);
+    if(VideoScreen!=null)VideoScreen.gameObject.SetActive(page==3);if(BindingScreen!=null)BindingScreen.gameObject.SetActive(page==4);
     if(page==1)Information.text=Navigation.ControlsText();else if(page==2)Information.text=Navigation.Credits+"\n\nВерсия "+Application.version;
     Master.SetValueWithoutNotify(d.Master);Vacuum.SetValueWithoutNotify(d.Vacuum);Truck.SetValueWithoutNotify(d.Truck);Impacts.SetValueWithoutNotify(d.Impacts);UI.SetValueWithoutNotify(d.UI);
     Sensitivity.SetValueWithoutNotify(d.MouseSensitivity);Fov.SetValueWithoutNotify(d.FieldOfView);Feedback.SetValueWithoutNotify(d.CameraFeedback);InvertY.SetIsOnWithoutNotify(d.InvertY);
@@ -93,6 +104,8 @@ namespace HowToSuck
    SettingsButton.onClick.RemoveListener(OpenSettings);HelpButton.onClick.RemoveListener(OpenHelp);CreditsButton.onClick.RemoveListener(OpenCredits);
    ApplyButton.onClick.RemoveListener(Apply);DefaultsButton.onClick.RemoveListener(Defaults);ReloadButton.onClick.RemoveListener(Reload);ResetFileButton.onClick.RemoveListener(AskReset);
    ConfirmResetButton.onClick.RemoveListener(ConfirmReset);CancelResetButton.onClick.RemoveListener(CancelReset);CloseButton.onClick.RemoveListener(Back);
+   if(VideoOpenButton!=null)VideoOpenButton.onClick.RemoveListener(OpenVideo);if(BindingsOpenButton!=null)BindingsOpenButton.onClick.RemoveListener(OpenBindings);
+   if(VideoScreen!=null)VideoScreen.Bind(null);if(BindingScreen!=null)BindingScreen.Bind(null);
    foreach(var slider in Sliders())slider.onValueChanged.RemoveListener(Preview);InvertY.onValueChanged.RemoveListener(PreviewBool);Navigation=null;
   }
   private void OnDisable()=>Close(false);

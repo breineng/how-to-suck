@@ -18,6 +18,9 @@ namespace HowToSuck
         public IngestionService Ingestion { get; private set; }
         public bool AllPlayersInExtraction { get; private set; }
         public event Action SnapshotChanged;
+        private readonly Dictionary<int, PlayerStorage> storages = new Dictionary<int, PlayerStorage>();
+        public IReadOnlyDictionary<int, PlayerStorage> Storages => new System.Collections.ObjectModel.ReadOnlyDictionary<int, PlayerStorage>(storages);
+        private int preparedStorageCapacity = 1;
 
         private readonly Dictionary<int, PlayerMotor> players = new Dictionary<int, PlayerMotor>();
         private readonly Dictionary<int, PlayerIntentBuffer> inputs = new Dictionary<int, PlayerIntentBuffer>();
@@ -45,12 +48,12 @@ namespace HowToSuck
             clock = () => Time.realtimeSinceStartupAsDouble;
             suction = new SuctionSystem(Loot);
             Ingestion = new IngestionService(Loot, suction, instance => spawner?.Despawn(instance));
-            Ingestion.Collected += OnCollected;
+            Ingestion.Delivered += OnDelivered;
         }
 
         // The prepared controller supplies the only run ID; the world never invents another ID.
         public void PrepareWorld(LevelContext level, IWorldSpawner worldSpawner, VacuumDefinition vacuum,
-            ContractController controller, Func<double> authorityClock)
+            ContractController controller, Func<double> authorityClock, int storageCapacity = 1)
         {
             if (!HasAuthority || Ingestion == null) throw new InvalidOperationException("Initialize the authority first.");
             if (controller == null || controller.State.Phase != ContractPhase.Preparing)
@@ -58,6 +61,8 @@ namespace HowToSuck
             if (IsRunning || !string.IsNullOrEmpty(RunId) || players.Count != 0)
                 throw new InvalidOperationException("Clear the previous world before preparing another run.");
             if (level == null || level.ExtractionZone == null) throw new ArgumentNullException(nameof(level));
+            if (storageCapacity < 1) throw new ArgumentOutOfRangeException(nameof(storageCapacity));
+            preparedStorageCapacity = storageCapacity;
             spawner = worldSpawner ?? throw new ArgumentNullException(nameof(worldSpawner));
             clock = authorityClock ?? throw new ArgumentNullException(nameof(authorityClock));
             contract = controller;
@@ -92,7 +97,7 @@ namespace HowToSuck
                 throw new InvalidOperationException("Only the current running contract can unfreeze the world.");
             if (IsRunning == running) return;
             IsRunning = running;
-            // Cancel owned ingestion before enumerating the remaining registry; cancellation removes entries.
+            // Cancel reservations before freezing the preserved registry instances.
             Ingestion?.SetRunning(running);
             if (!running && truck != null) truck.Stop();
             foreach (var item in Loot.Items.Values) if (item != null) item.SetWorldFrozen(!running);
@@ -115,7 +120,9 @@ namespace HowToSuck
         {
             if (!HasAuthority || motor == null || motor.PlayerId <= 0 || string.IsNullOrWhiteSpace(RunId))
                 throw new InvalidOperationException("A player needs the current prepared run before registration.");
-            players.Add(motor.PlayerId, motor);
+            if (storages.ContainsKey(motor.PlayerId)) throw new InvalidOperationException("Previous owner storage must finish this run before player ID reuse.");
+            var storage = new PlayerStorage(RunId, motor.PlayerId, preparedStorageCapacity);
+            players.Add(motor.PlayerId, motor); storages.Add(motor.PlayerId, storage);
             motor.BindContactWorld(this);
             var buffer = new PlayerIntentBuffer();
             buffer.BindRun(RunId, motor.transform.eulerAngles.y, 0);
@@ -129,11 +136,13 @@ namespace HowToSuck
             }
             var receiver = motor.GetComponent<IntakeReceiver>();
             if (receiver != null)
-            { receiver.IntakeId = motor.PlayerId; receiver.PlayerId = motor.PlayerId; receivers.Add(receiver); }
+            { receiver.IntakeId = motor.PlayerId; receiver.PlayerId = motor.PlayerId; receiver.BindStorage(storage); receivers.Add(receiver); }
         }
 
         public void RemovePlayer(int id)
         {
+            if (storages.TryGetValue(id, out var storage)) storage.Detach();
+            Ingestion?.CancelOwner(id);
             if (emitters.TryGetValue(id, out var emitter) && emitter != null) emitter.Active = false;
             if (players.TryGetValue(id, out var motor) && motor != null) motor.BindContactWorld(null);
             players.Remove(id); inputs.Remove(id); emitters.Remove(id);
@@ -169,6 +178,8 @@ namespace HowToSuck
             if (boundsGuard != null) boundsGuard.Clear();
             boundsGuard = null;
             truck = null; extraction = null; contract = null; playerVacuum = null;
+            foreach (var storage in storages.Values) storage.ClearForWorldEnd();
+            storages.Clear();
             Loot.Clear(); players.Clear(); inputs.Clear(); emitters.Clear(); receivers.Clear();
             extractionPlayers.Clear(); AllPlayersInExtraction = false; inStep = false;
         }
@@ -235,16 +246,16 @@ namespace HowToSuck
             finally { inStep = false; SnapshotChanged?.Invoke(); }
         }
 
-        private void OnCollected(CollectionRecord record)
+        private void OnDelivered(DeliveryRecord record)
         {
             if (inStep && IsRunning && contract != null && record.RunId == RunId)
-                contract.TryRecordCollection(record, stepNow);
+                contract.TryRecordDelivery(record, stepNow);
         }
 
         private void OnDestroy()
         {
             Clear();
-            if (Ingestion != null) Ingestion.Collected -= OnCollected;
+            if (Ingestion != null) Ingestion.Delivered -= OnDelivered;
             SnapshotChanged = null;
         }
     }

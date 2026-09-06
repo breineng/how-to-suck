@@ -20,6 +20,8 @@ GameObject:
   - component: {fileID: 3002695138939182505}
   - component: {fileID: 7812218909044333075}
   - component: {fileID: 8360497027748943624}
+  - component: {fileID: 5043766512590134010}
+  - component: {fileID: 1575694621810921810}
   m_Layer: 0
   m_Name: SoloEntryRoot
   m_TagString: Untagged
@@ -249,6 +251,8 @@ MonoBehaviour:
   Session: {fileID: 8780696073988365327}
   Settings: {fileID: 7812218909044333075}
   Actions: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}
+  Video: {fileID: 5043766512590134010}
+  Bindings: {fileID: 1575694621810921810}
   Credits: "How to Suck\n\n\u0421\u043E\u0437\u0434\u0430\u043D\u043E \u043D\u0430
     Unity.\n\u041C\u043E\u0434\u0435\u043B\u0438 \u0438 \u0430\u043D\u0438\u043C\u0430\u0446\u0438\u044F
     \u0441\u043E\u0437\u0434\u0430\u043D\u044B \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u043E
@@ -259,3 +263,31 @@ MonoBehaviour:
     \xB7 TextMeshPro\nNetcode for GameObjects \xB7 Unity Transport \xB7 Steamworks.NET\n\n\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438
     \u0438 \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B
     \u0438\u0437 \u043C\u0435\u043D\u044E \u0438\u0433\u0440\u044B."
+--- !u!114 &5043766512590134010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97eee77db2a38c4fb9c7235a96a21a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalVideoController
+  Settings: {fileID: 7812218909044333075}
+--- !u!114 &1575694621810921810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6255298743493005928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0960f6ee00dae694d9bf97bf4dee5897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalBindingsController
+  Settings: {fileID: 7812218909044333075}
+  Session: {fileID: 8780696073988365327}
+  Actions: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}

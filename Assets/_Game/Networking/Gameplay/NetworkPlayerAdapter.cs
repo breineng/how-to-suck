@@ -109,9 +109,9 @@ namespace HowToSuck.Networking
         public void SubmitIntent(int playerId,PlayerIntent intent)
         {
             if(!IsSpawned||!IsOwner||playerId!=Motor.PlayerId||intent.RunId!=run||!intent.IsFinite)return;
-            pending=new IntentWire{Run=new FixedString64Bytes(run),Sequence=intent.Sequence,Jump=intent.JumpPressSequence,
+            pending=new IntentWire{Run=new FixedString64Bytes(run),Sequence=intent.Sequence,Jump=intent.JumpPressSequence,Fire=intent.FirePressSequence,
                 Move=intent.Move,Yaw=intent.Yaw,Pitch=intent.Pitch,Sprint=intent.SprintHeld,Vacuum=intent.VacuumHeld,
-                Interact=intent.InteractHeld,SuppressJump=NetworkIntentCopy.JumpSuppressed(intent)};hasPending=true;
+                Interact=intent.InteractHeld,SuppressJump=NetworkIntentCopy.JumpSuppressed(intent),SuppressFire=NetworkIntentCopy.FireSuppressed(intent)};hasPending=true;
         }
         private void Update()
         {
@@ -138,9 +138,10 @@ namespace HowToSuck.Networking
             double now=game.Driver.Now;
             if(now<receiveAt)return;
             tokens=Math.Min(8,tokens+(now-receiveAt)*60);receiveAt=now;if(tokens<1)return;tokens-=1;
-            var intent=new PlayerIntent{RunId=run,Sequence=packet.Sequence,JumpPressSequence=packet.Jump,Move=packet.Move,Yaw=packet.Yaw,
+            var intent=new PlayerIntent{RunId=run,Sequence=packet.Sequence,JumpPressSequence=packet.Jump,FirePressSequence=packet.Fire,Move=packet.Move,Yaw=packet.Yaw,
                 Pitch=packet.Pitch,SprintHeld=packet.Sprint,VacuumHeld=packet.Vacuum,InteractHeld=packet.Interact};
             intent=NetworkIntentCopy.WithJumpSuppression(intent,packet.SuppressJump);
+            intent=NetworkIntentCopy.WithFireSuppression(intent,packet.SuppressFire);
             if(intent.IsFinite)game.Session.World.SubmitIntent(Motor.PlayerId,intent); // Existing run/sequence/timeout and motor clamps.
         }
         public override void OnNetworkDespawn()
@@ -150,6 +151,7 @@ namespace HowToSuck.Networking
             if(Input!=null){Input.SetGameplayAvailable(false);Input.enabled=false;}
             if(view!=null)view.Initialize(false);
             GetComponent<ToolTierIssue>()?.Release();
+            hasPending=false;pending=default;available=false; // No owner intent survives despawn.
         }
     }
 }

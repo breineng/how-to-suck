@@ -27,6 +27,21 @@ namespace HowToSuck
         private PlayerView view;
         private bool subscribed;
         public LocalSettingsData DraftCopy()=>preview?.Copy()??new LocalSettingsData();
+        public LocalSettingsData CommittedCopy()=>confirmed?.Copy()??new LocalSettingsData();
+        public bool CommitVideo(LocalVideoSettings value,out string error)
+        {
+            error=null;if(!IsInitialized||value==null||!value.Valid){error="Недопустимый видеорежим.";return false;}
+            var next=confirmed.Copy();next.Video=value.Copy();
+            if(!repository.Save(next,out error)){LastError=error;Changed?.Invoke();return false;}
+            confirmed=next;preview.Video=value.Copy();CanWrite=true;LastError="";Changed?.Invoke();return true;
+        }
+        public bool CommitBindings(LocalBindingOverride[] value,out string error)
+        {
+            error=null;if(!IsInitialized||!GameplayBindingPolicy.ValidateShape(value)){error="Недопустимые привязки управления.";return false;}
+            var next=confirmed.Copy();next.Bindings=GameplayBindingPolicy.Copy(value);
+            if(!repository.Save(next,out error)){LastError=error;Changed?.Invoke();return false;}
+            confirmed=next;preview.Bindings=GameplayBindingPolicy.Copy(value);CanWrite=true;LastError="";Changed?.Invoke();return true;
+        }
         private void Awake(){if(!IsInitialized)Initialize(Application.persistentDataPath);}
         // Explicit own-directory override permits isolated verification without touching the real player's preferences.
         public void Initialize(string ownSettingsDirectory)

@@ -15,6 +15,7 @@ namespace HowToSuck
         public bool IsRunning => phase == ContractPhase.Running;
 
         private readonly ProgressionService progression;
+        private readonly Func<BossKey, bool> bossDeliveryValidator;
         private readonly HashSet<ulong> ledger = new HashSet<ulong>();
         private readonly HashSet<int> previousRoster = new HashSet<int>();
         private readonly Dictionary<int, ExtractionPlayerState> uniqueRoster =
@@ -26,9 +27,10 @@ namespace HowToSuck
         private double startedAt, deadline, lastNow, holdStartedAt;
         private int initiatorId;
 
-        public ContractController(ProgressionService progression)
+        public ContractController(ProgressionService progression, Func<BossKey, bool> bossDeliveryValidator = null)
         {
             this.progression = progression ?? throw new ArgumentNullException(nameof(progression));
+            this.bossDeliveryValidator = bossDeliveryValidator;
             progression.Attach(this);
         }
 
@@ -85,17 +87,24 @@ namespace HowToSuck
             return ExpireIfDue(now);
         }
 
-        public bool TryRecordCollection(CollectionRecord record, double now)
+        public bool TryRecordDelivery(DeliveryRecord record, double now)
         {
             // Time wins before even examining record validity or old run metadata.
             if (!ObserveRunning(now) || ExpireIfDue(now)) return false;
-            if (record.RunId != runId || record.InstanceId == 0 ||
-                string.IsNullOrWhiteSpace(record.TypeId) || record.Value <= 0 ||
+            if (!record.IsTruck || record.IntakeId <= 0 || record.RunId != runId || record.InstanceId == 0 ||
+                string.IsNullOrWhiteSpace(record.TypeId) || !ValidDeliveryCargo(record) ||
                 ledger.Contains(record.InstanceId) || record.Value > long.MaxValue - collectedMoney)
                 return false;
             ledger.Add(record.InstanceId);
             collectedMoney += record.Value;
             return true;
+        }
+
+        private bool ValidDeliveryCargo(DeliveryRecord record)
+        {
+            if (record.CargoRole == CargoRole.OrdinaryLoot) return record.Value > 0 && !record.BossKey.IsValid;
+            if (record.CargoRole != CargoRole.BossBody || record.Value != 0 || !record.BossKey.IsValid || record.BossKey.RunId != runId || bossDeliveryValidator == null) return false;
+            return bossDeliveryValidator(record.BossKey);
         }
 
         // True when this call completes the run. Empty roster resets the hold;

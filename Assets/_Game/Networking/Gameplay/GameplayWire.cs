@@ -9,6 +9,7 @@ namespace HowToSuck.Networking
         public FixedString64Bytes Run;
         public uint Sequence;
         public uint Jump;
+        public uint Fire;
         public Vector2 Move;
         public float Yaw;
         public float Pitch;
@@ -16,11 +17,13 @@ namespace HowToSuck.Networking
         public bool Vacuum;
         public bool Interact;
         public bool SuppressJump;
+        public bool SuppressFire;
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
             s.SerializeValue(ref Run);
             s.SerializeValue(ref Sequence);
             s.SerializeValue(ref Jump);
+            s.SerializeValue(ref Fire);
             s.SerializeValue(ref Move);
             s.SerializeValue(ref Yaw);
             s.SerializeValue(ref Pitch);
@@ -28,18 +31,21 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Vacuum);
             s.SerializeValue(ref Interact);
             s.SerializeValue(ref SuppressJump);
+            s.SerializeValue(ref SuppressFire);
         }
         public bool Equals(IntentWire x) =>
             Run.Equals(x.Run) &&
             Sequence.Equals(x.Sequence) &&
             Jump.Equals(x.Jump) &&
+            Fire.Equals(x.Fire) &&
             Move.Equals(x.Move) &&
             Yaw.Equals(x.Yaw) &&
             Pitch.Equals(x.Pitch) &&
             Sprint.Equals(x.Sprint) &&
             Vacuum.Equals(x.Vacuum) &&
             Interact.Equals(x.Interact) &&
-            SuppressJump.Equals(x.SuppressJump);
+            SuppressJump.Equals(x.SuppressJump) &&
+            SuppressFire.Equals(x.SuppressFire);
     }
     public struct PlayerWire : INetworkSerializable, IEquatable<PlayerWire>
     {

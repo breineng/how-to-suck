@@ -7,6 +7,7 @@ namespace HowToSuck
         public string RunId;
         public uint Sequence;
         public uint JumpPressSequence;
+        public uint FirePressSequence;
         public Vector2 Move;
         public bool SprintHeld;
         public bool VacuumHeld;
@@ -14,6 +15,7 @@ namespace HowToSuck
         public float Yaw;
         public float Pitch;
         internal bool SuppressJump;
+        internal bool SuppressFire;
 
         public PlayerIntent Neutral()
         {
@@ -23,6 +25,7 @@ namespace HowToSuck
             intent.VacuumHeld = false;
             intent.InteractHeld = false;
             intent.SuppressJump = true;
+            intent.SuppressFire = true; // Sticky cancellation for this counter; only a fresh press may clear it.
             return intent;
         }
 

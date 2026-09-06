@@ -9,6 +9,7 @@ namespace HowToSuck
         public string TypeId;
         public string DisplayName;
         public long Value = 10;
+        public CargoRole CargoRole = CargoRole.OrdinaryLoot;
         [Min(0.001f)] public float RequiredIntakeSize = 0.12f;
         public bool CanBeSwallowedByPlayer = true;
         public bool CanBeSwallowedByTruck = true;
@@ -21,8 +22,10 @@ namespace HowToSuck
                 error = "Item type ID must be non-empty and contain no leading or trailing whitespace.";
             else if (string.IsNullOrWhiteSpace(DisplayName))
                 error = $"Item '{TypeId}' needs a display name.";
-            else if (Value <= 0)
-                error = $"Item '{TypeId}' must have a positive value.";
+            else if (CargoRole != CargoRole.OrdinaryLoot && CargoRole != CargoRole.BossBody)
+                error = "Unknown cargo role.";
+            else if (CargoRole == CargoRole.OrdinaryLoot ? Value <= 0 : Value != 0)
+                error = $"Item '{TypeId}' needs positive ordinary value or exactly zero boss-body value.";
             else if (float.IsNaN(RequiredIntakeSize) || float.IsInfinity(RequiredIntakeSize) || RequiredIntakeSize <= 0f)
                 error = $"Item '{TypeId}' needs a finite positive intake size.";
             else

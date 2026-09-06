@@ -34,7 +34,8 @@ namespace HowToSuck
         {
             if(bytes==null)return null;var value=JsonConvert.DeserializeObject<LocalSettingsData>(Utf8.GetString(bytes),JsonSettings);
             if(value==null)throw new InvalidDataException("Settings root is absent");
-            if(value.Schema>1)return value;
+            if(value.Schema>2)return value;
+            if(value.Schema==1)value.Schema=2; // Preserve scalar v1 settings; new fields keep safe defaults. First explicit save writes v2.
             if(!value.Valid)throw new InvalidDataException("Settings values are outside supported ranges");return value;
         }
         private void Archive(string source,string kind)
@@ -57,7 +58,7 @@ namespace HowToSuck
                     if(value!=null&&value.Valid)return Result(LocalSettingsOpenKind.RecoveredBackup,value,"Настройки восстановлены из резервной копии. Повреждённый файл сохранён.",true);
                     return Result(LocalSettingsOpenKind.DefaultsAfterCorruption,new LocalSettingsData(),"Повреждённые настройки сохранены отдельно. Пока применены стандартные значения.",true);
                 }
-                if(value.Schema>1)return Result(LocalSettingsOpenKind.FutureVersion,new LocalSettingsData(),"Настройки созданы в новой версии игры. Можно играть со стандартными значениями или явно сбросить только настройки.",false);
+                if(value.Schema>2)return Result(LocalSettingsOpenKind.FutureVersion,new LocalSettingsData(),"Настройки созданы в новой версии игры. Можно играть со стандартными значениями или явно сбросить только настройки.",false);
                 primaryWasValid=writable=true;return Result(LocalSettingsOpenKind.Loaded,value,null,true);
             }}catch(Exception e)when(e is IOException||e is UnauthorizedAccessException||e is System.Security.SecurityException){
                 return Result(LocalSettingsOpenKind.IoError,new LocalSettingsData(),"Не удалось прочитать личные настройки. Кампания не изменена.",false);

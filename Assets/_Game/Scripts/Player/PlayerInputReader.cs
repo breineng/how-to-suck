@@ -37,8 +37,18 @@ namespace HowToSuck
             // Closing the child screen leaves the pause menu open and requires release of its UI click.
             suppressVacuum=suppressInteract=suppressJump=true;discardLook=true;SendNeutral();ApplyActionState();
         }
+        private LocalBindingOverride[] personalBindings;
+        private bool personalBindingsConfigured;
+        public void ApplyLocalBindings(LocalBindingOverride[] values)
+        {
+            SendNeutral(); // Cancel before rebinding, including a failed adapter application.
+            personalBindings=GameplayBindingPolicy.Copy(values);personalBindingsConfigured=values!=null;
+            if(localActions!=null){localActions.Disable();LocalBindingAdapter.Apply(localActions,personalBindings);}
+            suppressVacuum=suppressInteract=suppressJump=true;discardLook=true;SendNeutral();ApplyActionState();
+        }
         private InputActionAsset localActions;
-        private InputAction move, look, sprint, jump, vacuum, interact, pause;
+        private InputAction move, look, sprint, jump, vacuum, fire, interact, pause;
+        private readonly FirePressGate fireGate = new FirePressGate();
         private IPlayerIntentSink sink;
         private int playerId;
         private bool initialized;
@@ -52,12 +62,13 @@ namespace HowToSuck
         public void Initialize(int id, IPlayerIntentSink intentSink, string runId)
         {
             if (intentSink == null) throw new ArgumentNullException(nameof(intentSink));
+            fireGate.Block();
             if (initialized) SendNeutral();
             DisposeActions();
             playerId = id;
             sink = intentSink;
             // A live reader must keep its counters across rebinding; the authority may still remember them.
-            LatestIntent = new PlayerIntent { RunId = runId, Sequence = LatestIntent.Sequence, JumpPressSequence = LatestIntent.JumpPressSequence, Yaw = transform.eulerAngles.y };
+            LatestIntent = new PlayerIntent { RunId = runId, Sequence = LatestIntent.Sequence, JumpPressSequence = LatestIntent.JumpPressSequence, FirePressSequence = LatestIntent.FirePressSequence, SuppressFire = true, Yaw = transform.eulerAngles.y };
             MenuOpen = false;
             GameplayAvailable = true;
             focused = Application.isFocused;
@@ -76,6 +87,7 @@ namespace HowToSuck
                 sprint = localActions.FindAction("Gameplay/Sprint", true);
                 jump = localActions.FindAction("Gameplay/Jump", true);
                 vacuum = localActions.FindAction("Gameplay/Vacuum", true);
+                fire = localActions.FindAction("Gameplay/Fire", true);
                 interact = localActions.FindAction("Gameplay/Interact", true);
                 pause = localActions.FindAction("Gameplay/Pause", true);
             }
@@ -87,6 +99,7 @@ namespace HowToSuck
                 return;
             }
 
+            if(personalBindingsConfigured)LocalBindingAdapter.Apply(localActions,personalBindings);
             initialized = true;
             suppressVacuum = suppressInteract = suppressJump = true;
             discardLook = true;
@@ -139,6 +152,8 @@ namespace HowToSuck
                 RunId = previous.RunId,
                 Sequence = unchecked(previous.Sequence + 1),
                 JumpPressSequence = previous.JumpPressSequence,
+                FirePressSequence = previous.FirePressSequence,
+                SuppressFire = previous.SuppressFire, // Cancellation survives later movement packets until a fresh allowed press.
                 Move = Vector2.ClampMagnitude(move.ReadValue<Vector2>(), 1f),
                 SprintHeld = sprint.IsPressed(),
                 VacuumHeld = !suppressVacuum && vacuum.IsPressed(),
@@ -148,6 +163,11 @@ namespace HowToSuck
             };
             if (!suppressJump && jump.WasPressedThisFrame())
                 intent.JumpPressSequence = unchecked(intent.JumpPressSequence + 1);
+            if (fireGate.TryPress(AnyButtonHeld(fire), fire.WasPressedThisFrame()))
+            {
+                intent.FirePressSequence = unchecked(intent.FirePressSequence + 1);
+                intent.SuppressFire = false;
+            }
             LatestIntent = intent;
             sink.SubmitIntent(playerId, intent);
         }
@@ -161,7 +181,8 @@ namespace HowToSuck
 
         private void SendNeutral()
         {
-            if (sink == null) return;
+            fireGate.Block();
+            if (sink == null) { LatestIntent = LatestIntent.Neutral(); return; }
             PlayerIntent intent = LatestIntent.Neutral();
             intent.Sequence = unchecked(intent.Sequence + 1);
             LatestIntent = intent;
@@ -179,6 +200,7 @@ namespace HowToSuck
             SetEnabled(sprint, gameplay);
             SetEnabled(jump, gameplay);
             SetEnabled(vacuum, gameplay);
+            SetEnabled(fire, gameplay);
             SetEnabled(interact, gameplay);
         }
 
@@ -198,6 +220,7 @@ namespace HowToSuck
 
         private void OnEnable()
         {
+            fireGate.Block();
             focused = Application.isFocused;
             suppressVacuum = suppressInteract = suppressJump = true;
             discardLook = true;

@@ -20,6 +20,17 @@ namespace HowToSuck
             if (HasIntent && intent.JumpPressSequence != latest.JumpPressSequence &&
                 !PlayerIntent.IsNewer(intent.JumpPressSequence, latest.JumpPressSequence)) return false;
 
+            if (HasIntent && intent.FirePressSequence != latest.FirePressSequence &&
+                (!PlayerIntent.IsNewer(intent.FirePressSequence, latest.FirePressSequence) ||
+                 unchecked(intent.FirePressSequence - latest.FirePressSequence) > unchecked(intent.Sequence - latest.Sequence))) return false;
+            // Expiry cannot depend on whether a FixedUpdate happened to call Read before this packet.
+            // Suppress only the old counter: a genuinely newer release-qualified press stays eligible.
+            if (HasIntent && now - LastAcceptedAt >= TimeoutSeconds && intent.FirePressSequence == latest.FirePressSequence)
+                intent.SuppressFire = true;
+            // A later packet cannot revive the same canceled press, even if the sender drops its neutral flag.
+            if (HasIntent && intent.FirePressSequence == latest.FirePressSequence && latest.SuppressFire)
+                intent.SuppressFire = true;
+
             intent.Move = Vector2.ClampMagnitude(intent.Move, 1f);
             intent.Yaw = Mathf.Repeat(intent.Yaw, 360f);
             intent.Pitch = Mathf.Clamp(intent.Pitch, -80f, 80f);
@@ -33,7 +44,10 @@ namespace HowToSuck
         {
             if (!HasIntent || double.IsNaN(now) || double.IsInfinity(now) ||
                 now < LastAcceptedAt || now - LastAcceptedAt >= TimeoutSeconds)
+            {
+                latest.SuppressFire = true; // A timed-out press is canceled permanently for this counter.
                 return latest.Neutral();
+            }
             return latest;
         }
 
@@ -46,8 +60,8 @@ namespace HowToSuck
 
         public void Clear(float yaw = 0f, float pitch = 0f)
         {
-            latest = new PlayerIntent { RunId = RunId, Yaw = yaw, Pitch = pitch };
-            if (!latest.IsFinite) latest = new PlayerIntent { RunId = RunId };
+            latest = new PlayerIntent { RunId = RunId, Yaw = yaw, Pitch = pitch, SuppressFire = true };
+            if (!latest.IsFinite) latest = new PlayerIntent { RunId = RunId, SuppressFire = true };
             HasIntent = false;
             LastAcceptedAt = 0;
         }
