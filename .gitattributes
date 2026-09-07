@@ -6,6 +6,8 @@
 *.unity text eol=lf
 *.prefab text eol=lf
 *.asset text eol=lf
+# Unity lighting data is binary even when other .asset files use YAML.
+**/LightingData.asset binary
 *.meta text eol=lf
 *.blend binary
 *.fbx binary

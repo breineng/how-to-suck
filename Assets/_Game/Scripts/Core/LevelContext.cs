@@ -142,7 +142,7 @@ namespace HowToSuck
             // The only scene lookup is a launch-boundary diagnostic, never service resolution.
             showBootstrapHint = FindFirstObjectByType<SessionRoot>() == null;
             if (showBootstrapHint)
-                Debug.LogWarning("How to Suck: open Assets/_Game/Scenes/Bootstrap.unity and start Play there. Gameplay scenes require the existing session root.", this);
+                Debug.LogWarning("How to Suck: open Assets/_Game/Production/Scenes/ProductBootstrap.unity and start Play there. Gameplay scenes require the existing session root.", this);
         }
 
         private void OnGUI()
@@ -152,7 +152,7 @@ namespace HowToSuck
 
             float width = Mathf.Min(640f, Screen.width - 32f);
             GUI.Box(new Rect((Screen.width - width) * 0.5f, 24f, width, 90f),
-                "How to Suck\nОткройте сцену Bootstrap и запустите игру оттуда.\nЭта комната запускается через главное меню.");
+                "How to Suck\nЗапустите игру через How to Suck → Играть в меню Unity.\nСтартовая сцена: Production/Scenes/ProductBootstrap.");
         }
     }
 }
