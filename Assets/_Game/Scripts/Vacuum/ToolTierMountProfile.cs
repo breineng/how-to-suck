@@ -37,6 +37,11 @@ namespace HowToSuck
             // This calibration is not a reach proof; the asset remains unusable until the native pose probe passes.
             Vector3 neutral=(ReferenceLeft.Wrist(0)+ReferenceRight.Wrist(0)-TargetLeft.Wrist(0)-TargetRight.Wrist(0))*.5f;
             result=new Vector3((float)baseline.X,(float)baseline.Y,(float)baseline.Z)+delta+stance.AdditionalMountAimOffset;
+            // MK2 FPS-fit candidate: same translation for physical nozzle, both tools and their grip targets.
+            // Keep the ORIGINAL displacement origin below; this must not relax the existing .6m budget.
+            if(TierId=="mk2")result+=new Vector3(.06f,-.15f,0f);
+            // MK3: one shared FPS-clearance candidate; original displacement origin remains below.
+            if(TierId=="mk3")result+=new Vector3(.08f,-.20f,0f);
             Vector3 origin=new Vector3((float)NozzleAimMountPolicy.NeutralX,(float)NozzleAimMountPolicy.NeutralY,(float)NozzleAimMountPolicy.NeutralZ)+neutral;
             return Finite(result)&&Vector3.Distance(result,origin)<=MaximumDisplacement;
         }
