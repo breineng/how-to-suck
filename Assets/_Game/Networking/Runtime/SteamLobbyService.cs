@@ -8,7 +8,8 @@ namespace HowToSuck.Networking
     {
         public readonly ulong LobbyId, HostSteamId;
         public readonly string Session;
-        public SteamLobbyCandidate(ulong lobby, ulong host, string session) { LobbyId = lobby; HostSteamId = host; Session = session; }
+        public readonly string HostName;
+        public SteamLobbyCandidate(ulong lobby, ulong host, string session, string hostName = null) { LobbyId = lobby; HostSteamId = host; Session = session; HostName = hostName; }
     }
 
     public sealed class SteamLobbyService : IDisposable
@@ -196,7 +197,10 @@ namespace HowToSuck.Networking
             if (!LobbyMetadata.TryReadAdvertisement(config, values, requireLobby, out var host, out var session)) return false;
             // Valve makes GetLobbyOwner available only to members; verify it after LobbyEnter.
             if (verifyMemberOwner && SteamMatchmaking.GetLobbyOwner(lobby).m_SteamID != host) return false;
-            candidate = new SteamLobbyCandidate(id, host, session); return true;
+            // Resolves public display data during explicit discovery/join metadata work, never from UI rendering.
+            string name=SteamFriends.GetFriendPersonaName(new CSteamID(host));
+            if(name!=null&&name.Length>48)name=name.Substring(0,48);
+            candidate = new SteamLobbyCandidate(id, host, session, name); return true;
         }
         private void OnChatUpdated(LobbyChatUpdate_t value)
         {

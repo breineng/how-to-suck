@@ -6,6 +6,7 @@ namespace HowToSuck
 {
  public sealed class LocalBindingView:MonoBehaviour
  {
+  public bool KeyOnlyLabels;
   public Button[] BindButtons;
   public TMP_Text[] BindLabels;
   public Button SaveButton,DefaultsButton,CancelCaptureButton;
@@ -24,7 +25,7 @@ namespace HowToSuck
   void Refresh()
   {
    if(controller==null)return;
-   for(int i=0;i<BindButtons.Length;i++){BindLabels[i].text=controller.Slots[i].Label+"\n"+controller.Label(i);BindButtons[i].interactable=!controller.Capturing;}
+   for(int i=0;i<BindButtons.Length;i++){BindLabels[i].text=KeyOnlyLabels?controller.Label(i):controller.Slots[i].Label+"\n"+controller.Label(i);BindButtons[i].interactable=!controller.Capturing;}
    SaveButton.interactable=DefaultsButton.interactable=!controller.Capturing;CancelCaptureButton.gameObject.SetActive(controller.WaitingForRelease);
    Message.text=string.IsNullOrEmpty(controller.LastError)?"Esc и управление меню не меняются. Выберите действие, затем клавишу. Нажмите Esc для отмены назначения.":controller.LastError;
   }
