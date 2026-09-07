@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2787562681747482625}
   - component: {fileID: 3165191204995743122}
   - component: {fileID: 1480154328440407861}
+  - component: {fileID: 5781985601584358863}
   m_Layer: 0
   m_Name: SharedSession
   m_TagString: Untagged
@@ -86,4 +87,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3951740aeb2ec4dab7d40ce1021dda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.NetworkAchievementRelay
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &5781985601584358863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6462170245740066734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90b9134a09dd6734c86fd6ca44e60fb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.NetworkAudioRelay
   ShowTopMostFoldoutHeaderGroup: 1
