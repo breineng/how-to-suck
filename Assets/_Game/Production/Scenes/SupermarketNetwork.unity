@@ -3029,6 +3029,10 @@ PrefabInstance:
       propertyPath: m_ScaleInLightmap
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 4856929971013440101, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 2d46617134bb5f849835880f106672ef, type: 2}
     - target: {fileID: 4911032610469285698, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
       propertyPath: m_ReceiveGI
       value: 1
@@ -3169,6 +3173,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Supermarket_SceneryContinuation
       objectReference: {fileID: 0}
+    - target: {fileID: 5596976508654851139, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 370282d2884305742876d399282f2712, type: 2}
     - target: {fileID: 5642599852776679026, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -3361,6 +3369,10 @@ PrefabInstance:
       propertyPath: m_ScaleInLightmap
       value: 0.04
       objectReference: {fileID: 0}
+    - target: {fileID: 7407628162818580159, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 194080014055a2645bea4dc3cdcbd77c, type: 2}
     - target: {fileID: 7650532503850547597, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -3457,6 +3469,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: 8346754714960067252, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 3a9fb0bf07b3fab4eb01e6e4fc4d99f9, type: 2}
     - target: {fileID: 8357735306964905631, guid: 5782fe128f0ada84385fa93d0fb8d99c, type: 3}
       propertyPath: m_ReceiveGI
       value: 1
