@@ -38,6 +38,7 @@ namespace HowToSuck
         private int corner,targetId;
         private readonly HashSet<int> hitPlayers=new HashSet<int>();
         private EnemyDefinition rules;
+        private readonly BossChapterAttackSequence chapterAttack = new BossChapterAttackSequence();
         private void Awake(){path=new NavMeshPath();body=GetComponent<Rigidbody>();shape=GetComponent<BoxCollider>();body.isKinematic=true;body.useGravity=false;}
         public bool TryValidate(out string error)
         {
@@ -68,7 +69,8 @@ namespace HowToSuck
             Health=MaximumHealth=rules.HealthForCrew(crewSize);body.position=Home;initialized=true;Phase=EnemyPhase.Idle;
             PhaseRevision=1;shape.enabled=true;Frozen=true;
         }
-        public void SetFrozen(bool value){if(!HasAuthority)throw new InvalidOperationException("Only authority freezes its enemy.");Frozen=value;}
+        public void SetFrozen(bool value)
+        {if(!HasAuthority)throw new InvalidOperationException("Only authority freezes its enemy.");if(value)CancelChapterAttack();Frozen=value;}
         public void ApplyReplica(EnemySnapshot value)
         {
             if(HasAuthority||!ValidSnapshot(value)||Definition==null||value.EnemyId!=Definition.EnemyId||Definition.IsBoss!=value.BossKey.IsValid)
@@ -102,7 +104,7 @@ namespace HowToSuck
             Health=Math.Max(0,Health-hit.Damage);observedAt=hit.AuthorityTime;
             if(Health==0)
             {
-                SetPhase(EnemyPhase.Defeated,hit.AuthorityTime);shape.enabled=false;projectileActive=false;
+                chapterAttack.Cancel();SetPhase(EnemyPhase.Defeated,hit.AuthorityTime);shape.enabled=false;projectileActive=false;
                 if(BossKey.IsValid)simulation.RecordBossDefeat(this,hit.AuthorityTime);
             }
             else if(!BossKey.IsValid&&(Phase==EnemyPhase.Idle||Phase==EnemyPhase.Move))SetPhase(EnemyPhase.Hit,hit.AuthorityTime);
@@ -131,14 +133,36 @@ namespace HowToSuck
             }
             if(Phase==EnemyPhase.Attack)
             {
-                if(now-phaseAt>=(sweep?rules.SweepAttackSeconds:rules.AttackSeconds)){SetPhase(EnemyPhase.Recover,now);return;}
-                if(sweep||rules.AttackKind==EnemyAttackKind.Melee)Melee(now,sweep?rules.SweepRange:rules.AttackRange,sweep?160:90);
+                if(now-phaseAt>=(sweep?rules.SweepAttackSeconds:rules.AttackSeconds)){FinishAttack(now,false);return;}
+                if(chapterAttack.IsLunge)
+                {
+                    float step=BossChapterAttackSequence.LungeStep(now-phaseAt,dt,rules.AttackSeconds);
+                    if(step>0)
+                    {
+                        if(!chapterAttack.LungeStopped&&!MoveChecked(attackDirection*BossChapterAttackSequence.LungeSpeed*step,true))
+                            chapterAttack.StopLunge(); // Keep the full authored landing after a blocked hop.
+                        Melee(now,BossChapterAttackSequence.LungeRange,BossChapterAttackSequence.LungeAngle);
+                    }
+                }
+                else if(sweep||rules.AttackKind==EnemyAttackKind.Melee)Melee(now,sweep?rules.SweepRange:rules.AttackRange,sweep?160:90);
                 else if(rules.AttackKind==EnemyAttackKind.Charge)
-                {bool moved=MoveChecked(attackDirection*rules.ChargeSpeed*dt);Melee(now,rules.AttackRange,100);if(!moved)SetPhase(EnemyPhase.Recover,now);}
+                {bool moved=MoveChecked(attackDirection*rules.ChargeSpeed*dt,chapterAttack.Active);Melee(now,rules.AttackRange,100);if(!moved)FinishAttack(now,true);}
                 return;
             }
             if(Phase==EnemyPhase.Recover||Phase==EnemyPhase.Hit)
-            {if(now-phaseAt>=(Phase==EnemyPhase.Hit?.3:rules.RecoverySeconds))SetPhase(EnemyPhase.Idle,now);return;}
+            {
+                double wait=Phase==EnemyPhase.Hit?.3:chapterAttack.PendingFollowUp?
+                    BossChapterAttackSequence.RedirectPauseSeconds:rules.RecoverySeconds;
+                if(now-phaseAt<wait)return;
+                if(Phase==EnemyPhase.Recover&&chapterAttack.TryBeginFollowUp())
+                {
+                    var follow=SelectTarget();
+                    if(follow!=null&&Horizontal(body.position,follow.transform.position)<=Math.Max(3,rules.AttackRange)&&LineClear(follow))
+                    {BeginAttack(follow,now,true);return;}
+                    chapterAttack.Cancel();
+                }
+                SetPhase(EnemyPhase.Idle,now);return;
+            }
             var target=SelectTarget();
             if(target==null)
             {
@@ -150,14 +174,30 @@ namespace HowToSuck
             float beginRange=rules.AttackKind==EnemyAttackKind.Charge?Math.Max(3,rules.AttackRange):rules.AttackRange;
             if(distance<=beginRange&&LineClear(target))
             {
-                unchecked{AttackRevision++;}if(AttackRevision==0)AttackRevision=1;
-                sweep=rules.HasSweep&&simulation.AdvancedEncounter&&AttackRevision%3==0;hitPlayers.Clear();projectileEmitted=false;
-                attackDirection=target.transform.position-body.position;attackDirection.y=0;
-                attackDirection=attackDirection.sqrMagnitude>.0001f?attackDirection.normalized:transform.forward;
-                SetPhase(EnemyPhase.Tell,now);
+                BeginAttack(target,now,false);
             }
             else {SetPhase(EnemyPhase.Move,now);Follow(target.transform.position,now,dt);}
         }
+        private void BeginAttack(PlayerMotor target,double now,bool followUp)
+        {
+            unchecked{AttackRevision++;}if(AttackRevision==0)AttackRevision=1;
+            if(!followUp)chapterAttack.BeginNormal(rules.ChapterIIPattern,simulation.AdvancedEncounter,BossKey.IsValid,AttackRevision);
+            sweep=rules.HasSweep&&simulation.AdvancedEncounter&&AttackRevision%3==0;hitPlayers.Clear();projectileEmitted=false;
+            // Lock the new direction BEFORE the full existing Tell; no homing during either charge.
+            attackDirection=target.transform.position-body.position;attackDirection.y=0;
+            attackDirection=attackDirection.sqrMagnitude>.0001f?attackDirection.normalized:transform.forward;
+            SetPhase(EnemyPhase.Tell,now);
+        }
+        private void FinishAttack(double now,bool blocked)
+        {chapterAttack.Complete(blocked);SetPhase(EnemyPhase.Recover,now);}
+        private void CancelChapterAttack()
+        {
+            bool active=chapterAttack.Active;
+            chapterAttack.Cancel();
+            if(active&&initialized&&HasAuthority&&(Phase==EnemyPhase.Tell||Phase==EnemyPhase.Attack))
+                SetPhase(EnemyPhase.Recover,observedAt);
+        }
+        private void OnDisable(){CancelChapterAttack();}
         private PlayerMotor SelectTarget()
         {
             PlayerMotor selected=null;float closest=float.PositiveInfinity;
@@ -217,7 +257,7 @@ namespace HowToSuck
             Vector3 delta=corners[corner]-body.position;delta.y=0;if(delta.sqrMagnitude<.0001f)return;
             Face(delta.normalized,dt);MoveChecked(Vector3.ClampMagnitude(delta,rules.MoveSpeed*dt));
         }
-        private bool MoveChecked(Vector3 delta)
+        private bool MoveChecked(Vector3 delta,bool stopWhenClipped=false)
         {
             if(delta.sqrMagnitude<1e-8f)return true;
             Vector3 center=body.position+body.rotation*shape.center;
@@ -232,18 +272,18 @@ namespace HowToSuck
             if(allowed<=.001f)return false;
             Vector3 next=body.position+delta/length*allowed;
             if(!NavMesh.SamplePosition(next,out var surface,.35f,NavMesh.AllAreas)||Horizontal(next,surface.position)>.05f)return false;
-            next.y=surface.position.y;body.MovePosition(next);return true;
+            next.y=surface.position.y;body.MovePosition(next);return !stopWhenClipped||allowed>=length;
         }
         private void ReturnHome(double now)
         {
             if(!simulation.TryReturnEnemyHome(this,Home))return;
-            targetId=0;corners=Array.Empty<Vector3>();projectileActive=false;SetPhase(EnemyPhase.Idle,now);
+            chapterAttack.Cancel();targetId=0;corners=Array.Empty<Vector3>();projectileActive=false;SetPhase(EnemyPhase.Idle,now);
         }
         private void Face(Vector3 direction,float dt)
         {direction.y=0;if(direction.sqrMagnitude>.0001f)body.MoveRotation(Quaternion.RotateTowards(body.rotation,Quaternion.LookRotation(direction),480*dt));}
         private void SetPhase(EnemyPhase phase,double now)
         {if(Phase==phase)return;Phase=phase;phaseAt=now;unchecked{PhaseRevision++;}if(PhaseRevision==0)PhaseRevision=1;}
         private static float Horizontal(Vector3 a,Vector3 b)=>new Vector2(a.x-b.x,a.z-b.z).magnitude;
-        private void OnDestroy(){if(rules!=null)Destroy(rules);}
+        private void OnDestroy(){chapterAttack.Cancel();if(rules!=null)Destroy(rules);}
     }
 }

@@ -29,6 +29,7 @@ MonoBehaviour:
   ProjectileLifetime: 2.5
   DefeatedCargoPrefab: {fileID: 6497371426064651264, guid: e19261e2b52f03e4e912a225d2b5a6e3, type: 3}
   HasSweep: 0
+  ChapterIIPattern: 2
   SweepRange: 3.5
   SweepTellSeconds: 1
   SweepAttackSeconds: 0.7

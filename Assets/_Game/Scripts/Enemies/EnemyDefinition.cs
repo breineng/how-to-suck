@@ -17,6 +17,7 @@ namespace HowToSuck
         public float ChargeSpeed=4.5f, ProjectileSpeed=5, ProjectileLifetime=2.5f;
         public GameObject DefeatedCargoPrefab;
         public bool HasSweep;
+        public BossChapterPattern ChapterIIPattern; // None preserves every existing definition.
         public float SweepRange=3.5f, SweepTellSeconds=1, SweepAttackSeconds=.7f;
         public bool TryValidate(out string error)
         {
@@ -25,6 +26,10 @@ namespace HowToSuck
                 Positive(MoveSpeed)&&Positive(DetectionRange)&&Positive(AttackRange)&&Positive(HomeRadius)&&
                 Positive(TellSeconds)&&Positive(AttackSeconds)&&Positive(RecoverySeconds)&&Positive(ChargeSpeed)&&
                 Positive(ProjectileSpeed)&&Positive(ProjectileLifetime)&&Positive(SweepRange)&&Positive(SweepTellSeconds)&&Positive(SweepAttackSeconds);
+            valid &= Enum.IsDefined(typeof(BossChapterPattern),ChapterIIPattern) &&
+                (ChapterIIPattern==BossChapterPattern.None || IsBoss&&!HasSweep&&
+                 (ChapterIIPattern==BossChapterPattern.AlternatingLunge&&AttackKind==EnemyAttackKind.Melee ||
+                  ChapterIIPattern==BossChapterPattern.RedirectedCharge&&AttackKind==EnemyAttackKind.Charge));
             if(IsBoss)
             {
                 var cargo=DefeatedCargoPrefab!=null?DefeatedCargoPrefab.GetComponent<SuckableObject>():null;
