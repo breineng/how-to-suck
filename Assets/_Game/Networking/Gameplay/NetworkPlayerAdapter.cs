@@ -117,7 +117,8 @@ namespace HowToSuck.Networking
                 StorageCount=stored.Count,StorageReserved=stored.Reserved,StorageCapacity=stored.Capacity,
                 StorageNextType=new FixedString64Bytes(stored.NextTypeId),StorageNextRole=(byte)stored.NextCargoRole,
                 SuitSegments=suit.State.Segments,SuitRecoveryPending=suit.State.RecoveryPending,
-                SuitInvulnerableUntil=suit.State.InvulnerableUntil,SuitObservedAt=suit.ObservedAt};
+                SuitInvulnerableUntil=suit.State.InvulnerableUntil,SuitObservedAt=suit.ObservedAt,
+                FireFeedbackSequence=Motor.FireFeedbackSequence,FireWasBlocked=Motor.FireWasBlocked};
         }
         private void Publish(){if(IsServer&&IsSpawned)Snapshot.Value=Capture();}
         private void OnSnapshot(PlayerWire old,PlayerWire value){if(!IsServer)Apply(value);}
@@ -126,6 +127,7 @@ namespace HowToSuck.Networking
             GameplayStateValidation.RequirePlayer(s,run,revision,Motor.PlayerId,tier);
             var suit=GameplayStateValidation.Suit(s);suitView.RequireAcceptable(suit);
             storageView.Apply(GameplayStateValidation.Storage(s));suitView.Apply(suit);
+            Motor.ApplyFireFeedback(s.FireFeedbackSequence,s.FireWasBlocked);
             GetComponent<VacuumEmitter>().Active=s.Vacuum&&!s.Frozen;
             Motor.ApplyReplicaPresentation(new PlayerIntent{RunId=run,Sequence=s.Sequence,JumpPressSequence=s.Jump,Move=s.Move,
                 Yaw=s.Yaw,Pitch=s.Pitch,SprintHeld=s.Sprint,VacuumHeld=s.Vacuum,InteractHeld=s.Interact},s.Grounded,s.Vertical,s.PlanarSpeed);

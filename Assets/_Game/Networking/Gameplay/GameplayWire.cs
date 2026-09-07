@@ -74,6 +74,8 @@ namespace HowToSuck.Networking
         public bool SuitRecoveryPending;
         public double SuitInvulnerableUntil;
         public double SuitObservedAt;
+        public uint FireFeedbackSequence;
+        public bool FireWasBlocked;
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
             s.SerializeValue(ref Run);
@@ -101,6 +103,8 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref SuitRecoveryPending);
             s.SerializeValue(ref SuitInvulnerableUntil);
             s.SerializeValue(ref SuitObservedAt);
+            s.SerializeValue(ref FireFeedbackSequence);
+            s.SerializeValue(ref FireWasBlocked);
         }
         public bool Equals(PlayerWire x) =>
             Run.Equals(x.Run) &&
@@ -127,7 +131,9 @@ namespace HowToSuck.Networking
             SuitSegments.Equals(x.SuitSegments) &&
             SuitRecoveryPending.Equals(x.SuitRecoveryPending) &&
             SuitInvulnerableUntil.Equals(x.SuitInvulnerableUntil) &&
-            SuitObservedAt.Equals(x.SuitObservedAt);
+            SuitObservedAt.Equals(x.SuitObservedAt) &&
+            FireFeedbackSequence.Equals(x.FireFeedbackSequence) &&
+            FireWasBlocked.Equals(x.FireWasBlocked);
     }
     public struct LootWire : INetworkSerializable, IEquatable<LootWire>
     {

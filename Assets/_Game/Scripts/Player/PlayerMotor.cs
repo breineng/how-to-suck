@@ -18,6 +18,20 @@ namespace HowToSuck
 
         // Read-only presentation invalidation; no simulation or networking decision uses it.
         public uint PresentationResetRevision { get; private set; }
+        public uint FireFeedbackSequence { get; private set; }
+        public bool FireWasBlocked { get; private set; }
+        public event System.Action FireFeedbackChanged;
+        private bool hasFireFeedback;
+        // Presentation only. The authority's accepted fire edge is replicated with this player.
+        public void ApplyFireFeedback(uint sequence, bool blocked)
+        {
+            if(hasFireFeedback && !PlayerIntent.IsNewer(sequence,FireFeedbackSequence))return;
+            hasFireFeedback=true;FireFeedbackSequence=sequence;FireWasBlocked=blocked;
+            var listeners=FireFeedbackChanged?.GetInvocationList();
+            if(listeners==null)return;
+            foreach(System.Action listener in listeners)
+                try{listener();}catch(System.Exception error){Debug.LogException(error,this);}
+        }
         public int PlayerId { get; private set; }
         public PlayerIntent LastIntent { get; private set; }
         public bool IsGrounded => HasMovementAuthority ? controller != null && controller.isGrounded : replicaGrounded;
@@ -98,6 +112,7 @@ namespace HowToSuck
         public void Initialize(int playerId)
         {
             unchecked{PresentationResetRevision++;}
+            hasFireFeedback=false;FireFeedbackSequence=0;FireWasBlocked=false;
             PlayerId = playerId;
             contactResponse = new PlayerContactResponse(ContactSettings ?? new PlayerContactSettings());
             controller = GetComponent<CharacterController>();

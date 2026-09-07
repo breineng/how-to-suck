@@ -17,6 +17,7 @@ namespace HowToSuck
         private PlayerStorageView storage;
         private PlayerSuitView suit;
         private bool subscribed;
+        private double blockedUntil;
         private static readonly Color Paper=new Color(.97f,.94f,.84f),Warning=new Color(1f,.54f,.32f),Complete=new Color(.6f,.9f,.7f);
 
         public void Bind(SessionRoot root)
@@ -31,9 +32,14 @@ namespace HowToSuck
             if(owner==player)return;
             DetachOwner();owner=player;if(owner==null)return;
             storage=owner.GetComponent<PlayerStorageView>();suit=owner.GetComponent<PlayerSuitView>();
+            owner.FireFeedbackChanged+=OnFireFeedback;
             if(storage!=null)storage.Changed+=Refresh;if(suit!=null)suit.Changed+=Refresh;
         }
         private static void Text(TMP_Text label,string value){if(label!=null&&label.text!=value)label.text=value;}
+        private void OnFireFeedback()
+        {blockedUntil=owner!=null&&owner.FireWasBlocked?Time.unscaledTimeAsDouble+2.5:0;Refresh();}
+        private void LateUpdate()
+        {if(blockedUntil>0&&Time.unscaledTimeAsDouble>=blockedUntil){blockedUntil=0;Refresh();}}
         private void Refresh()
         {
             bool playing=session!=null&&session.Phase==SessionPhase.Playing;
@@ -49,14 +55,16 @@ namespace HowToSuck
                 "Босс повержен — доставьте тело в грузовик":"Босс: победите и доставьте в грузовик");
             if(BossText!=null)BossText.color=state.Boss.IsDelivered?Complete:Paper;
             var stored=storage!=null?storage.Value:default;
+            bool blocked=owner!=null&&blockedUntil>Time.unscaledTimeAsDouble;
             string inventory="Хранилище: —";
             if(stored.IsKnown&&stored.RunId==state.RunId&&owner!=null&&stored.OwnerId==owner.PlayerId)
             {
                 inventory=$"Хранилище: {stored.Count} / {stored.Capacity}"+(stored.Reserved>0?$" · загружается: {stored.Reserved}":"");
-                inventory+="\n"+(stored.Count>0?(stored.NextCargoRole==CargoRole.BossBody?"ЛКМ — выпустить босса":"ЛКМ — выстрелить предметом"):
+                inventory+="\n"+(blocked?"Нет места перед соплом — отойдите":stored.Count>0?(stored.NextCargoRole==CargoRole.BossBody?"ЛКМ — выпустить босса":"ЛКМ — выстрелить предметом"):
                     "ПКМ — собрать предмет");
             }
             Text(StorageText,inventory);
+            if(StorageText!=null)StorageText.color=blocked?Warning:Paper;
             var protection=suit!=null?suit.Value:default;
             bool known=protection.IsKnown&&protection.State.RunId==state.RunId&&owner!=null&&protection.State.OwnerId==owner.PlayerId;
             Text(SuitText,!known?"Костюм: —":protection.State.RecoveryPending?"Возвращение к грузовику · −15 с":
@@ -72,7 +80,7 @@ namespace HowToSuck
             Text(ExtractionText,prompt);
             if(HoldFill!=null){HoldFill.transform.parent.gameObject.SetActive(state.ObjectivesComplete&&session.World.AllPlayersInExtraction);HoldFill.fillAmount=(float)state.ExtractHoldProgress;}
         }
-        private void DetachOwner(){if(storage!=null)storage.Changed-=Refresh;if(suit!=null)suit.Changed-=Refresh;owner=null;storage=null;suit=null;}
+        private void DetachOwner(){if(owner!=null)owner.FireFeedbackChanged-=OnFireFeedback;if(storage!=null)storage.Changed-=Refresh;if(suit!=null)suit.Changed-=Refresh;owner=null;storage=null;suit=null;blockedUntil=0;}
         private void Detach(){if(subscribed&&session!=null)session.Changed-=Refresh;subscribed=false;DetachOwner();}
         private void OnEnable(){Subscribe();Refresh();}
         private void OnDisable()=>Detach();

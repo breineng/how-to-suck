@@ -109,15 +109,24 @@ namespace HowToSuck
             if (!gate.Consume(intent.RunId,intent.FirePressSequence,now,intent.SuppressFire)) return false;
             if (!gameplayAllowed || !intent.IsFinite || motor==null || !motor.isActiveAndEnabled || !motor.HasMovementAuthority ||
                 motor.PlayerId!=id || !motor.NozzlePoseValid || motor.NozzleAnchor==null || source==null ||
-                !source.isActiveAndEnabled || source.Definition==null || source.Source!=motor.NozzleAnchor || !source.HasClearSourcePath() ||
+                !source.isActiveAndEnabled || source.Definition==null || source.Source!=motor.NozzleAnchor ||
                 storage==null || storage.RunId!=RunId || storage.OwnerId!=id || storage.IsDetached ||
                 !storage.TryPeek(out var key,out var first) || !Registered(first) || first.WorldFrozen || first.Body==null ||
                 !tracked.TryGetValue(first.InstanceId,out var t) || t.Item!=first) return false;
             var receiver=motor.GetComponent<IntakeReceiver>();
             if (receiver==null || receiver.IsTruck || receiver.Storage!=storage || !ItemFireRules.Finite(receiver.AdmissionRadius) || receiver.AdmissionRadius<=0 || !Finite(receiver.Position)) return false;
+            if(!source.HasClearSourcePath())
+            { LastFailure="Physical nozzle path blocked.";motor.ApplyFireFeedback(intent.FirePressSequence,true);return false; }
             float frontDistance=Mathf.Max(.025f,Vector3.Dot(receiver.Position-motor.NozzleAnchor.position,motor.NozzleAnchor.forward)+receiver.AdmissionRadius+.025f);
             if (!t.Geometry.TryLaunchPose(motor.NozzleAnchor,motor.transform,frontDistance,out var pose,out string error))
-            { LastFailure=error; return false; }
+            {
+                LastFailure=error;
+                if(error!=null&&(error.StartsWith("Endpoint blocked by ",StringComparison.Ordinal)||
+                    error.StartsWith("Launch origin envelope blocked by ",StringComparison.Ordinal)||
+                    error.StartsWith("Launch path blocked by ",StringComparison.Ordinal)))
+                    motor.ApplyFireFeedback(intent.FirePressSequence,true);
+                return false;
+            }
             if (nextShot==ulong.MaxValue) { LastFailure="Shot identity exhausted."; return false; }
             float mass=first.Body.mass;
             if (!ItemFireRules.Finite(mass) || mass<=0) { LastFailure="Invalid physical item mass."; return false; }
@@ -130,6 +139,7 @@ namespace HowToSuck
             // No callbacks intervene between checked FIFO release and this launch of the exact same Rigidbody.
             released.Body.linearVelocity=motor.NozzleAnchor.forward*ItemFireRules.LaunchSpeed;
             nextShot=flight.Shot; flights.Add(first.InstanceId,flight); gate.CommitLaunch(now); LaunchCount++;
+            motor.ApplyFireFeedback(intent.FirePressSequence,false);
             Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.ShotLaunch,
                 flight.Shot,first.InstanceId,0,id,0,false,now,0,flight.Damage,motor.NozzleAnchor.position));
             return true;
