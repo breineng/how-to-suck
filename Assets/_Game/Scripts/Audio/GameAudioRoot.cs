@@ -195,7 +195,7 @@ namespace HowToSuck.Audio
                 case CommittedAudioKind.ShotLaunch:id=SfxId.SwallowTiny;gain=.7f;break;
                 case CommittedAudioKind.EnemyHit:id=fact.Amount>=6?SfxId.ImpactHeavyA:SfxId.ImpactSmallA;gain=.65f;break;
                 case CommittedAudioKind.EnemyDefeat:id=SfxId.TruckSwallowB;gain=.65f;break;
-                case CommittedAudioKind.SuitHit:id=SfxId.UiPurchase;gain=.8f;spatial=false;break;
+                case CommittedAudioKind.SuitHit:id=SfxId.ImpactWoodA;gain=.8f;spatial=false;break;
                 case CommittedAudioKind.SuitRecovered:id=SfxId.QuotaReady;gain=.6f;spatial=false;break;
                 default:return;
             }
