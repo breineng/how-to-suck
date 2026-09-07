@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92b37f9d09d43f146a490a3d646d0d6f, type: 3}
+  m_Name: Identity
+  m_EditorClassIdentifier: HowToSuck.Networking::HowToSuck.Networking.SoloBuildIdentity
+  Ready: 1
+  EntryRootPrefab: {fileID: 1079781193533017584, guid: f50511b5b07deb94f8d7e9bfcd6a67d6, type: 3}
+  BuildId: hts-solo-dev-20260906-v1
+  ContentHash: 348267ed90c4baf91b7a7b7437bfcc774ff680ff7b4b8f45abea22d711bafe82
