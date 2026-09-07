@@ -10,6 +10,8 @@ namespace HowToSuck
         public TMP_Text NameText,IndexText,DetailsText,RecommendationText,RoleText;
         public SessionMenuView Menu;
         public ShopView Shop;
+        [Tooltip("Optional existing guest-ready action. Authored by the networking lobby without a Runtime-to-Networking dependency.")]
+        public Button ReadyNavigationButton;
         private Button[] navigationButtons;private int navigationMask=-1;
         private SessionRoot session;
         private bool wasBlocked;
@@ -17,7 +19,11 @@ namespace HowToSuck
         {
             if(session==root){Refresh();return;}
             Unbind();session=root;if(session==null)return;
-            navigationButtons=new[]{PreviousButton,NextButton,Menu!=null?Menu.StartButton:null,Menu!=null?Menu.BackButton:null,Shop!=null?Shop.OpenButton:null};navigationMask=-1;
+            var localMenu=Menu!=null?Menu.GetComponent<LocalMenuView>():GetComponentInParent<LocalMenuView>();
+            // Nine optional actions fit the bitmask. Runtime visibility still owns host/guest and modal availability.
+            navigationButtons=new[]{PreviousButton,NextButton,Menu!=null?Menu.StartButton:null,ReadyNavigationButton,
+                Menu!=null?Menu.BackButton:null,Shop!=null?Shop.OpenButton:null,
+                localMenu!=null?localMenu.SettingsButton:null,localMenu!=null?localMenu.HelpButton:null,localMenu!=null?localMenu.CreditsButton:null};navigationMask=-1;
             session.Changed+=Refresh;PreviousButton.onClick.AddListener(Previous);NextButton.onClick.AddListener(Next);Refresh();
         }
         private void Previous()=>Change(-1);
