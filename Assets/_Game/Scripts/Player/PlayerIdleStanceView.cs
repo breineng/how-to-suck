@@ -7,6 +7,8 @@ namespace HowToSuck
     public sealed class PlayerIdleStanceView : MonoBehaviour
     {
         public float Weight {get;private set;}
+        // Readable diagnostic: 0 means the optional pelvis shift had no safe leg reach.
+        public float LowerBodyOffsetFraction {get;internal set;}=1;
         private PlayerMotor motor;
         private PlayerAnimationView view;
         private VacuumEmitter emitter;

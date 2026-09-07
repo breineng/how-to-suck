@@ -7,6 +7,8 @@ namespace HowToSuck
     {
         public static void ApplyLower(PlayerAnimationView view,WorkerStanceCandidatePolicy.Frame frame,Action<Transform> save)
         {
+            var idle=view.GetComponent<PlayerIdleStanceView>();
+            if(idle!=null)idle.LowerBodyOffsetFraction=1;
             if(frame.Weight<=0)return;
             var reference=view.StopMotion.Reference;var bones=view.Body.bones;
             foreach(var bone in bones)save(bone);
@@ -14,11 +16,26 @@ namespace HowToSuck
             var lp=bones[left.Ankle].position;var lq=bones[left.Ankle].rotation;
             var rp=bones[right.Ankle].position;var rq=bones[right.Ankle].rotation;
             // The pelvis moves within the skeleton; both real feet retain their world poses.
-            view.RegripD.Pelvis.position+=view.VisualRoot.rotation*frame.PelvisRootOffset;
+            var offset=view.VisualRoot.rotation*frame.PelvisRootOffset;
+            float fraction=Mathf.Min(Reach(bones[left.Thigh],bones[left.Calf],bones[left.Ankle],offset),
+                Reach(bones[right.Thigh],bones[right.Calf],bones[right.Ankle],offset));
+            if(idle!=null)idle.LowerBodyOffsetFraction=fraction;
+            // The incoming contact pose is authoritative when its knee is already straight/folded.
+            if(fraction<=0)return;
+            view.RegripD.Pelvis.position+=offset*fraction;
             SolveLeg(bones[left.Thigh],bones[left.Calf],bones[left.Ankle],lp,lq);
             SolveLeg(bones[right.Thigh],bones[right.Calf],bones[right.Ankle],rp,rq);
             Support(view,reference,bones,"thigh_L","calf_L","foot_L","knee_support_L");
             Support(view,reference,bones,"thigh_R","calf_R","foot_R","knee_support_R");
+        }
+        private static float Reach(Transform upper,Transform lower,Transform foot,Vector3 offset)
+        {
+            var first=lower.position-upper.position;var second=foot.position-lower.position;var line=foot.position-upper.position;
+            float fraction=(float)WorkerIdleStanceReach.Limit(line.x,line.y,line.z,offset.x,offset.y,offset.z,first.magnitude,second.magnitude);
+            if(fraction<=0)return 0;
+            // Keep the authored knee side; an undefined plane is not a basis for a new bend.
+            if(Vector3.ProjectOnPlane(first,line.normalized).sqrMagnitude<1e-10f)return 0;
+            return fraction;
         }
         private static void SolveLeg(Transform upper,Transform lower,Transform foot,Vector3 goal,Quaternion rotation)
         {
