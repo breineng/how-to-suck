@@ -33,6 +33,12 @@ namespace HowToSuck
         private bool initialized,roleBound,sweep,projectileActive,projectileEmitted;
         private double phaseAt,observedAt,nextPathAt,projectileExpires;
         private Vector3 attackDirection,projectilePosition,projectileDirection,navDestination;
+        // One-frame checked facing also bounds the following kinematic translation.
+        private Quaternion movementRotation;
+        private Collider blockedCargo;
+        private Vector3 blockedCargoNormal;
+        private Rigidbody bypassCargo;
+        private float bypassSign;
         private NavMeshPath path;
         private Vector3[] corners=Array.Empty<Vector3>();
         private int corner,targetId;
@@ -117,7 +123,7 @@ namespace HowToSuck
         internal void Step(double now,float dt)
         {
             if(!HasAuthority||!initialized||Frozen||Retired||!isActiveAndEnabled||!simulation.CanApplyAt(now))return;
-            observedAt=now;
+            observedAt=now;movementRotation=body.rotation;
             if(Phase==EnemyPhase.Defeated)
             {if(now-phaseAt>=View.DefeatDuration&&simulation.CompleteDefeat(this))Retired=true;return;}
             StepProjectile(now,dt);
@@ -126,7 +132,7 @@ namespace HowToSuck
             {ReturnHome(now);return;}
             if(Phase==EnemyPhase.Tell)
             {
-                Face(attackDirection,dt);
+                if(!Face(attackDirection,dt)){FinishAttack(now,true);return;}
                 if(now-phaseAt>=(sweep?rules.SweepTellSeconds:rules.TellSeconds))
                 {SetPhase(EnemyPhase.Attack,now);if(!sweep&&rules.AttackKind==EnemyAttackKind.Spit)EmitProjectile(now);}
                 return;
@@ -255,32 +261,86 @@ namespace HowToSuck
             while(corner<corners.Length&&Horizontal(body.position,corners[corner])<.15f)corner++;
             if(corner>=corners.Length)return;
             Vector3 delta=corners[corner]-body.position;delta.y=0;if(delta.sqrMagnitude<.0001f)return;
-            Face(delta.normalized,dt);MoveChecked(Vector3.ClampMagnitude(delta,rules.MoveSpeed*dt));
+            Face(delta.normalized,dt);
+            bool moved=MoveChecked(Vector3.ClampMagnitude(delta,rules.MoveSpeed*dt));
+            if(blockedCargo==null){bypassCargo=null;return;}
+            if(moved)return; // Never add a second step after even a partially accepted move.
+            var obstacle=blockedCargo;var tangent=Vector3.Cross(Vector3.up,blockedCargoNormal).normalized;
+            if(tangent.sqrMagnitude<.5f)return;
+            if(bypassCargo!=obstacle.attachedRigidbody){bypassCargo=obstacle.attachedRigidbody;bypassSign=Vector3.Dot(tangent,delta)<0?-1:1;}
+            // Local wall-slide only while ordinary Follow is blocked. No charge/lunge steering.
+            if(!MoveChecked(tangent*(bypassSign*rules.MoveSpeed*dt)))
+                if(MoveChecked(tangent*(-bypassSign*rules.MoveSpeed*dt)))bypassSign=-bypassSign;
         }
         private bool MoveChecked(Vector3 delta,bool stopWhenClipped=false)
         {
+            blockedCargo=null;blockedCargoNormal=Vector3.zero;
             if(delta.sqrMagnitude<1e-8f)return true;
-            Vector3 center=body.position+body.rotation*shape.center;
+            Vector3 center=body.position+movementRotation*shape.center;
             Vector3 extent=Vector3.Max(Vector3.one*.01f,shape.size*.5f-Vector3.one*.02f);
             float length=delta.magnitude;float allowed=length;
-            foreach(var hit in Physics.BoxCastAll(center,extent,delta/length,body.rotation,length+.025f,
+            foreach(var hit in Physics.BoxCastAll(center,extent,delta/length,movementRotation,length+.025f,
                 LayerMask.GetMask("World","Player","Enemies"),QueryTriggerInteraction.Ignore))
             {
                 if(hit.collider==shape||hit.collider.transform.IsChildOf(transform)||hit.normal.y>.6f)continue;
                 allowed=Math.Min(allowed,Math.Max(0,hit.distance-.025f));
             }
+            // Use the full solid box for cargo: the legacy .02 shrink must not enter furniture.
+            float turnTravel=2*(shape.center.magnitude+shape.size.magnitude*.5f)*Mathf.Sin(Quaternion.Angle(body.rotation,movementRotation)*Mathf.Deg2Rad*.5f);
+            foreach(var hit in Physics.BoxCastAll(center,shape.size*.5f+Vector3.one*turnTravel,delta/length,movementRotation,length+.025f,
+                LayerMask.GetMask("Items"),QueryTriggerInteraction.Ignore))
+            {
+                if(!BlocksCargo(hit.collider))continue;
+                float clearance=Math.Max(0,hit.distance-.025f);
+                if(clearance<allowed){allowed=clearance;blockedCargo=hit.collider;blockedCargoNormal=hit.normal;}
+            }
             if(allowed<=.001f)return false;
             Vector3 next=body.position+delta/length*allowed;
             if(!NavMesh.SamplePosition(next,out var surface,.35f,NavMesh.AllAreas)||Horizontal(next,surface.position)>.05f)return false;
-            next.y=surface.position.y;body.MovePosition(next);return !stopWhenClipped||allowed>=length;
+            next.y=surface.position.y;
+            if(!CargoPoseClear(next,movementRotation))return false;
+            body.MovePosition(next);return !stopWhenClipped||allowed>=length;
         }
         private void ReturnHome(double now)
         {
             if(!simulation.TryReturnEnemyHome(this,Home))return;
             chapterAttack.Cancel();targetId=0;corners=Array.Empty<Vector3>();projectileActive=false;SetPhase(EnemyPhase.Idle,now);
         }
-        private void Face(Vector3 direction,float dt)
-        {direction.y=0;if(direction.sqrMagnitude>.0001f)body.MoveRotation(Quaternion.RotateTowards(body.rotation,Quaternion.LookRotation(direction),480*dt));}
+        private bool Face(Vector3 direction,float dt)
+        {
+            direction.y=0;if(direction.sqrMagnitude<=.0001f)return true;
+            var next=Quaternion.RotateTowards(body.rotation,Quaternion.LookRotation(direction),480*dt);
+            // A correctly oriented body needs no swept rotation clearance.
+            if(Quaternion.Angle(body.rotation,next)<=.001f)return true;
+            // Every rotating point stays within this conservative envelope around its old pose.
+            float radius=shape.center.magnitude+shape.size.magnitude*.5f;
+            float travel=2*radius*Mathf.Sin(Quaternion.Angle(body.rotation,next)*Mathf.Deg2Rad*.5f);
+            var center=body.position+body.rotation*shape.center;
+            foreach(var c in Physics.OverlapBox(center,shape.size*.5f+Vector3.one*(travel+.025f),body.rotation,
+                LayerMask.GetMask("Items"),QueryTriggerInteraction.Ignore))if(BlocksCargo(c))return false;
+            movementRotation=next;body.MoveRotation(next);return true;
+        }
+        private bool BlocksCargo(Collider c)
+        {
+            if(c==null||c.isTrigger||c.transform.IsChildOf(transform)||c.attachedRigidbody==null)return false;
+            var item=c.attachedRigidbody.GetComponent<SuckableObject>();
+            // Existing masses, no new kg threshold. Airborne shots keep their real damage contact.
+            return item!=null&&item.RunId==RunId&&item.State==SuckableState.Available&&
+                c.attachedRigidbody.mass>body.mass;
+        }
+        private bool CargoPoseClear(Vector3 position,Quaternion rotation)
+        {
+            foreach(var c in Physics.OverlapBox(position+rotation*shape.center,shape.size*.5f+Vector3.one*.025f,rotation,
+                LayerMask.GetMask("Items"),QueryTriggerInteraction.Ignore))
+            {
+                if(!BlocksCargo(c)||!Physics.ComputePenetration(shape,position,rotation,c,c.transform.position,c.transform.rotation,out var normal,out float depth))continue;
+                // Permit an existing overlap to get strictly shallower; never push farther into it.
+                bool existing=Physics.ComputePenetration(shape,body.position,body.rotation,c,c.transform.position,c.transform.rotation,out _,out float oldDepth);
+                if(existing&&depth<oldDepth)continue;
+                blockedCargo=c;blockedCargoNormal=normal;return false;
+            }
+            return true;
+        }
         private void SetPhase(EnemyPhase phase,double now)
         {if(Phase==phase)return;Phase=phase;phaseAt=now;unchecked{PhaseRevision++;}if(PhaseRevision==0)PhaseRevision=1;}
         private static float Horizontal(Vector3 a,Vector3 b)=>new Vector2(a.x-b.x,a.z-b.z).magnitude;
