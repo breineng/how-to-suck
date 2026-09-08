@@ -93,9 +93,9 @@ namespace HowToSuck
             if(StorageText!=null)StorageText.color=blocked?Warning:Paper;
             var protection=suit!=null?suit.Value:default;
             bool known=protection.IsKnown&&protection.State.RunId==state.RunId&&owner!=null&&protection.State.OwnerId==owner.PlayerId;
-            Text(SuitText,!known?"Костюм: —":protection.State.RecoveryPending?"Возвращение к грузовику · −15 с":
-                $"Костюм: {protection.State.Segments} / 3"+(protection.InvulnerableAtObservation?" · защита":""));
-            if(SuitText!=null)SuitText.color=known&&protection.State.Segments<=1?Warning:Paper;
+            Text(SuitText,!known?"Костюм: —":protection.State.RecoveryPending?"Вы выведены из строя — требуется подъём":
+                $"Костюм: {protection.State.Segments}%"+(protection.InvulnerableAtObservation?" · защита":""));
+            if(SuitText!=null)SuitText.color=known&&protection.State.Segments<=25?Warning:Paper;
             bool atTruck=owner!=null&&session.World.IsPlayerInExtraction(owner.PlayerId);
             if(ExtractionPanel!=null)ExtractionPanel.SetActive(atTruck);
             if(!atTruck)return;

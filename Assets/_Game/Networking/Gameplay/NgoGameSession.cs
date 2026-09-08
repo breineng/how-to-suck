@@ -107,18 +107,11 @@ namespace HowToSuck.Networking
             if(observedLevel==null)return false;
             var variant=observedLevel.FindContractVariant(state.Contract.ToString());
             var encounter=observedLevel.FindEnemyEncounter(state.Contract.ToString());
-            if(variant==null||!observedLevel.TryValidateContract(variant,out _)||encounter==null||encounter.Spawns==null||enemies.Count!=encounter.Spawns.Length)return false;
-            var enemyIds=new HashSet<ulong>();int bosses=0;
-            foreach(var enemy in enemies.Values)
-            {
-                if(enemy==null||!enemy.IsSpawned||!HasAuthority&&!enemy.HasAcceptedCurrentSnapshot)return false;
-                var e=enemy.Snapshot.Value;
-                if(!enemy.IsSpawned||!e.Run.Equals(state.Run)||e.Revision!=state.Revision||!e.Frozen||e.Phase!=(byte)EnemyPhase.Idle||
-                    !enemyIds.Add(e.InstanceId)||enemy.Actor.HasAuthority!=HasAuthority||enemy.Actor.Health!=enemy.Actor.MaximumHealth)return false;
-                if(e.BossInstanceId!=0)
-                {bosses++;if(e.BossInstanceId!=state.BossInstance||!e.BossRun.Equals(state.BossRun)||!e.BossType.Equals(state.BossId))return false;}
-            }
-            if(bosses!=1||state.BossStatus!=(byte)BossObjectiveStatus.Active)return false;
+            if(variant==null||!observedLevel.TryValidateContract(variant,out _)||encounter==null||encounter.Spawns==null)return false;
+            // Encounters are dormant at preparation. Waiting for the old pre-spawned roster would deadlock
+            // both Solo and co-op before anyone can disturb a prop or deliver the boss quota threshold.
+            if(enemies.Count!=0||state.BossStatus!=(byte)BossObjectiveStatus.Unassigned||
+                state.BossInstance!=0||state.BossRun.Length!=0||state.BossId.Length!=0)return false;
             var ids=new HashSet<int>();var lootIds=new HashSet<ulong>();
             foreach(var player in players.Values)
             {

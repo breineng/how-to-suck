@@ -48,20 +48,21 @@ namespace HowToSuck
                 CapacityMessageText.text="Покупки совершает хозяин кампании.";
             }else{
                 CampaignCapacityRules.TryModel(currentModel.TierId,out int basis,out int max);
-                CapacityText.text=$"Слоты: {current} / {max} · база {basis}, общий бонус +{bonus}";
-                CapacityPriceText.text=next>current?$"Слот: {current} → {next} · ${price:N0}":$"Максимум этой модели: {max} слотов";
+                CapacityText.text=$"{current} / {max} СЛОТОВ";
+                CapacityPriceText.text=next>current?$"+1 СЛОТ  /  ${price:N0}":$"МАКСИМУМ: {max} СЛОТОВ";
+                if(CapacityIcons!=null)for(int i=0;i<CapacityIcons.Length;i++)if(CapacityIcons[i]!=null){CapacityIcons[i].gameObject.SetActive(i<max);CapacityIcons[i].color=i<current?new Color(.1f,.1f,.1f,1):new Color(.1f,.1f,.1f,.2f);}
                 if(nextModel!=null) {
                     int future=CampaignCapacityRules.Effective(nextModel.TierId,bonus);
                     CampaignCapacityRules.TryModel(nextModel.TierId,out _,out int futureMax);
-                    StatsText.text+=$"\nСлоты при покупке модели: {current} → {future} / {futureMax}";
-                }
+                    if(NextCapacity!=null)NextCapacity.text=$"СЛОТЫ  {future} / {futureMax}";
+                }else if(NextCapacity!=null)NextCapacity.text="Последняя модель";
                 switch(offer.Kind){
                     case ShopOfferKind.ReadOnly:CapacityMessageText.text="Общий бонус сохраняется при смене модели. Покупает хост.";break;
                     case ShopOfferKind.Insufficient:CapacityMessageText.text=$"Для слота не хватает ${offer.MissingFunds:N0}.";break;
                     case ShopOfferKind.MaximumTier:CapacityMessageText.text="Бонус сохранён. Следующая модель покупается отдельно.";break;
                     case ShopOfferKind.PendingPurchase:case ShopOfferKind.PendingResult:case ShopOfferKind.Saving:
                         CapacityMessageText.text="Показана подтверждённая вместимость. Сначала завершите сохранение.";break;
-                    default:CapacityMessageText.text="Слот и модель — отдельные покупки. Заполнять максимум перед сменой модели не нужно.";break;
+                    default:CapacityMessageText.text="Бонусные слоты сохраняются при смене модели.";break;
                 }
             }
             var buttons=new List<Button>();foreach(var b in new[]{BuyButton,CapacityBuyButton,RetryButton,CloseButton})if(b!=null&&b.gameObject.activeInHierarchy&&b.IsInteractable())buttons.Add(b);

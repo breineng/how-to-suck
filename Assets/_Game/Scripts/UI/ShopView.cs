@@ -10,6 +10,9 @@ namespace HowToSuck
         public GameObject Panel;
         public Button OpenButton,BuyButton,RetryButton,CloseButton;
         public TMP_Text CampaignText,BalanceText,CurrentText,NextText,StatsText,PriceText,MessageText;
+        public Image CurrentPreview,NextPreview,CurrentPowerFill,NextPowerFill,CurrentSizeFill,NextSizeFill;
+        public TMP_Text CurrentStats,NextCapacity;
+        public Image[] CapacityIcons;
         private SessionRoot session;
         private bool opened,working;
         private string notice;
@@ -94,10 +97,18 @@ namespace HowToSuck
             var offer=Offer(current,next);
             CampaignText.text=session.HasAuthority?"Ваша кампания · общее оборудование":"Кампания хоста · общее оборудование";
             BalanceText.text=$"Баланс: ${session.DisplayedBalance:N0}";
-            CurrentText.text="Сейчас: "+current.DisplayName;
-            NextText.text=next!=null?"Следующий уровень: "+next.DisplayName:"Максимальный уровень";
+            CurrentText.text=current.DisplayName;
+            NextText.text=next!=null?next.DisplayName:"МАКСИМУМ";
             var shown=next!=null?next:current;
-            StatsText.text=$"Мощность: {shown.Power:N0}\nРазмер приёмника: {shown.IntakeSize:0.##}";
+            if(CurrentPreview!=null){CurrentPreview.sprite=current.Preview;CurrentPreview.enabled=current.Preview!=null;}
+            if(NextPreview!=null){NextPreview.sprite=shown.Preview;NextPreview.enabled=shown.Preview!=null;}
+            float maxPower=1,maxSize=1;foreach(var definition in session.Catalog.Vacuums){maxPower=Mathf.Max(maxPower,definition.Power);maxSize=Mathf.Max(maxSize,definition.IntakeSize);}
+            if(CurrentStats!=null)CurrentStats.text=$"<line-height=66px>МОЩНОСТЬ  {current.Power:N0}\nПРИЁМНИК  {current.IntakeSize:0.##} м";
+            if(CurrentPowerFill!=null)CurrentPowerFill.fillAmount=Mathf.Clamp01(current.Power/maxPower);
+            if(NextPowerFill!=null)NextPowerFill.fillAmount=Mathf.Clamp01(shown.Power/maxPower);
+            if(CurrentSizeFill!=null)CurrentSizeFill.fillAmount=Mathf.Clamp01(current.IntakeSize/maxSize);
+            if(NextSizeFill!=null)NextSizeFill.fillAmount=Mathf.Clamp01(shown.IntakeSize/maxSize);
+            StatsText.text=$"<line-height=66px>МОЩНОСТЬ  {shown.Power:N0}\nПРИЁМНИК  {shown.IntakeSize:0.##} м";
             PriceText.text=next!=null?$"Модель: ${next.Price:N0}":"Последняя модель уже приобретена";
             bool retryVisible=offer.CanRetry||offer.Kind==ShopOfferKind.Saving;
             bool actionWasSelected=EventSystem.current!=null&&(EventSystem.current.currentSelectedGameObject==BuyButton.gameObject||EventSystem.current.currentSelectedGameObject==RetryButton.gameObject);

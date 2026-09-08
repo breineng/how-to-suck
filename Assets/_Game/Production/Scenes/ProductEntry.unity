@@ -482,6 +482,7 @@ GameObject:
   - component: {fileID: 24487847}
   - component: {fileID: 24487852}
   - component: {fileID: 24487851}
+  - component: {fileID: 24487853}
   m_Layer: 0
   m_Name: Coop
   m_TagString: Untagged
@@ -618,6 +619,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ConcreteButtonAccent
   Accent: {fileID: 1507587621}
+--- !u!114 &24487853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24487846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &28446271
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,6 +782,7 @@ GameObject:
   - component: {fileID: 30728970}
   - component: {fileID: 30728969}
   - component: {fileID: 30728973}
+  - component: {fileID: 30728974}
   m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
@@ -912,6 +926,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 31
+--- !u!114 &30728974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30728967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &41422541
 GameObject:
   m_ObjectHideFlags: 0
@@ -1684,6 +1710,7 @@ GameObject:
   - component: {fileID: 106104589}
   - component: {fileID: 106104591}
   - component: {fileID: 106104590}
+  - component: {fileID: 106104592}
   m_Layer: 0
   m_Name: Truck
   m_TagString: Untagged
@@ -1777,6 +1804,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &106104592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106104588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &106500113
 GameObject:
   m_ObjectHideFlags: 0
@@ -1791,6 +1830,7 @@ GameObject:
   - component: {fileID: 106500116}
   - component: {fileID: 106500115}
   - component: {fileID: 106500119}
+  - component: {fileID: 106500120}
   m_Layer: 0
   m_Name: Invitation
   m_TagString: Untagged
@@ -1934,6 +1974,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 30
+--- !u!114 &106500120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106500113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &108833669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2239,6 +2291,7 @@ GameObject:
   - component: {fileID: 140293620}
   - component: {fileID: 140293617}
   - component: {fileID: 140293621}
+  - component: {fileID: 140293622}
   m_Layer: 0
   m_Name: Confirm
   m_TagString: Untagged
@@ -2382,6 +2435,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &140293622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140293615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &141513398
 GameObject:
   m_ObjectHideFlags: 0
@@ -2758,6 +2823,7 @@ GameObject:
   - component: {fileID: 169846793}
   - component: {fileID: 169846790}
   - component: {fileID: 169846794}
+  - component: {fileID: 169846795}
   m_Layer: 0
   m_Name: SaveBindings
   m_TagString: Untagged
@@ -2901,6 +2967,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 21
+--- !u!114 &169846795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169846788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &185102604
 GameObject:
   m_ObjectHideFlags: 0
@@ -2915,6 +2993,7 @@ GameObject:
   - component: {fileID: 185102609}
   - component: {fileID: 185102606}
   - component: {fileID: 185102610}
+  - component: {fileID: 185102611}
   m_Layer: 0
   m_Name: Binding8
   m_TagString: Untagged
@@ -3058,6 +3137,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &185102611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185102604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &188121506
 GameObject:
   m_ObjectHideFlags: 0
@@ -3072,6 +3163,7 @@ GameObject:
   - component: {fileID: 188121509}
   - component: {fileID: 188121508}
   - component: {fileID: 188121512}
+  - component: {fileID: 188121513}
   m_Layer: 0
   m_Name: Next0
   m_TagString: Untagged
@@ -3215,6 +3307,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &188121513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188121506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &188199968
 GameObject:
   m_ObjectHideFlags: 0
@@ -3477,6 +3581,7 @@ GameObject:
   - component: {fileID: 225182760}
   - component: {fileID: 225182759}
   - component: {fileID: 225182763}
+  - component: {fileID: 225182764}
   m_Layer: 0
   m_Name: Tab0
   m_TagString: Untagged
@@ -3621,6 +3726,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 32
+--- !u!114 &225182764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225182757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &242229577
 GameObject:
   m_ObjectHideFlags: 0
@@ -4178,6 +4295,7 @@ GameObject:
   - component: {fileID: 277927192}
   - component: {fileID: 277927191}
   - component: {fileID: 277927195}
+  - component: {fileID: 277927196}
   m_Layer: 0
   m_Name: Previous3
   m_TagString: Untagged
@@ -4321,143 +4439,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
---- !u!1 &278631964
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 278631965}
-  - component: {fileID: 278631966}
-  - component: {fileID: 278631967}
-  m_Layer: 0
-  m_Name: Text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &278631965
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278631964}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1121899454}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 625, y: 1500}
-  m_Pivot: {x: 0, y: 1}
---- !u!222 &278631966
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278631964}
-  m_CullTransparentMesh: 1
---- !u!114 &278631967
+--- !u!114 &277927196
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278631964}
+  m_GameObject: {fileID: 277927189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: 
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_sharedMaterial: {fileID: -5136365414828865339, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 0.025, g: 0.025, b: 0.024, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 27
-  m_fontSizeBase: 27
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 0
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &289487234
 GameObject:
   m_ObjectHideFlags: 0
@@ -4720,6 +4713,7 @@ GameObject:
   - component: {fileID: 307466989}
   - component: {fileID: 307466988}
   - component: {fileID: 307466992}
+  - component: {fileID: 307466993}
   m_Layer: 0
   m_Name: Next3
   m_TagString: Untagged
@@ -4863,6 +4857,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &307466993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307466986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &316100128
 GameObject:
   m_ObjectHideFlags: 0
@@ -5103,6 +5109,7 @@ GameObject:
   - component: {fileID: 340160875}
   - component: {fileID: 340160880}
   - component: {fileID: 340160879}
+  - component: {fileID: 340160881}
   m_Layer: 0
   m_Name: Quit
   m_TagString: Untagged
@@ -5239,6 +5246,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ConcreteButtonAccent
   Accent: {fileID: 1046065945}
+--- !u!114 &340160881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340160874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &349157109
 GameObject:
   m_ObjectHideFlags: 0
@@ -5557,6 +5576,7 @@ GameObject:
   - component: {fileID: 360020644}
   - component: {fileID: 360020643}
   - component: {fileID: 360020647}
+  - component: {fileID: 360020648}
   m_Layer: 0
   m_Name: Refresh
   m_TagString: Untagged
@@ -5700,6 +5720,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 32
+--- !u!114 &360020648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360020641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &373556026
 GameObject:
   m_ObjectHideFlags: 0
@@ -6925,6 +6957,7 @@ GameObject:
   - component: {fileID: 454836874}
   - component: {fileID: 454836873}
   - component: {fileID: 454836877}
+  - component: {fileID: 454836878}
   m_Layer: 0
   m_Name: Keep
   m_TagString: Untagged
@@ -7068,6 +7101,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 30
+--- !u!114 &454836878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454836871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!114 &455124410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7233,6 +7278,7 @@ GameObject:
   - component: {fileID: 492782302}
   - component: {fileID: 492782301}
   - component: {fileID: 492782305}
+  - component: {fileID: 492782306}
   m_Layer: 0
   m_Name: Next2
   m_TagString: Untagged
@@ -7376,6 +7422,171 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &492782306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492782299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
+--- !u!1 &505877061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 505877062}
+  - component: {fileID: 505877066}
+  - component: {fileID: 505877065}
+  - component: {fileID: 505877064}
+  - component: {fileID: 505877063}
+  - component: {fileID: 505877067}
+  m_Layer: 0
+  m_Name: KeysScrollbar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &505877062
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 667887259}
+  m_Father: {fileID: 1258617775}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 18, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
+--- !u!114 &505877063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
+--- !u!114 &505877064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Scrollbar
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 0.82, g: 0.025, b: 0.03, a: 1}
+    m_HighlightedColor: {r: 0.94, g: 0.045, b: 0.05, a: 1}
+    m_PressedColor: {r: 0.65, g: 0.018, b: 0.025, a: 1}
+    m_SelectedColor: {r: 0.94, g: 0.045, b: 0.05, a: 1}
+    m_DisabledColor: {r: 0.38, g: 0.37, b: 0.35, a: 0.5}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.08
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 919846368}
+  m_HandleRect: {fileID: 919846367}
+  m_Direction: 2
+  m_Value: 1
+  m_Size: 0.46258503
+  m_NumberOfSteps: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &505877065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.38, g: 0.37, b: 0.35, a: 0.26}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &505877066
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_CullTransparentMesh: 1
+--- !u!114 &505877067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505877061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3c72ff7396c824599d3531735f4d0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalMenuCancel
+  Menu: {fileID: 1372621305}
 --- !u!1 &507321747
 GameObject:
   m_ObjectHideFlags: 0
@@ -7678,141 +7889,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 520792351}
   m_CullTransparentMesh: 1
---- !u!1 &522677379
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 522677384}
-  - component: {fileID: 522677383}
-  - component: {fileID: 522677381}
-  - component: {fileID: 522677380}
-  - component: {fileID: 522677382}
-  m_Layer: 0
-  m_Name: CreditsOpen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &522677380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522677379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.92, g: 0.92, b: 0.9, a: 1}
-    m_PressedColor: {r: 0.78, g: 0.78, b: 0.75, a: 1}
-    m_SelectedColor: {r: 0.92, g: 0.92, b: 0.9, a: 1}
-    m_DisabledColor: {r: 0.65, g: 0.65, b: 0.65, a: 0.5}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 522677381}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &522677381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522677379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &522677382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522677379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e3c72ff7396c824599d3531735f4d0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalMenuCancel
-  Menu: {fileID: 1372621305}
---- !u!222 &522677383
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522677379}
-  m_CullTransparentMesh: 1
---- !u!224 &522677384
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522677379}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1230430397}
-  m_Father: {fileID: 1129764324}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 262, y: -987}
-  m_SizeDelta: {x: 155, y: 38}
-  m_Pivot: {x: 0, y: 1}
 --- !u!1 &523610646
 GameObject:
   m_ObjectHideFlags: 0
@@ -8809,6 +8885,7 @@ GameObject:
   - component: {fileID: 613152729}
   - component: {fileID: 613152728}
   - component: {fileID: 613152732}
+  - component: {fileID: 613152733}
   m_Layer: 0
   m_Name: Previous0
   m_TagString: Untagged
@@ -8952,6 +9029,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &613152733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613152726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &618502521
 GameObject:
   m_ObjectHideFlags: 0
@@ -9700,6 +9789,7 @@ GameObject:
   - component: {fileID: 662414428}
   - component: {fileID: 662414425}
   - component: {fileID: 662414429}
+  - component: {fileID: 662414430}
   m_Layer: 0
   m_Name: Defaults
   m_TagString: Untagged
@@ -9843,6 +9933,54 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 25
+--- !u!114 &662414430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662414423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
+--- !u!1 &667887258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 667887259}
+  m_Layer: 0
+  m_Name: SlidingArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &667887259
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667887258}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 919846367}
+  m_Father: {fileID: 505877062}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -4, y: -4}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &669099328
 GameObject:
   m_ObjectHideFlags: 0
@@ -10818,6 +10956,7 @@ GameObject:
   - component: {fileID: 707303060}
   - component: {fileID: 707303057}
   - component: {fileID: 707303061}
+  - component: {fileID: 707303062}
   m_Layer: 0
   m_Name: BindingsOpen
   m_TagString: Untagged
@@ -10961,6 +11100,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 21
+--- !u!114 &707303062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707303055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &712759459
 GameObject:
   m_ObjectHideFlags: 0
@@ -12181,6 +12332,7 @@ GameObject:
   - component: {fileID: 766957484}
   - component: {fileID: 766957486}
   - component: {fileID: 766957485}
+  - component: {fileID: 766957487}
   m_Layer: 0
   m_Name: Impacts
   m_TagString: Untagged
@@ -12274,6 +12426,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &766957487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766957483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &769658527
 GameObject:
   m_ObjectHideFlags: 0
@@ -13590,6 +13754,7 @@ GameObject:
   - component: {fileID: 895003433}
   - component: {fileID: 895003430}
   - component: {fileID: 895003434}
+  - component: {fileID: 895003435}
   m_Layer: 0
   m_Name: VideoOpen
   m_TagString: Untagged
@@ -13733,6 +13898,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 21
+--- !u!114 &895003435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895003428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &909920226
 GameObject:
   m_ObjectHideFlags: 0
@@ -13944,6 +14121,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913068573}
+  m_CullTransparentMesh: 1
+--- !u!1 &919846366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 919846367}
+  - component: {fileID: 919846369}
+  - component: {fileID: 919846368}
+  m_Layer: 0
+  m_Name: Handle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &919846367
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919846366}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 667887259}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &919846368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919846366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &919846369
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919846366}
   m_CullTransparentMesh: 1
 --- !u!1 &921266073
 GameObject:
@@ -14482,7 +14734,6 @@ RectTransform:
   - {fileID: 662414424}
   - {fileID: 1095151925}
   - {fileID: 386060486}
-  - {fileID: 1931780196}
   m_Father: {fileID: 513934187}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -14666,6 +14917,7 @@ GameObject:
   - component: {fileID: 996029011}
   - component: {fileID: 996029008}
   - component: {fileID: 996029012}
+  - component: {fileID: 996029013}
   m_Layer: 0
   m_Name: Reload
   m_TagString: Untagged
@@ -14809,6 +15061,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 22
+--- !u!114 &996029013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996029006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &998571058
 GameObject:
   m_ObjectHideFlags: 0
@@ -14960,6 +15224,7 @@ GameObject:
   - component: {fileID: 998715485}
   - component: {fileID: 998715482}
   - component: {fileID: 998715486}
+  - component: {fileID: 998715487}
   m_Layer: 0
   m_Name: ResetFile
   m_TagString: Untagged
@@ -15103,6 +15368,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 22
+--- !u!114 &998715487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998715480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1003446035
 GameObject:
   m_ObjectHideFlags: 0
@@ -15114,6 +15391,7 @@ GameObject:
   - component: {fileID: 1003446036}
   - component: {fileID: 1003446038}
   - component: {fileID: 1003446037}
+  - component: {fileID: 1003446039}
   m_Layer: 0
   m_Name: InvertY
   m_TagString: Untagged
@@ -15203,6 +15481,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &1003446039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003446035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1025350010
 GameObject:
   m_ObjectHideFlags: 0
@@ -15502,6 +15792,7 @@ GameObject:
   - component: {fileID: 1046478877}
   - component: {fileID: 1046478879}
   - component: {fileID: 1046478878}
+  - component: {fileID: 1046478880}
   m_Layer: 0
   m_Name: Sensitivity
   m_TagString: Untagged
@@ -15595,6 +15886,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1046478880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046478876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1049569798
 GameObject:
   m_ObjectHideFlags: 0
@@ -16086,6 +16389,7 @@ GameObject:
   - component: {fileID: 1095151921}
   - component: {fileID: 1095151923}
   - component: {fileID: 1095151926}
+  - component: {fileID: 1095151927}
   m_Layer: 0
   m_Name: Close
   m_TagString: Untagged
@@ -16229,6 +16533,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 31
+--- !u!114 &1095151927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095151920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1097136548
 GameObject:
   m_ObjectHideFlags: 0
@@ -16640,42 +16956,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1121899453
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1121899454}
-  m_Layer: 0
-  m_Name: Content
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1121899454
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1121899453}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 278631965}
-  m_Father: {fileID: 1239923212}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 644, y: 1500}
-  m_Pivot: {x: 0, y: 1}
 --- !u!1 &1124716746
 GameObject:
   m_ObjectHideFlags: 0
@@ -16851,7 +17131,7 @@ RectTransform:
   m_GameObject: {fileID: 1129764321}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1924084655}
@@ -16863,8 +17143,6 @@ RectTransform:
   - {fileID: 24487850}
   - {fileID: 1152165649}
   - {fileID: 340160878}
-  - {fileID: 1853647625}
-  - {fileID: 522677384}
   - {fileID: 1751436356}
   - {fileID: 1952877568}
   m_Father: {fileID: 1372621303}
@@ -16888,6 +17166,7 @@ GameObject:
   - component: {fileID: 1133236045}
   - component: {fileID: 1133236044}
   - component: {fileID: 1133236048}
+  - component: {fileID: 1133236049}
   m_Layer: 0
   m_Name: Previous2
   m_TagString: Untagged
@@ -17031,6 +17310,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &1133236049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1133236042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1134120200
 GameObject:
   m_ObjectHideFlags: 0
@@ -17180,6 +17471,7 @@ GameObject:
   - component: {fileID: 1138087962}
   - component: {fileID: 1138087964}
   - component: {fileID: 1138087963}
+  - component: {fileID: 1138087965}
   m_Layer: 0
   m_Name: Feedback
   m_TagString: Untagged
@@ -17273,6 +17565,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1138087965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138087961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1143088677
 GameObject:
   m_ObjectHideFlags: 0
@@ -17362,6 +17666,7 @@ GameObject:
   - component: {fileID: 1152165645}
   - component: {fileID: 1152165647}
   - component: {fileID: 1152165650}
+  - component: {fileID: 1152165651}
   m_Layer: 0
   m_Name: SettingsOpen
   m_TagString: Untagged
@@ -17498,6 +17803,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ConcreteButtonAccent
   Accent: {fileID: 2103666567}
+--- !u!114 &1152165651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1152165644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1160160173
 GameObject:
   m_ObjectHideFlags: 0
@@ -17512,6 +17829,7 @@ GameObject:
   - component: {fileID: 1160160176}
   - component: {fileID: 1160160175}
   - component: {fileID: 1160160179}
+  - component: {fileID: 1160160180}
   m_Layer: 0
   m_Name: Next1
   m_TagString: Untagged
@@ -17655,6 +17973,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &1160160180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160160173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1161349326
 GameObject:
   m_ObjectHideFlags: 0
@@ -18192,6 +18522,7 @@ GameObject:
   - component: {fileID: 1203392813}
   - component: {fileID: 1203392812}
   - component: {fileID: 1203392817}
+  - component: {fileID: 1203392818}
   m_Layer: 0
   m_Name: FriendTemplate
   m_TagString: Untagged
@@ -18355,6 +18686,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 29
+--- !u!114 &1203392818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203392810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1205064596
 GameObject:
   m_ObjectHideFlags: 0
@@ -18369,6 +18712,7 @@ GameObject:
   - component: {fileID: 1205064601}
   - component: {fileID: 1205064598}
   - component: {fileID: 1205064602}
+  - component: {fileID: 1205064603}
   m_Layer: 0
   m_Name: DefaultBindings
   m_TagString: Untagged
@@ -18512,6 +18856,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 21
+--- !u!114 &1205064603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205064596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1207536929
 GameObject:
   m_ObjectHideFlags: 0
@@ -18787,143 +19143,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220317594}
   m_CullTransparentMesh: 1
---- !u!1 &1230430396
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1230430397}
-  - component: {fileID: 1230430399}
-  - component: {fileID: 1230430398}
-  m_Layer: 0
-  m_Name: Label
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1230430397
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1230430396}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 522677384}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1230430398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1230430396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: "\u0422\u0438\u0442\u0440\u044B"
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_sharedMaterial: {fileID: -5136365414828865339, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4278584838
-  m_fontColor: {r: 0.025, g: 0.025, b: 0.024, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 4096
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 0
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &1230430399
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1230430396}
-  m_CullTransparentMesh: 1
 --- !u!114 &1235084362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18938,57 +19157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 5cfbfd6fe75f530459e92a636ad92c69, type: 3}
   m_ActionId: 17805a93-9aff-450b-9f7b-42fa7d78c53d
---- !u!1 &1239923211
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1239923212}
-  - component: {fileID: 1239923213}
-  m_Layer: 0
-  m_Name: Viewport
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1239923212
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1239923211}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1121899454}
-  m_Father: {fileID: 1841921971}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1239923213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1239923211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
-  m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 0}
 --- !u!1 &1249095283
 GameObject:
   m_ObjectHideFlags: 0
@@ -19390,6 +19558,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1465624531}
+  - {fileID: 505877062}
   m_Father: {fileID: 1720625859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -19432,11 +19601,11 @@ MonoBehaviour:
   m_ScrollSensitivity: 34
   m_Viewport: {fileID: 1465624531}
   m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 505877064}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: 0
-  m_VerticalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -19629,6 +19798,7 @@ GameObject:
   - component: {fileID: 1265964397}
   - component: {fileID: 1265964396}
   - component: {fileID: 1265964400}
+  - component: {fileID: 1265964401}
   m_Layer: 0
   m_Name: Revert
   m_TagString: Untagged
@@ -19772,6 +19942,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 30
+--- !u!114 &1265964401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1265964394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1278307945
 GameObject:
   m_ObjectHideFlags: 0
@@ -19920,6 +20102,7 @@ GameObject:
   - component: {fileID: 1286080480}
   - component: {fileID: 1286080482}
   - component: {fileID: 1286080481}
+  - component: {fileID: 1286080483}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -20013,6 +20196,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1286080483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286080479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1287505524
 GameObject:
   m_ObjectHideFlags: 0
@@ -20664,6 +20859,7 @@ GameObject:
   - component: {fileID: 1344175612}
   - component: {fileID: 1344175609}
   - component: {fileID: 1344175613}
+  - component: {fileID: 1344175614}
   m_Layer: 0
   m_Name: Binding5
   m_TagString: Untagged
@@ -20807,6 +21003,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1344175614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1344175607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1345726968
 GameObject:
   m_ObjectHideFlags: 0
@@ -20821,6 +21029,7 @@ GameObject:
   - component: {fileID: 1345726973}
   - component: {fileID: 1345726970}
   - component: {fileID: 1345726974}
+  - component: {fileID: 1345726975}
   m_Layer: 0
   m_Name: Binding2
   m_TagString: Untagged
@@ -20964,6 +21173,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1345726975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345726968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1365428616
 GameObject:
   m_ObjectHideFlags: 0
@@ -21041,6 +21262,7 @@ GameObject:
   - component: {fileID: 1372448629}
   - component: {fileID: 1372448628}
   - component: {fileID: 1372448632}
+  - component: {fileID: 1372448633}
   m_Layer: 0
   m_Name: Preview
   m_TagString: Untagged
@@ -21184,6 +21406,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 31
+--- !u!114 &1372448633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372448626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1372621298
 GameObject:
   m_ObjectHideFlags: 0
@@ -21336,15 +21570,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalMenuView
   SettingsButton: {fileID: 1152165645}
-  HelpButton: {fileID: 1853647621}
-  CreditsButton: {fileID: 522677380}
   BaseGroup: {fileID: 1372621304}
   Panel: {fileID: 513934186}
   SettingsPanel: {fileID: 741439373}
-  InformationPanel: {fileID: 1931780195}
   ResetConfirmation: {fileID: 386060485}
   Title: {fileID: 1301437212}
-  Information: {fileID: 278631967}
   Status: {fileID: 375913166}
   CloseLabel: {fileID: 887150644}
   Master: {fileID: 1732495630}
@@ -21425,6 +21655,7 @@ GameObject:
   - component: {fileID: 1375106037}
   - component: {fileID: 1375106034}
   - component: {fileID: 1375106038}
+  - component: {fileID: 1375106039}
   m_Layer: 0
   m_Name: Apply
   m_TagString: Untagged
@@ -21568,6 +21799,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 31
+--- !u!114 &1375106039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375106032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1381826654
 GameObject:
   m_ObjectHideFlags: 0
@@ -21618,6 +21861,7 @@ GameObject:
   - component: {fileID: 1382478320}
   - component: {fileID: 1382478317}
   - component: {fileID: 1382478321}
+  - component: {fileID: 1382478322}
   m_Layer: 0
   m_Name: Binding6
   m_TagString: Untagged
@@ -21761,6 +22005,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1382478322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382478315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1384192515
 GameObject:
   m_ObjectHideFlags: 0
@@ -21775,6 +22031,7 @@ GameObject:
   - component: {fileID: 1384192520}
   - component: {fileID: 1384192517}
   - component: {fileID: 1384192521}
+  - component: {fileID: 1384192522}
   m_Layer: 0
   m_Name: Cancel
   m_TagString: Untagged
@@ -21918,6 +22175,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1384192522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384192515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1392994510
 GameObject:
   m_ObjectHideFlags: 0
@@ -22216,6 +22485,7 @@ GameObject:
   - component: {fileID: 1404817222}
   - component: {fileID: 1404817224}
   - component: {fileID: 1404817223}
+  - component: {fileID: 1404817225}
   m_Layer: 0
   m_Name: Fov
   m_TagString: Untagged
@@ -22309,6 +22579,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1404817225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404817221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1421812067
 GameObject:
   m_ObjectHideFlags: 0
@@ -22460,6 +22742,7 @@ GameObject:
   - component: {fileID: 1422084881}
   - component: {fileID: 1422084880}
   - component: {fileID: 1422084884}
+  - component: {fileID: 1422084885}
   m_Layer: 0
   m_Name: Previous1
   m_TagString: Untagged
@@ -22603,6 +22886,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 34
+--- !u!114 &1422084885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422084878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1424279348
 GameObject:
   m_ObjectHideFlags: 0
@@ -23104,6 +23399,7 @@ GameObject:
   - component: {fileID: 1460046470}
   - component: {fileID: 1460046467}
   - component: {fileID: 1460046471}
+  - component: {fileID: 1460046472}
   m_Layer: 0
   m_Name: Binding3
   m_TagString: Untagged
@@ -23247,6 +23543,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1460046472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460046465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1465624530
 GameObject:
   m_ObjectHideFlags: 0
@@ -23281,8 +23589,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -14, y: 0}
+  m_SizeDelta: {x: -28, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1465624532
 MonoBehaviour:
@@ -24487,6 +24795,7 @@ GameObject:
   - component: {fileID: 1548286043}
   - component: {fileID: 1548286040}
   - component: {fileID: 1548286044}
+  - component: {fileID: 1548286045}
   m_Layer: 0
   m_Name: Binding4
   m_TagString: Untagged
@@ -24630,6 +24939,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1548286045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548286038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1552917988
 GameObject:
   m_ObjectHideFlags: 0
@@ -24903,143 +25224,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588060662}
-  m_CullTransparentMesh: 1
---- !u!1 &1615564018
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1615564019}
-  - component: {fileID: 1615564021}
-  - component: {fileID: 1615564020}
-  m_Layer: 0
-  m_Name: Label
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1615564019
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1615564018}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1853647625}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1615564020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1615564018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: "\u0421\u043F\u0440\u0430\u0432\u043A\u0430"
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_sharedMaterial: {fileID: -5136365414828865339, guid: 625429d7deef6c84da558b8ea887dfa3, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4278584838
-  m_fontColor: {r: 0.025, g: 0.025, b: 0.024, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 4096
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 0
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &1615564021
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1615564018}
   m_CullTransparentMesh: 1
 --- !u!1 &1626314130
 GameObject:
@@ -25329,6 +25513,7 @@ GameObject:
   - component: {fileID: 1644416527}
   - component: {fileID: 1644416524}
   - component: {fileID: 1644416528}
+  - component: {fileID: 1644416529}
   m_Layer: 0
   m_Name: Binding1
   m_TagString: Untagged
@@ -25472,6 +25657,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1644416529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644416522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1656079208
 GameObject:
   m_ObjectHideFlags: 0
@@ -25639,6 +25836,7 @@ GameObject:
   - component: {fileID: 1668766381}
   - component: {fileID: 1668766380}
   - component: {fileID: 1668766384}
+  - component: {fileID: 1668766385}
   m_Layer: 0
   m_Name: Host
   m_TagString: Untagged
@@ -25782,6 +25980,18 @@ MonoBehaviour:
   Style: 0
   FontOverride: {fileID: 0}
   FontSizeOverride: 32
+--- !u!114 &1668766385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668766378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1669413893
 GameObject:
   m_ObjectHideFlags: 0
@@ -25907,6 +26117,7 @@ GameObject:
   - component: {fileID: 1673498206}
   - component: {fileID: 1673498203}
   - component: {fileID: 1673498207}
+  - component: {fileID: 1673498208}
   m_Layer: 0
   m_Name: Binding7
   m_TagString: Untagged
@@ -26050,6 +26261,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &1673498208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673498201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1676633055
 GameObject:
   m_ObjectHideFlags: 0
@@ -26598,6 +26821,7 @@ GameObject:
   - component: {fileID: 1732495628}
   - component: {fileID: 1732495630}
   - component: {fileID: 1732495629}
+  - component: {fileID: 1732495631}
   m_Layer: 0
   m_Name: Master
   m_TagString: Untagged
@@ -26691,6 +26915,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1732495631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732495627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1749123190
 GameObject:
   m_ObjectHideFlags: 0
@@ -27237,6 +27473,7 @@ GameObject:
   - component: {fileID: 1773716648}
   - component: {fileID: 1773716647}
   - component: {fileID: 1773716651}
+  - component: {fileID: 1773716652}
   m_Layer: 0
   m_Name: Tab1
   m_TagString: Untagged
@@ -27381,6 +27618,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 32
+--- !u!114 &1773716652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1773716645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1785509618
 GameObject:
   m_ObjectHideFlags: 0
@@ -27792,262 +28041,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824828748}
   m_CullTransparentMesh: 1
---- !u!1 &1841921970
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1841921971}
-  - component: {fileID: 1841921975}
-  - component: {fileID: 1841921974}
-  - component: {fileID: 1841921973}
-  - component: {fileID: 1841921972}
-  m_Layer: 0
-  m_Name: InformationScroll
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1841921971
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841921970}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1239923212}
-  m_Father: {fileID: 1931780196}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64, y: -214}
-  m_SizeDelta: {x: 656, y: 676}
-  m_Pivot: {x: 0, y: 1}
---- !u!114 &1841921972
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841921970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2901def79796af44b911a5b45a76c25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ConcreteScrollSelection
-  Scroll: {fileID: 1841921973}
---- !u!114 &1841921973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841921970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
-  m_Content: {fileID: 1121899454}
-  m_Horizontal: 0
-  m_Vertical: 1
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 34
-  m_Viewport: {fileID: 1239923212}
-  m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 0}
-  m_HorizontalScrollbarVisibility: 0
-  m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: 0
-  m_VerticalScrollbarSpacing: 0
-  m_OnValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1841921974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841921970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.03}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1841921975
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841921970}
-  m_CullTransparentMesh: 1
---- !u!1 &1853647620
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1853647625}
-  - component: {fileID: 1853647624}
-  - component: {fileID: 1853647622}
-  - component: {fileID: 1853647621}
-  - component: {fileID: 1853647623}
-  m_Layer: 0
-  m_Name: HelpOpen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1853647621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853647620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.92, g: 0.92, b: 0.9, a: 1}
-    m_PressedColor: {r: 0.78, g: 0.78, b: 0.75, a: 1}
-    m_SelectedColor: {r: 0.92, g: 0.92, b: 0.9, a: 1}
-    m_DisabledColor: {r: 0.65, g: 0.65, b: 0.65, a: 0.5}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 1853647622}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1853647622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853647620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &1853647623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853647620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e3c72ff7396c824599d3531735f4d0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalMenuCancel
-  Menu: {fileID: 1372621305}
---- !u!222 &1853647624
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853647620}
-  m_CullTransparentMesh: 1
---- !u!224 &1853647625
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1853647620}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1615564019}
-  m_Father: {fileID: 1129764324}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 74, y: -987}
-  m_SizeDelta: {x: 155, y: 38}
-  m_Pivot: {x: 0, y: 1}
 --- !u!1 &1859551425
 GameObject:
   m_ObjectHideFlags: 0
@@ -28062,6 +28055,7 @@ GameObject:
   - component: {fileID: 1859551428}
   - component: {fileID: 1859551427}
   - component: {fileID: 1859551431}
+  - component: {fileID: 1859551432}
   m_Layer: 0
   m_Name: Tab2
   m_TagString: Untagged
@@ -28206,6 +28200,18 @@ MonoBehaviour:
   Style: 2
   FontOverride: {fileID: 0}
   FontSizeOverride: 32
+--- !u!114 &1859551432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859551425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1865756698
 GameObject:
   m_ObjectHideFlags: 0
@@ -29214,42 +29220,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -8, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1931780195
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1931780196}
-  m_Layer: 0
-  m_Name: Information
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1931780196
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931780195}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1841921971}
-  m_Father: {fileID: 984880956}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1944401680
 GameObject:
   m_ObjectHideFlags: 0
@@ -29261,6 +29231,7 @@ GameObject:
   - component: {fileID: 1944401681}
   - component: {fileID: 1944401683}
   - component: {fileID: 1944401682}
+  - component: {fileID: 1944401684}
   m_Layer: 0
   m_Name: Vacuum
   m_TagString: Untagged
@@ -29354,6 +29325,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1944401684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944401680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &1952877565
 GameObject:
   m_ObjectHideFlags: 0
@@ -29821,6 +29804,7 @@ GameObject:
   - component: {fileID: 1995072792}
   - component: {fileID: 1995072797}
   - component: {fileID: 1995072796}
+  - component: {fileID: 1995072798}
   m_Layer: 0
   m_Name: Solo
   m_TagString: Untagged
@@ -29957,6 +29941,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ConcreteButtonAccent
   Accent: {fileID: 1307242728}
+--- !u!114 &1995072798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995072791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &2002555363
 GameObject:
   m_ObjectHideFlags: 0
@@ -29971,6 +29967,7 @@ GameObject:
   - component: {fileID: 2002555368}
   - component: {fileID: 2002555365}
   - component: {fileID: 2002555369}
+  - component: {fileID: 2002555370}
   m_Layer: 0
   m_Name: Binding0
   m_TagString: Untagged
@@ -30114,6 +30111,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 26
+--- !u!114 &2002555370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002555363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &2007677850
 GameObject:
   m_ObjectHideFlags: 0
@@ -30128,6 +30137,7 @@ GameObject:
   - component: {fileID: 2007677855}
   - component: {fileID: 2007677852}
   - component: {fileID: 2007677856}
+  - component: {fileID: 2007677857}
   m_Layer: 0
   m_Name: CancelCapture
   m_TagString: Untagged
@@ -30271,6 +30281,18 @@ MonoBehaviour:
   Style: 1
   FontOverride: {fileID: 0}
   FontSizeOverride: 22
+--- !u!114 &2007677857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007677850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f73d40ab9336941b0d9087996da2c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.UiActionSound
 --- !u!1 &2008637907
 GameObject:
   m_ObjectHideFlags: 0

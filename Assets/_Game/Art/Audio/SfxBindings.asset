@@ -184,6 +184,195 @@ MonoBehaviour:
     MinDistance: 1
     MaxDistance: 12
     Loop: 0
+  - Id: 19
+    Clip: {fileID: 8300000, guid: eb09bad888ad8c54fb4caaed96efd1bc, type: 3}
+    Status: 1
+    Gain: 0.8
+    Bus: 1
+    Priority: 30
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 20
+    Clip: {fileID: 8300000, guid: a2659f018abb69a42a08eae8e6740c7b, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 21
+    Clip: {fileID: 8300000, guid: f02791940be57e440a18e8d62625ed7a, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 22
+    Clip: {fileID: 8300000, guid: 328c25feedc192c49bf8f94002e11479, type: 3}
+    Status: 1
+    Gain: 0.85
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 23
+    Clip: {fileID: 8300000, guid: 43bad4569ca6334489e273cf28c01b35, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 30
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 24
+    Clip: {fileID: 8300000, guid: 83437fd5795936447860ed9c4dcaaa7e, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 4
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 25
+    Clip: {fileID: 8300000, guid: ce41e37790117bb4687d8aadb68db1d4, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 1
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 26
+    Clip: {fileID: 8300000, guid: d7a06d06395fa0d4486d8b643eaaad30, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 4
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 27
+    Clip: {fileID: 8300000, guid: 820356f178430c442ba1d6d4468bc4ab, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 28
+    Clip: {fileID: 8300000, guid: d3aa105d5037edb40a7376d58768742b, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 29
+    Clip: {fileID: 8300000, guid: e181137251563254abbd66fea23710a5, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 30
+    Clip: {fileID: 8300000, guid: 797d0291ef330bf429059df3271e2bb9, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 31
+    Clip: {fileID: 8300000, guid: ef3d1d8697633134eb20b6c569e5aaaf, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 4
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 32
+    Clip: {fileID: 8300000, guid: aca58ac1cf237634ab31fe215df75084, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 33
+    Clip: {fileID: 8300000, guid: 64ecf9f23b63771429495945f61a27a6, type: 3}
+    Status: 1
+    Gain: 0.55
+    Bus: 3
+    Priority: 80
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 0
+  - Id: 34
+    Clip: {fileID: 8300000, guid: 31babe3839a65de488cbe264796c6385, type: 3}
+    Status: 1
+    Gain: 0.2
+    Bus: 3
+    Priority: 220
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 1
+  - Id: 35
+    Clip: {fileID: 8300000, guid: f7830c987b0d52b4eaf146a1bbfdfb61, type: 3}
+    Status: 1
+    Gain: 0.2
+    Bus: 3
+    Priority: 220
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 1
+  - Id: 36
+    Clip: {fileID: 8300000, guid: 2c220031d8b35e44399cf991f0bfba3a, type: 3}
+    Status: 1
+    Gain: 0.2
+    Bus: 3
+    Priority: 220
+    MinDistance: 3
+    MaxDistance: 42
+    Loop: 1
+  - Id: 37
+    Clip: {fileID: 8300000, guid: d2a2b45b46919134ab835cab1993472c, type: 3}
+    Status: 1
+    Gain: 0.18
+    Bus: 4
+    Priority: 180
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
+  - Id: 38
+    Clip: {fileID: 8300000, guid: 7fe0b281b6794fe419cbc32d1cd8beb9, type: 3}
+    Status: 1
+    Gain: 0.2
+    Bus: 4
+    Priority: 200
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 1
+  - Id: 39
+    Clip: {fileID: 8300000, guid: b87bb89f63887f242a09cc3c4a9472f8, type: 3}
+    Status: 1
+    Gain: 0.65
+    Bus: 4
+    Priority: 80
+    MinDistance: 1
+    MaxDistance: 12
+    Loop: 0
   Mixer: {fileID: 24100000, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
   Vacuum: {fileID: -5213224462465936082, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}
   Truck: {fileID: 5688735172511403975, guid: 258fe43ada8e2ed48b84e8878abf0cc9, type: 2}

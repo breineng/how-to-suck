@@ -17,11 +17,15 @@ MonoBehaviour:
   IsBoss: 0
   AttackKind: 1
   BaseHealth: 65
+  ContactDamage: 22
+  RangedDamage: 14
+  LeapSpeed: 8
+  LeapHeightVelocity: 3.5
   MoveSpeed: 1.8
   DetectionRange: 8
   AttackRange: 1.5
   HomeRadius: 8
-  TellSeconds: 0.9
+  TellSeconds: 0.48
   AttackSeconds: 0.8
   RecoverySeconds: 1.5
   ChargeSpeed: 4.5
@@ -29,6 +33,7 @@ MonoBehaviour:
   ProjectileLifetime: 2.5
   DefeatedCargoPrefab: {fileID: 0}
   HasSweep: 0
+  ChapterIIPattern: 0
   SweepRange: 3.5
   SweepTellSeconds: 1
   SweepAttackSeconds: 0.7

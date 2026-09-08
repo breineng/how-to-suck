@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ContractDefinition
   ContractId: old_house
   DisplayName: "\u0421\u0442\u0430\u0440\u044B\u0439 \u0434\u043E\u043C I"
+  Preview: {fileID: 21300000, guid: 418a04d9e30352045800eb293c5fd6c1, type: 3}
   RequiredBossId: dust_elder
   RecommendedTierId: mk1
   SceneName: OldHouseNetwork

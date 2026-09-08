@@ -10,9 +10,9 @@ namespace HowToSuck.Networking
         public static LootReplicaProvenance Provenance(LootWire s)=>new LootReplicaProvenance(s.Type.ToString(),(CargoRole)s.CargoRole,
             Key(s.BossRun,s.BossId,s.BossInstance),s.StoredOwner,s.LastStorageOwner,s.LastStorageTier.ToString(),s.ActiveShotId);
         public static PlayerStorageSnapshot Storage(PlayerWire s)=>new PlayerStorageSnapshot(s.Run.ToString(),s.PlayerId,s.StorageCount,
-            s.StorageReserved,s.StorageCapacity,s.StorageNextType.ToString(),(CargoRole)s.StorageNextRole);
+            s.StorageReserved,s.StorageCapacity,s.StorageNextType.ToString(),(CargoRole)s.StorageNextRole,s.StorageTypes.ToString());
         public static PlayerSuitPresentation Suit(PlayerWire s)=>new PlayerSuitPresentation(
-            new PlayerSuitSnapshot(s.Run.ToString(),s.PlayerId,s.SuitSegments,s.SuitInvulnerableUntil,s.SuitRecoveryPending),s.SuitObservedAt,s.Frozen);
+            new PlayerSuitSnapshot(s.Run.ToString(),s.PlayerId,s.SuitSegments,s.SuitInvulnerableUntil,s.SuitRecoveryPending,s.RepairCharges,s.RepairProgress),s.SuitObservedAt,s.Frozen);
         public static BossObjectiveSnapshot Boss(SessionWire s,string requiredBossId)=>GameplayReplicaPolicy.BossSnapshot(s.Run.ToString(),requiredBossId,
             Key(s.BossRun,s.BossId,s.BossInstance),(BossObjectiveStatus)s.BossStatus);
         public static void RequireLoot(LootWire s,string run,uint revision,ulong instance,string type,CargoRole role)
@@ -32,7 +32,8 @@ namespace HowToSuck.Networking
         {
             if(s.Run.ToString()!=run||s.Revision!=revision||revision==0||s.PlayerId!=player||s.Tier.ToString()!=tier||
                 !GameplayReplicaPolicy.Player(player)||!CampaignCapacityRules.TryModel(tier,out _,out _)||!Finite(s.Yaw)||!Finite(s.Pitch)||
-                !Finite(s.Move.x)||!Finite(s.Move.y)||!Finite(s.Vertical)||!Finite(s.PlanarSpeed)||s.PlanarSpeed<0)
+                !Finite(s.Move.x)||!Finite(s.Move.y)||!Finite(s.Vertical)||!Finite(s.PlanarSpeed)||s.PlanarSpeed<0||
+                !Finite(s.FireCharge)||s.FireCharge<0||s.FireCharge>1)
                 throw new InvalidOperationException("Player identity or presentation changed inconsistently.");
             Storage(s); // Includes owner/run, count+reserved, capacity and coherent FIFO validation.
             Suit(s); // Same owner/run envelope; invalid suit data cannot satisfy prepared-snapshot readiness.
@@ -59,7 +60,7 @@ namespace HowToSuck.Networking
             if(!GameplayReplicaPolicy.StableId(s.Contract.ToString())||!GameplayReplicaPolicy.StableId(requiredBossId)||s.Quota<=0)
                 throw new InvalidOperationException("Active contract is not in the authored boss catalog.");
             var boss=Boss(s,requiredBossId);
-            if(phase==ContractPhase.Running&&(boss.Status==BossObjectiveStatus.Unassigned||s.Deadline<=s.Started||s.Observed<s.Started||s.Observed>=s.Deadline))
+            if(phase==ContractPhase.Running&&(s.Deadline<=s.Started||s.Observed<s.Started||s.Observed>=s.Deadline))
                 throw new InvalidOperationException("Invalid running objective or clock.");
             if(phase==ContractPhase.Succeeded&&(s.Money<s.Quota||!boss.IsDelivered))throw new InvalidOperationException("Succeeded without both objectives.");
             if(s.HasResult){

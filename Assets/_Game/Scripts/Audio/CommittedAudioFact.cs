@@ -14,11 +14,11 @@ namespace HowToSuck.Audio
     if(!Guid.TryParseExact(Run,"N",out _)||Occurrence==0||!Finite(At)||At<0||!Finite(Size)||!Finite(Duration)||!Finite(Position.x)||!Finite(Position.y)||!Finite(Position.z))return false;
     switch(Kind){
      case CommittedAudioKind.Ingestion:return Item!=0&&Enemy==0&&Size>0&&Duration>0&&Amount==0&&(Truck?Owner==0&&Intake==1000:Player(Owner)&&Intake==Owner);
-     case CommittedAudioKind.ShotLaunch:return Item!=0&&Enemy==0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=1&&Amount<=100;
-     case CommittedAudioKind.EnemyHit:return Item!=0&&Enemy!=0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=1&&Amount<=100;
+     case CommittedAudioKind.ShotLaunch:return Item!=0&&Enemy==0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=1&&Amount<=ItemFireRules.MaximumDamage;
+     case CommittedAudioKind.EnemyHit:return Item!=0&&Enemy!=0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=1&&Amount<=ItemFireRules.MaximumDamage;
      case CommittedAudioKind.EnemyDefeat:return Item!=0&&Enemy!=0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount==0;
-     case CommittedAudioKind.SuitHit:return Item==0&&Enemy!=0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=0&&Amount<=2;
-     case CommittedAudioKind.SuitRecovered:return Item==0&&Enemy==0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount==3;
+     case CommittedAudioKind.SuitHit:return Item==0&&Enemy!=0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>=0&&Amount<=100;
+     case CommittedAudioKind.SuitRecovered:return Item==0&&Enemy==0&&Player(Owner)&&Intake==0&&!Truck&&Size==0&&Duration==0&&Amount>0&&Amount<=100;
      default:return false;
     }
    }

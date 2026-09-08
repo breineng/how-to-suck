@@ -106,7 +106,7 @@ namespace HowToSuck.Networking
                 throw new InvalidOperationException("Publish storage only from this authority world and registered owner.");
             string nextType="";CargoRole nextRole=CargoRole.OrdinaryLoot;
             if(storage.Count>0){if(!storage.TryPeek(out _,out var item))throw new InvalidOperationException("Committed FIFO has no matching stored item.");nextType=item.TypeId;nextRole=item.CargoRole;}
-            var stored=new PlayerStorageSnapshot(storage.RunId,storage.OwnerId,storage.Count,storage.Reserved,storage.Capacity,nextType,nextRole);
+            var stored=new PlayerStorageSnapshot(storage.RunId,storage.OwnerId,storage.Count,storage.Reserved,storage.Capacity,nextType,nextRole,storage.SlotTypes);
             if(game.Session.World.Combat==null)throw new InvalidOperationException("No authoritative suit service for registered player.");
             var suit=new PlayerSuitPresentation(game.Session.World.Combat.SuitSnapshot(Motor.PlayerId),game.Driver.Now,!game.Session.World.IsRunning);
             if(suit.State.RunId!=run||suit.State.OwnerId!=Motor.PlayerId)throw new InvalidOperationException("Publish the actual registered owner's current-run suit.");
@@ -116,7 +116,8 @@ namespace HowToSuck.Networking
                 PlanarSpeed=game.Session.World.IsRunning?Motor.PlanarSpeed:0f,Grounded=Motor.IsGrounded,Sprint=i.SprintHeld,Vacuum=i.VacuumHeld,Interact=i.InteractHeld,Frozen=!game.Session.World.IsRunning,
                 StorageCount=stored.Count,StorageReserved=stored.Reserved,StorageCapacity=stored.Capacity,
                 StorageNextType=new FixedString64Bytes(stored.NextTypeId),StorageNextRole=(byte)stored.NextCargoRole,
-                SuitSegments=suit.State.Segments,SuitRecoveryPending=suit.State.RecoveryPending,
+                StorageTypes=new FixedString4096Bytes(stored.SlotTypes),RepairCharges=suit.State.RepairCharges,RepairProgress=suit.State.RepairProgress,
+                SuitSegments=suit.State.Segments,SuitRecoveryPending=suit.State.RecoveryPending,FireCharge=Motor.FireCharge,
                 SuitInvulnerableUntil=suit.State.InvulnerableUntil,SuitObservedAt=suit.ObservedAt,
                 FireFeedbackSequence=Motor.FireFeedbackSequence,FireWasBlocked=Motor.FireWasBlocked};
         }
@@ -128,6 +129,8 @@ namespace HowToSuck.Networking
             var suit=GameplayStateValidation.Suit(s);suitView.RequireAcceptable(suit);
             storageView.Apply(GameplayStateValidation.Storage(s));suitView.Apply(suit);
             Motor.ApplyFireFeedback(s.FireFeedbackSequence,s.FireWasBlocked);
+            if(Motor.IsDowned!=s.SuitRecoveryPending)Motor.SetDowned(s.SuitRecoveryPending);
+            Motor.PresentFireCharge(s.FireCharge);
             GetComponent<VacuumEmitter>().Active=s.Vacuum&&!s.Frozen;
             Motor.ApplyReplicaPresentation(new PlayerIntent{RunId=run,Sequence=s.Sequence,JumpPressSequence=s.Jump,Move=s.Move,
                 Yaw=s.Yaw,Pitch=s.Pitch,SprintHeld=s.Sprint,VacuumHeld=s.Vacuum,InteractHeld=s.Interact},s.Grounded,s.Vertical,s.PlanarSpeed);
@@ -139,7 +142,7 @@ namespace HowToSuck.Networking
             if(!IsSpawned||!IsOwner||playerId!=Motor.PlayerId||intent.RunId!=run||!intent.IsFinite)return;
             pending=new IntentWire{Run=new FixedString64Bytes(run),Sequence=intent.Sequence,Jump=intent.JumpPressSequence,Fire=intent.FirePressSequence,
                 Move=intent.Move,Yaw=intent.Yaw,Pitch=intent.Pitch,Sprint=intent.SprintHeld,Vacuum=intent.VacuumHeld,
-                Interact=intent.InteractHeld,SuppressJump=NetworkIntentCopy.JumpSuppressed(intent),SuppressFire=NetworkIntentCopy.FireSuppressed(intent)};hasPending=true;
+                Interact=intent.InteractHeld,FireHeld=intent.FireHeld,SuppressJump=NetworkIntentCopy.JumpSuppressed(intent),SuppressFire=NetworkIntentCopy.FireSuppressed(intent)};hasPending=true;
         }
         private void Update()
         {
@@ -167,7 +170,7 @@ namespace HowToSuck.Networking
             if(now<receiveAt)return;
             tokens=Math.Min(8,tokens+(now-receiveAt)*60);receiveAt=now;if(tokens<1)return;tokens-=1;
             var intent=new PlayerIntent{RunId=run,Sequence=packet.Sequence,JumpPressSequence=packet.Jump,FirePressSequence=packet.Fire,Move=packet.Move,Yaw=packet.Yaw,
-                Pitch=packet.Pitch,SprintHeld=packet.Sprint,VacuumHeld=packet.Vacuum,InteractHeld=packet.Interact};
+                Pitch=packet.Pitch,SprintHeld=packet.Sprint,VacuumHeld=packet.Vacuum,InteractHeld=packet.Interact,FireHeld=packet.FireHeld};
             intent=NetworkIntentCopy.WithJumpSuppression(intent,packet.SuppressJump);
             intent=NetworkIntentCopy.WithFireSuppression(intent,packet.SuppressFire);
             if(intent.IsFinite)game.Session.World.SubmitIntent(Motor.PlayerId,intent); // Existing run/sequence/timeout and motor clamps.

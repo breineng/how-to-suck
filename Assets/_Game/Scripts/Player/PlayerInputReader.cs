@@ -157,6 +157,7 @@ namespace HowToSuck
                 Move = Vector2.ClampMagnitude(move.ReadValue<Vector2>(), 1f),
                 SprintHeld = sprint.IsPressed(),
                 VacuumHeld = !suppressVacuum && vacuum.IsPressed(),
+                FireHeld = AnyButtonHeld(fire),
                 InteractHeld = !suppressInteract && interact.IsPressed(),
                 Yaw = Mathf.Repeat(previous.Yaw + delta.x * EffectiveMouseSensitivity, 360f),
                 Pitch = Mathf.Clamp(previous.Pitch + LocalSettingsMath.PitchDelta(delta.y,EffectiveMouseSensitivity,EffectiveInvertY), -80f, 80f)

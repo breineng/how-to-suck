@@ -8,6 +8,7 @@ namespace HowToSuck
         [Tooltip("Stable authored identifier. Do not change after the contract is published.")]
         public string ContractId;
         public string DisplayName;
+        public Sprite Preview;
         [Tooltip("Stable identity of the required boss for this contract.")]
         public string RequiredBossId;
         [Tooltip("Optional equipment recommendation shown in Lobby; never a map access requirement.")]

@@ -47,7 +47,8 @@ namespace HowToSuck
         }
         public static bool Matches(LocalVideoSettings value)
         {
-            if(value==null||Screen.width!=value.Width||Screen.height!=value.Height||(int)Screen.fullScreenMode!=value.Mode||QualitySettings.GetQualityLevel()!=value.Quality||QualitySettings.vSyncCount!=value.Vsync)return false;
+            int mode=Screen.fullScreenMode==FullScreenMode.MaximizedWindow?3:(int)Screen.fullScreenMode;
+            if(value==null||Screen.width!=value.Width||Screen.height!=value.Height||mode!=value.Mode||QualitySettings.GetQualityLevel()!=value.Quality||QualitySettings.vSyncCount!=value.Vsync)return false;
             if(value.Mode!=0)return true;var actual=Screen.currentResolution.refreshRateRatio;
             return actual.denominator>0&&Math.Abs((double)actual.numerator/actual.denominator-(double)value.RefreshNumerator/value.RefreshDenominator)<.01;
         }

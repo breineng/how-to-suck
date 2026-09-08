@@ -8,10 +8,10 @@ namespace HowToSuck
  [DisallowMultipleComponent]
  public sealed class LocalMenuView:MonoBehaviour,ICancelHandler
  {
-  public Button SettingsButton,HelpButton,CreditsButton;
+  public Button SettingsButton;
   public CanvasGroup BaseGroup;
-  public GameObject Panel,SettingsPanel,InformationPanel,ResetConfirmation;
-  public TMP_Text Title,Information,Status,CloseLabel;
+  public GameObject Panel,SettingsPanel,ResetConfirmation;
+  public TMP_Text Title,Status,CloseLabel;
   public Slider Master,Vacuum,Truck,Impacts,UI,Sensitivity,Fov,Feedback;
   public TMP_Text MasterValue,VacuumValue,TruckValue,ImpactsValue,UIValue,SensitivityValue,FovValue,FeedbackValue;
   public Toggle InvertY;
@@ -34,7 +34,7 @@ namespace HowToSuck
   {
    if(Navigation==owner)return;Unbind(Navigation);Navigation=owner;if(owner==null)return;
    lobbyMenu=GetComponentInParent<SessionMenuView>();pauseMenu=GetComponent<MenuInputController>();
-   SettingsButton.onClick.AddListener(OpenSettings);HelpButton.onClick.AddListener(OpenHelp);CreditsButton.onClick.AddListener(OpenCredits);
+   SettingsButton.onClick.AddListener(OpenSettings);
    ApplyButton.onClick.AddListener(Apply);DefaultsButton.onClick.AddListener(Defaults);ReloadButton.onClick.AddListener(Reload);
    ResetFileButton.onClick.AddListener(AskReset);ConfirmResetButton.onClick.AddListener(ConfirmReset);CancelResetButton.onClick.AddListener(CancelReset);CloseButton.onClick.AddListener(Back);
    foreach(var slider in Sliders())slider.onValueChanged.AddListener(Preview);InvertY.onValueChanged.AddListener(PreviewBool);
@@ -46,7 +46,7 @@ namespace HowToSuck
    Panel.SetActive(false);ResetConfirmation.SetActive(false);
   }
   Slider[] Sliders()=>new[]{Master,Vacuum,Truck,Impacts,UI,Sensitivity,Fov,Feedback};
-  public void OpenSettings()=>Open(0);public void OpenHelp()=>Open(1);public void OpenCredits()=>Open(2);
+  public void OpenSettings()=>Open(0);
   private void Open(int target)
   {
    if(Navigation==null||!Navigation.Settings.IsInitialized)return;
@@ -62,7 +62,7 @@ namespace HowToSuck
   private void Preview(float unused){if(refreshing||!IsOpen||(page!=0&&(!ConcreteTabsEnabled||page!=5)))return;var d=Navigation.Settings.DraftCopy();d.Master=Master.value;d.Vacuum=Vacuum.value;d.Truck=Truck.value;d.Impacts=Impacts.value;d.UI=UI.value;d.MouseSensitivity=Sensitivity.value;d.InvertY=InvertY.isOn;d.FieldOfView=Fov.value;d.CameraFeedback=Feedback.value;Navigation.Settings.Preview(d);}
   private void PreviewBool(bool unused)=>Preview(0);
   private bool TabOperationPending=>ConcreteTabsEnabled&&Navigation!=null&&
-   ((Navigation.Video!=null&&(Navigation.Video.TrialActive||Navigation.Video.RestorePending))||(Navigation.Bindings!=null&&Navigation.Bindings.Capturing));
+   ((Navigation.Video!=null&&Navigation.Video.TrialActive)||(Navigation.Bindings!=null&&Navigation.Bindings.Capturing));
   private void Apply(){if(IsOpen&&!confirming&&!TabOperationPending){bool saved=Navigation.Settings.Apply();
    if(saved&&ConcreteTabsEnabled&&Navigation.Bindings!=null&&Navigation.Bindings.HasUnapplied)saved=Navigation.Bindings.Save();
    Refresh();Status.text=saved?"Настройки сохранены.":Navigation.Settings.LastError+" "+(Navigation.Bindings!=null?Navigation.Bindings.LastError:"");}}
@@ -104,11 +104,11 @@ namespace HowToSuck
   {
    if(!IsOpen||Navigation==null)return;refreshing=true;
    try{
-    var settings=Navigation.Settings;var d=settings.DraftCopy();Title.text=page==0?"Настройки":page==1?"Управление и справка":page==2?"Титры":page==3?"Видео":"Клавиши";
-    SettingsPanel.SetActive(page==0||(ConcreteTabsEnabled&&(page==3||page==5)));InformationPanel.SetActive(page==1||page==2);ResetConfirmation.SetActive(confirming);CloseLabel.text=page==0?"Отмена / назад":"Назад";
+    var settings=Navigation.Settings;var d=settings.DraftCopy();Title.text=page==0?"Настройки":page==3?"Видео":"Клавиши";
+    SettingsPanel.SetActive(page==0||(ConcreteTabsEnabled&&(page==3||page==5)));ResetConfirmation.SetActive(confirming);CloseLabel.text=page==0?"Отмена / назад":"Назад";
     if(AdvancedButtons!=null)AdvancedButtons.SetActive(!ConcreteTabsEnabled&&page==0&&Navigation.Video!=null&&Navigation.Bindings!=null);
     if(ConcreteTabsEnabled){
-     bool family=page==0||page==3||page==5;ConcreteTabs.SetActive(family);Title.text=family?"НАСТРОЙКИ":page==1?"СПРАВКА":"ТИТРЫ";
+     bool family=page==0||page==3||page==5;ConcreteTabs.SetActive(family);Title.text="НАСТРОЙКИ";
      Group(ConcreteControls,family&&page==0);Group(ConcreteAudio,family&&page==5);Group(ConcreteVideo,family&&page==3);
      // Remain enabled while switching tabs: LocalBindingView.OnDisable would discard an unsaved key draft.
      VideoScreen.gameObject.SetActive(family);BindingScreen.gameObject.SetActive(family);
@@ -118,7 +118,6 @@ namespace HowToSuck
      ReloadButton.gameObject.SetActive(family&&page!=3&&!settings.CanWrite);CloseLabel.text="Назад";
      CloseButton.gameObject.SetActive(Navigation.Video==null||!Navigation.Video.TrialActive);
     }else{if(VideoScreen!=null)VideoScreen.gameObject.SetActive(page==3);if(BindingScreen!=null)BindingScreen.gameObject.SetActive(page==4);}
-    if(page==1)Information.text=Navigation.ControlsText();else if(page==2)Information.text=Navigation.Credits+"\n\nВерсия "+Application.version;
     Master.SetValueWithoutNotify(d.Master);Vacuum.SetValueWithoutNotify(d.Vacuum);Truck.SetValueWithoutNotify(d.Truck);Impacts.SetValueWithoutNotify(d.Impacts);UI.SetValueWithoutNotify(d.UI);
     Sensitivity.SetValueWithoutNotify(d.MouseSensitivity);Fov.SetValueWithoutNotify(d.FieldOfView);Feedback.SetValueWithoutNotify(d.CameraFeedback);InvertY.SetIsOnWithoutNotify(d.InvertY);
     MasterValue.text=Mathf.RoundToInt(d.Master*100)+"%";VacuumValue.text=Mathf.RoundToInt(d.Vacuum*100)+"%";TruckValue.text=Mathf.RoundToInt(d.Truck*100)+"%";ImpactsValue.text=Mathf.RoundToInt(d.Impacts*100)+"%";UIValue.text=Mathf.RoundToInt(d.UI*100)+"%";
@@ -132,9 +131,9 @@ namespace HowToSuck
   private void LateUpdate()
   {
    // Lobby launchers must not draw or intercept input over another modal.
-   bool launchersVisible=!IsOpen&&(lobbyMenu==null||!lobbyMenu.ModalBlocksLobby)
+   bool launchersVisible=lobbyMenu==null&&!IsOpen
     &&(pauseMenu==null||pauseMenu.ConfirmLeavePanel==null||!pauseMenu.ConfirmLeavePanel.activeInHierarchy);
-   ShowLauncher(SettingsButton,launchersVisible);ShowLauncher(HelpButton,launchersVisible);ShowLauncher(CreditsButton,launchersVisible);
+   ShowLauncher(SettingsButton,launchersVisible);
    if(!IsOpen||EventSystem.current==null)return;var selected=EventSystem.current.currentSelectedGameObject;
    var focusRoot=confirming?ResetConfirmation:ConcreteTabsEnabled&&Navigation?.Video!=null&&Navigation.Video.TrialActive?VideoScreen.Confirmation:Panel;
    if(selected==null||!selected.transform.IsChildOf(focusRoot.transform)||!selected.activeInHierarchy||selected.GetComponent<Selectable>() is Selectable selectable&&!selectable.IsInteractable())
@@ -146,7 +145,7 @@ namespace HowToSuck
   public void Unbind(LocalMenuNavigation owner)
   {
    if(Navigation!=owner||Navigation==null)return;Close(false);Navigation.Settings.Changed-=Refresh;
-   SettingsButton.onClick.RemoveListener(OpenSettings);HelpButton.onClick.RemoveListener(OpenHelp);CreditsButton.onClick.RemoveListener(OpenCredits);
+   SettingsButton.onClick.RemoveListener(OpenSettings);
    if(ConcreteTabsEnabled){ControlsTab.onClick.RemoveListener(OpenControlsTab);AudioTab.onClick.RemoveListener(OpenAudioTab);ImageTab.onClick.RemoveListener(OpenImageTab);
     if(owner.Bindings!=null)owner.Bindings.Changed-=Refresh;if(owner.Video!=null)owner.Video.Changed-=Refresh;}
    ApplyButton.onClick.RemoveListener(Apply);DefaultsButton.onClick.RemoveListener(Defaults);ReloadButton.onClick.RemoveListener(Reload);ResetFileButton.onClick.RemoveListener(AskReset);

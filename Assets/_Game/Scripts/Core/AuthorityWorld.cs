@@ -55,7 +55,7 @@ namespace HowToSuck
             suction = new SuctionSystem(Loot);
             Ingestion = new IngestionService(Loot, suction, instance => spawner?.Despawn(instance));
             Ingestion.Delivered += OnDelivered;
-            ItemFire = new ItemFireService(Loot, () => HasAuthority && IsRunning);
+            ItemFire = new ItemFireService(Loot, () => HasAuthority && IsRunning) { Ingestion=Ingestion };
             Combat = new EnemySimulationService(this);
         }
 
@@ -76,6 +76,7 @@ namespace HowToSuck
             contract = controller;
             playerVacuum = vacuum != null ? vacuum : throw new ArgumentNullException(nameof(vacuum));
             truck = level.Truck;
+            ItemFire.Truck=truck;
             extraction = level.ExtractionZone;
             boundsGuard = level.BoundsGuard;
             extraction.Clear();
@@ -121,6 +122,7 @@ namespace HowToSuck
                     if (player != null)
                     {
                         player.ResetContactResponse();
+                        player.PresentFireCharge(0);
                         player.GetComponent<PlayerInputReader>()?.SetGameplayAvailable(false);
                     }
             }
@@ -222,7 +224,7 @@ namespace HowToSuck
                 Combat.StepRecovery();
                 if (boundsGuard != null)
                     boundsGuard.Step(this, now,
-                        (motor, position) => motor.RecoverAt(position, inputs[motor.PlayerId].Read(now)),
+                        (motor, position) => !motor.IsDowned && motor.RecoverAt(position, inputs[motor.PlayerId].Read(now)),
                         instance => spawner.Despawn(instance));
                 foreach (var pair in players)
                 {
@@ -268,6 +270,7 @@ namespace HowToSuck
                 Ingestion.Admit(now, receivers);
                 if (!IsRunning || !contract.IsRunning) return;
                 extraction.Refresh(players);
+                Combat.StepRepairs();
                 extractionPlayers.Clear();
                 AllPlayersInExtraction = false;
                 bool allInside = true;
@@ -285,6 +288,7 @@ namespace HowToSuck
             finally { suction.CancelStep(); Combat.EndStep(); inStep = false; SnapshotChanged?.Invoke(); }
         }
 
+        internal PlayerIntent RecoveryIntent(int id) => inStep && inputs.TryGetValue(id,out var buffer) ? buffer.Read(stepNow) : default;
         internal bool TryRecoverCombatPlayer(PlayerMotor motor,Vector3 position,double now)
         {
             if(!inStep||now!=stepNow||!IsRunning||motor==null||!players.TryGetValue(motor.PlayerId,out var current)||current!=motor||!inputs.TryGetValue(motor.PlayerId,out var buffer))return false;

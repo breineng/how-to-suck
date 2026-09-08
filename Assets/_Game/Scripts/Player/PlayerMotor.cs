@@ -36,6 +36,15 @@ namespace HowToSuck
         public PlayerIntent LastIntent { get; private set; }
         public bool IsGrounded => HasMovementAuthority ? controller != null && controller.isGrounded : replicaGrounded;
         public bool HasMovementAuthority { get; private set; } = true;
+        public bool IsDowned { get; private set; }
+        public float FireCharge { get; private set; }
+        public void PresentFireCharge(float charge) => FireCharge = Mathf.Clamp01(charge);
+        public void SetDowned(bool downed)
+        {
+            IsDowned = downed;
+            if (controller != null) controller.enabled = HasMovementAuthority && !downed;
+            if (downed) { FireCharge = 0; SuspendForRecovery(LastIntent); }
+        }
         private bool roleBound, replicaGrounded;
         public void BindMovementAuthority(bool authority)
         {
@@ -57,6 +66,10 @@ namespace HowToSuck
         // Replicas receive this presentation value; an interpolated render root is never divided by fixed time.
         public float PlanarSpeed { get; private set; }
         public Vector3 CameraLocalMount => Settings!=null?new Vector3(0,Settings.EyeHeight,Settings.CameraForwardOffset):new Vector3(0,1.62f,0);
+        // The rendered eye includes the authored forward offset. Tool mounts retain
+        // their independent hand/arm pose; targeting originates at the actual eye.
+        public Ray AimRay => new Ray(transform.position+Quaternion.Euler(0,LastIntent.Yaw,0)*CameraLocalMount,
+            Quaternion.Euler(LastIntent.Pitch,LastIntent.Yaw,0)*Vector3.forward);
 
         private CharacterController controller;
         private float verticalVelocity;
@@ -96,7 +109,7 @@ namespace HowToSuck
 
         public bool RecoverAt(Vector3 position, PlayerIntent current)
         {
-            if (!initialized || controller == null || !controller.enabled || !gameObject.activeInHierarchy ||
+            if (!initialized || controller == null || (!controller.enabled && !IsDowned) || !gameObject.activeInHierarchy ||
                 contactWorld == null || !contactWorld.HasAuthority || !contactWorld.IsRunning ||
                 !contactWorld.Players.TryGetValue(PlayerId, out var registered) || registered != this ||
                 current.RunId != contactWorld.RunId || !current.IsFinite ||
@@ -104,7 +117,7 @@ namespace HowToSuck
                 !WorldBoundsRules.Finite(position.z)) return false;
             controller.enabled = false;
             try { transform.position = position; }
-            finally { controller.enabled = true; }
+            finally { IsDowned = false; controller.enabled = HasMovementAuthority; }
             SuspendForRecovery(current);
             return true;
         }

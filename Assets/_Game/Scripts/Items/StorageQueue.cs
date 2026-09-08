@@ -12,6 +12,7 @@ namespace HowToSuck
         internal bool Closed { get; private set; }
         internal int Count => stored.Count;
         internal int Reserved => reserved.Count;
+        internal T At(int index) => index >= 0 && index < stored.Count ? stored[index].Value : null;
         internal bool HasSpace => !Closed && Count + Reserved < Capacity;
         internal StorageQueue(string run, int capacity)
         {

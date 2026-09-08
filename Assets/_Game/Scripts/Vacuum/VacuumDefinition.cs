@@ -11,6 +11,7 @@ namespace HowToSuck
         public float IntakeSize=.45f;
         public long Price;
         public GameObject ViewPrefab;
+        public Sprite Preview;
         public bool TryValidate(out string error)
         {
             error=null;

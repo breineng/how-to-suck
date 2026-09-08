@@ -12,6 +12,10 @@ namespace HowToSuck
         public bool IsBoss;
         public EnemyAttackKind AttackKind;
         public int BaseHealth=40;
+        [Range(1,100)] public int ContactDamage=18;
+        [Range(1,100)] public int RangedDamage=14;
+        [Range(2,12)] public float LeapSpeed=7;
+        [Range(2,8)] public float LeapHeightVelocity=4.5f;
         public float MoveSpeed=2.2f, DetectionRange=8, AttackRange=1.5f, HomeRadius=12;
         public float TellSeconds=.65f, AttackSeconds=.8f, RecoverySeconds=1.2f;
         public float ChargeSpeed=4.5f, ProjectileSpeed=5, ProjectileLifetime=2.5f;
@@ -25,7 +29,9 @@ namespace HowToSuck
                 Enum.IsDefined(typeof(EnemyAttackKind),AttackKind)&&BaseHealth>0&&BaseHealth<=10000&&
                 Positive(MoveSpeed)&&Positive(DetectionRange)&&Positive(AttackRange)&&Positive(HomeRadius)&&
                 Positive(TellSeconds)&&Positive(AttackSeconds)&&Positive(RecoverySeconds)&&Positive(ChargeSpeed)&&
-                Positive(ProjectileSpeed)&&Positive(ProjectileLifetime)&&Positive(SweepRange)&&Positive(SweepTellSeconds)&&Positive(SweepAttackSeconds);
+                Positive(ProjectileSpeed)&&Positive(ProjectileLifetime)&&Positive(SweepRange)&&Positive(SweepTellSeconds)&&Positive(SweepAttackSeconds)&&
+                ContactDamage>=1&&ContactDamage<=100&&RangedDamage>=1&&RangedDamage<=100&&
+                Positive(LeapSpeed)&&LeapSpeed<=12&&Positive(LeapHeightVelocity)&&LeapHeightVelocity<=8;
             valid &= Enum.IsDefined(typeof(BossChapterPattern),ChapterIIPattern) &&
                 (ChapterIIPattern==BossChapterPattern.None || IsBoss&&!HasSweep&&
                  (ChapterIIPattern==BossChapterPattern.AlternatingLunge&&AttackKind==EnemyAttackKind.Melee ||

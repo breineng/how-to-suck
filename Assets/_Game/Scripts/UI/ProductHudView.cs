@@ -40,9 +40,11 @@ namespace HowToSuck
     {
         public GameObject Root, ExtractionPanel, HoldPanel, BlockedPanel;
         public TMP_Text DeliveredText, QuotaText, TimerText, BossTitleText, BossDetailText;
+        public TMP_Text MoneyDeltaText;
         public TMP_Text StorageText, ReservedText, NextItemText, SuitCountText, SuitStatusText;
         public TMP_Text CollectHintText, FireHintText, ExtractionText, BlockedText;
         public Image QuotaFill, HoldFill;
+        public Image SuitHealthFill;
         [Tooltip("Three authored fill images; the empty outlines remain in the prefab.")]
         public Image[] SuitSegments = new Image[3];
         public RectTransform SlotContainer;
@@ -57,12 +59,18 @@ namespace HowToSuck
         int visibleSlots = -1;
         bool hasState;
         ProductHudState previous;
+        double displayedMoney,moneyFrom;
+        long moneyTarget,moneyDelta;
+        float moneyAt=-10;
+        Vector2 deltaPosition;
+        TMP_Text boundMoneyDelta;
 
         public void SetVisible(bool visible) => Active(Root, visible);
 
         public void Present(in ProductHudState value)
         {
             var state = value.Contract;
+            if(boundMoneyDelta!=MoneyDeltaText){boundMoneyDelta=MoneyDeltaText;if(boundMoneyDelta!=null)deltaPosition=boundMoneyDelta.rectTransform.anchoredPosition;}
             bool identityChanged = !hasState || previous.Contract.RunId != state.RunId || previous.OwnerId != value.OwnerId;
             bool knownStorage = value.OwnerId > 0 && value.Storage.IsKnown &&
                 value.Storage.OwnerId == value.OwnerId && value.Storage.RunId == state.RunId;
@@ -71,7 +79,19 @@ namespace HowToSuck
 
             if (identityChanged || previous.Contract.DeliveredValue != state.DeliveredValue || previous.Contract.Quota != state.Quota)
             {
-                Text(DeliveredText, $"${state.DeliveredValue:N0}");
+                if(identityChanged||state.DeliveredValue<moneyTarget)
+                {
+                    displayedMoney=moneyFrom=moneyTarget=state.DeliveredValue;moneyAt=-10;moneyDelta=0;
+                    Text(DeliveredText,$"${state.DeliveredValue:N0}");
+                    if(MoneyDeltaText!=null){MoneyDeltaText.rectTransform.anchoredPosition=deltaPosition;MoneyDeltaText.alpha=0;}
+                }
+                else if(state.DeliveredValue>moneyTarget)
+                {
+                    moneyDelta=(Time.unscaledTime-moneyAt<.45f?moneyDelta:0)+state.DeliveredValue-moneyTarget;
+                    moneyFrom=displayedMoney;moneyTarget=state.DeliveredValue;moneyAt=Time.unscaledTime;
+                    Text(MoneyDeltaText,$"+${moneyDelta:N0}");
+                    HowToSuck.Audio.GameAudioRoot.Current?.Action(HowToSuck.Audio.SfxId.MoneyAdded,Vector3.zero);
+                }
                 Text(QuotaText, $"/ ${state.Quota:N0}");
                 Fill(QuotaFill, state.Quota > 0 ? (float)((double)state.DeliveredValue / state.Quota) : 0f);
             }
@@ -86,8 +106,8 @@ namespace HowToSuck
             {
                 bool delivered = state.Boss.IsDelivered;
                 bool defeated = state.Boss.Status == BossObjectiveStatus.Defeated;
-                Text(BossTitleText, delivered ? "БОСС ДОСТАВЛЕН" : defeated ? "БОСС ПОВЕРЖЕН" : "ДОСТАВЬТЕ БОССА");
-                Text(BossDetailText, delivered ? "Цель выполнена" : defeated ? "Доставьте тело в грузовик" : "Победите босса и доставьте тело в грузовик");
+                Text(BossTitleText, delivered ? "БОСС ДОСТАВЛЕН" : defeated ? "БОСС ПОВЕРЖЕН" : state.Boss.Status==BossObjectiveStatus.Unassigned?"БОСС СКРЫВАЕТСЯ":"ДОСТАВЬТЕ БОССА");
+                Text(BossDetailText, delivered ? "Цель выполнена" : defeated ? "Выстрелите телом в приёмник грузовика" : state.Boss.Status==BossObjectiveStatus.Unassigned?"Появится после сдачи более 50% квоты":"Победите босса и доставьте тело в грузовик");
             }
 
             if (identityChanged || !previous.Storage.SameValues(value.Storage)) PresentStorage(value.Storage, knownStorage);
@@ -105,7 +125,7 @@ namespace HowToSuck
                 previous.Storage.OwnerId == previous.OwnerId && previous.Storage.RunId == previous.Contract.RunId &&
                 previous.Storage.Count > 0 && previous.Storage.NextCargoRole == CargoRole.BossBody;
             if (identityChanged || previous.FireKey != value.FireKey || bossNext != previousBossNext)
-                Text(FireHintText, Key(value.FireKey) + (bossNext ? " — ВЫПУСТИТЬ БОССА" : " — ВЫСТРЕЛИТЬ"));
+                Text(FireHintText, Key(value.FireKey) + (bossNext ? " — ВЫПУСТИТЬ БОССА" : " — ВЫСТРЕЛ · УДЕРЖАТЬ — ЗАРЯД"));
             if (identityChanged || previous.FireBlocked != value.FireBlocked)
             {
                 Active(BlockedPanel, value.FireBlocked);
@@ -150,8 +170,12 @@ namespace HowToSuck
                 }
             Text(NextItemText, nextName);
             for (int i = 0; i < visibleSlots && i < slots.Count; i++)
+            {
+                Sprite icon=null;string type=stored.TypeAt(i);
+                if(ItemIcons!=null)foreach(var entry in ItemIcons)if(entry.TypeId==type){icon=entry.Sprite;break;}
                 slots[i].Present(i < stored.Count, i >= stored.Count && i < stored.Count + stored.Reserved,
-                    i == 0 && stored.Count > 0, i == 0 ? nextIcon : null, Paper, Accent, Muted);
+                    i == 0 && stored.Count > 0, icon, Paper, Accent, Muted);
+            }
         }
 
         void EnsureSlots(int capacity)
@@ -189,20 +213,34 @@ namespace HowToSuck
 
         void PresentSuit(PlayerSuitPresentation protection, bool known)
         {
-            Text(SuitCountText, known ? $"{protection.State.Segments} / 3" : "— / 3");
-            Text(SuitStatusText, !known ? "" : protection.State.RecoveryPending ? "Возвращение к грузовику · −15 с" :
+            Text(SuitCountText, known ? $"{protection.State.Health}%" : "—");
+            Fill(SuitHealthFill,known?protection.State.Health/100f:0);
+            Text(SuitStatusText, !known ? "" : protection.State.RecoveryPending ? "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ" :
                 protection.InvulnerableAtObservation ? "ЗАЩИТА" : "");
-            Tint(SuitCountText, known && protection.State.Segments <= 1 ? Accent : Paper);
+            Tint(SuitCountText, known && protection.State.Health <= 25 ? Accent : Paper);
             if (SuitSegments == null) return;
             for (int i = 0; i < SuitSegments.Length; i++)
                 if (SuitSegments[i] != null)
                 {
-                    bool filled = known && i < 3 && i < protection.State.Segments;
+                    bool filled = SuitHealthFill==null&&known&&i<3&&i*34<protection.State.Health;
                     if (SuitSegments[i].enabled != filled) SuitSegments[i].enabled = filled;
                 }
         }
 
         static string Key(string key) => string.IsNullOrEmpty(key) ? "—" : key;
+        void LateUpdate()
+        {
+            if(!hasState)return;
+            float elapsed=Time.unscaledTime-moneyAt,t=Mathf.Clamp01(elapsed/.6f);
+            displayedMoney=moneyFrom+(moneyTarget-moneyFrom)*(1-Math.Pow(1-t,3));
+            Text(DeliveredText,$"${Math.Round(displayedMoney):N0}");
+            if(DeliveredText!=null)DeliveredText.rectTransform.localScale=Vector3.one*(1+Mathf.Sin(t*Mathf.PI)*.08f);
+            if(MoneyDeltaText!=null)
+            {
+                MoneyDeltaText.alpha=elapsed<.7f?1:Mathf.Clamp01((1.4f-elapsed)/.7f);
+                MoneyDeltaText.rectTransform.anchoredPosition=deltaPosition+Vector2.up*Mathf.Clamp(elapsed,0,1.4f)*18;
+            }
+        }
         static void Active(GameObject target, bool value) { if (target != null && target.activeSelf != value) target.SetActive(value); }
         static void Text(TMP_Text label, string value) { if (label != null && label.text != value) label.text = value; }
         static void Tint(Graphic graphic, Color value) { if (graphic != null && graphic.color != value) graphic.color = value; }

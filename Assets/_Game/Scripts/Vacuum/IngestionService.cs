@@ -85,19 +85,26 @@ namespace HowToSuck
             requests.Sort((a,b)=>{int result=a.Distance.CompareTo(b.Distance);if(result!=0)return result;result=a.Receiver.IntakeId.CompareTo(b.Receiver.IntakeId);return result!=0?result:a.Item.InstanceId.CompareTo(b.Item.InstanceId);});
             foreach(var request in requests)TryBegin(request.Item,request.Receiver,now);
         }
-        private bool TryBegin(SuckableObject item,IntakeReceiver receiver,double now)
+        internal bool TryCaptureTruckShot(SuckableObject item,TruckIntake truck,Vector3 from,Vector3 to,double now)
         {
-            if(!running || item==null || receiver==null || !receiver.CanAdmit || !receiver.Accepts(item) ||
+            if(truck==null||!truck.isActiveAndEnabled||truck.Receiver==null||!truck.Receiver.IsTruck||
+                !TruckDeliveryGeometry.CrossesOpening(truck,item,from,to))return false;
+            return TryBegin(item,truck.Receiver,now,true);
+        }
+        private bool TryBegin(SuckableObject item,IntakeReceiver receiver,double now,bool crossedOpening=false)
+        {
+            if(!running || double.IsNaN(now) || double.IsInfinity(now) || item==null || receiver==null ||
+                !(crossedOpening&&receiver.IsTruck?receiver.CanReceive:receiver.CanAdmit) || !receiver.Accepts(item) ||
                 !Loose(item) || item.WorldFrozen || item.RunId!=runId || item.InstanceId==0 ||
                 !registry.Items.TryGetValue(item.InstanceId,out var registered) || registered!=item || completed.Contains(item.InstanceId))return false;
             if(item.CargoRole==CargoRole.OrdinaryLoot ? item.Value<=0 : item.CargoRole!=CargoRole.BossBody || item.Value!=0 || !item.BossKey.IsValid || item.BossKey.RunId!=runId)return false;
             if(!receiver.IsTruck && (receiver.Storage.RunId!=runId || string.IsNullOrWhiteSpace(receiver.Emitter.Definition.TierId)))return false;
-            if(!suction.TryFindIntakeSurface(receiver.Emitter,item,receiver.Position,receiver.AdmissionRadius,out _))return false;
+            if(!crossedOpening&&!suction.TryFindIntakeSurface(receiver.Emitter,item,receiver.Position,receiver.AdmissionRadius,out _))return false;
             // State and slot are committed synchronously, before processing the next request.
             var snapshot=new IngestionSnapshot(item,receiver,now);
             if(!snapshot.IsTruck && (snapshot.Storage==null || !snapshot.Storage.Reserve(snapshot)))return false;
             if(!item.TryTransition(item.State,SuckableState.Ingesting)) { snapshot.Storage?.Cancel(snapshot); return false; }
-            receiver.Current=snapshot;item.Ingestion=snapshot;active.Add(snapshot);
+            receiver.Attach(snapshot);item.Ingestion=snapshot;active.Add(snapshot);
             // Cosmetic fact only after the real slot/state/job commit; exhausted audio IDs never reject gameplay.
             if(audioAdmissionOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
                 runId,Audio.CommittedAudioKind.Ingestion,++audioAdmissionOccurrence,item.InstanceId,0,snapshot.PlayerId,snapshot.IntakeId,
@@ -109,7 +116,7 @@ namespace HowToSuck
         private static bool ReceiverStillOwns(IngestionSnapshot snapshot)
         {
             var receiver=snapshot.Receiver;
-            return snapshot.Item!=null && ReferenceEquals(snapshot.Item.Ingestion,snapshot) && receiver!=null && receiver.isActiveAndEnabled && receiver.Current==snapshot && receiver.IsTruck==snapshot.IsTruck &&
+            return snapshot.Item!=null && ReferenceEquals(snapshot.Item.Ingestion,snapshot) && receiver!=null && receiver.isActiveAndEnabled && receiver.Owns(snapshot) && receiver.IsTruck==snapshot.IsTruck &&
                 receiver.IntakeId==snapshot.IntakeId && receiver.PlayerId==snapshot.PlayerId && receiver.Emitter!=null &&
                 receiver.Emitter.isActiveAndEnabled && receiver.Emitter.Definition!=null &&
                 (snapshot.IsTruck || snapshot.Storage!=null && !snapshot.Storage.IsDetached && receiver.Storage==snapshot.Storage);
@@ -131,7 +138,7 @@ namespace HowToSuck
         }
         private static void ReleaseSlot(IngestionSnapshot snapshot)
         {
-            if(snapshot.Receiver!=null && ReferenceEquals(snapshot.Receiver.Current,snapshot))snapshot.Receiver.Current=null;
+            if(snapshot.Receiver!=null)snapshot.Receiver.Release(snapshot);
             if(snapshot.Item!=null && ReferenceEquals(snapshot.Item.Ingestion,snapshot))snapshot.Item.Ingestion=null;
         }
         private void Cancel(IngestionSnapshot snapshot)

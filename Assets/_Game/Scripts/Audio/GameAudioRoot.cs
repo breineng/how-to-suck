@@ -23,6 +23,7 @@ namespace HowToSuck.Audio
         public static GameAudioRoot Current {get;private set;}
         public event Action<AuthorityImpactCue> AuthorityImpact;
         public event Action<CommittedAudioReceipt> AuthorityCommittedAudio;
+        public event Action<CommittedAudioFact> Presented;
         public int CommittedQueueDrops {get;private set;}
         private readonly Queue<PendingCommitted> pendingCommitted=new Queue<PendingCommitted>();
         private readonly struct PendingCommitted {public readonly CommittedAudioReceipt Receipt;public readonly double Received;
@@ -36,7 +37,7 @@ namespace HowToSuck.Audio
 #endif
         private readonly AudioEventLedger ledger=new AudioEventLedger();
         private readonly HashSet<VacuumAudioEmitter> loops=new HashSet<VacuumAudioEmitter>();
-        private readonly float[] volumes={.7f,1,1,1,1};
+        private readonly float[] volumes={.7f,.25f,1,1,.5f};
         private sealed class Voice{public AudioSource Source;public AudioBindings.Entry Entry;public float Gain;public Transform Follow;public bool Spatial;}
         private readonly Voice[] voices=new Voice[12];
         private bool ready,wasPlaying;
@@ -55,7 +56,7 @@ namespace HowToSuck.Audio
             if(Bindings==null||!Bindings.Validate(out error))
             {Debug.LogError("Audio bindings are missing or invalid: "+(Bindings==null?"missing":error),this);enabled=false;return;}
             for(int i=0;i<voices.Length;i++)voices[i]=new Voice{Source=CreateSource(transform,"SFX voice "+i)};
-            ready=true;ApplyMixerSettings();RefreshState();
+            ready=true;ApplyMixerSettings();RefreshState();MenuMusicPlayer.Ensure();
         }
         public static AudioSource CreateSource(Transform parent,string name)
         {
@@ -81,7 +82,7 @@ namespace HowToSuck.Audio
         {
             float sum=0;foreach(var voice in voices)if(voice!=null&&voice.Entry!=null&&voice.Source.isPlaying)
                 sum+=voice.Entry.Gain*voice.Gain*volumes[(int)voice.Entry.Bus];
-            float budget=sum>.40f?.40f/sum:1;
+            float budget=sum>.95f?.95f/sum:1;
             foreach(var voice in voices)if(voice!=null&&voice.Entry!=null)
                 voice.Source.volume=voice.Entry.Gain*voice.Gain*SourceBusGain(voice.Entry.Bus)*budget;
         }
@@ -185,6 +186,8 @@ namespace HowToSuck.Audio
             var fact=receipt.Fact;if(!Playing||fact.Run!=Session.RunId||!fact.IsValid)return;
             int local=Session.LocalPlayer!=null?Session.LocalPlayer.PlayerId:0;
             if(!fact.CanPlayForLocal(local))return;
+            var handlers=Presented;if(handlers!=null)foreach(Action<CommittedAudioFact> handler in handlers.GetInvocationList())
+                try{handler(fact);}catch(Exception){TransportCueErrors++;}
             SfxId id;bool spatial=true;float gain=1;Transform follow=null;
             switch(fact.Kind)
             {
@@ -192,11 +195,11 @@ namespace HowToSuck.Audio
                     id=fact.Truck?Variant(SfxId.TruckSwallowA,SfxId.TruckSwallowB,fact.Item):fact.Size<=.2f?SfxId.SwallowTiny:fact.Size<=.6f?SfxId.SwallowMedium:SfxId.SwallowHeavy;
                     foreach(var loop in loops)if(loop!=null&&(fact.Truck?loop.IsTruck:!loop.IsTruck&&loop.PlayerId==fact.Owner)){follow=loop.Anchor;break;}
                     spatial=fact.Truck||fact.Owner!=local;break;
-                case CommittedAudioKind.ShotLaunch:id=SfxId.SwallowTiny;gain=.7f;break;
-                case CommittedAudioKind.EnemyHit:id=fact.Amount>=6?SfxId.ImpactHeavyA:SfxId.ImpactSmallA;gain=.65f;break;
-                case CommittedAudioKind.EnemyDefeat:id=SfxId.TruckSwallowB;gain=.65f;break;
-                case CommittedAudioKind.SuitHit:id=SfxId.ImpactWoodA;gain=.8f;spatial=false;break;
-                case CommittedAudioKind.SuitRecovered:id=SfxId.QuotaReady;gain=.6f;spatial=false;break;
+                case CommittedAudioKind.ShotLaunch:id=SfxId.ShotBlast;spatial=fact.Owner!=local;break;
+                case CommittedAudioKind.EnemyHit:id=SfxId.EnemyDamage;gain=.9f;break;
+                case CommittedAudioKind.EnemyDefeat:id=SfxId.EnemyBurst;break;
+                case CommittedAudioKind.SuitHit:id=SfxId.PlayerDamage;spatial=false;break;
+                case CommittedAudioKind.SuitRecovered:id=SfxId.Repair;spatial=false;break;
                 default:return;
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -207,6 +210,8 @@ namespace HowToSuck.Audio
         }
         public void Rattle(VacuumAudioEmitter owner,float load)
         {if(Playing&&Registered(owner))Play(SfxId.VacuumRattle,owner.Anchor.position,!owner.IsLocal,Mathf.Lerp(.3f,.7f,load),owner.Anchor);}
+        public void Action(SfxId id,Vector3 point,bool spatial=false,float gain=1)
+        {if(Playing||id==SfxId.UiClick||id==SfxId.UiHover)Play(id,point,spatial,gain);}
         public void QuotaReached(string run){if(Playing&&Session.ContractState.QuotaReached&&ledger.Signal(run,SfxId.QuotaReady))Play(SfxId.QuotaReady,Vector3.zero,false,1);}
         public void ContractSucceeded(string run){if(Session!=null&&Session.ContractState.Phase==ContractPhase.Succeeded&&ledger.Signal(run,SfxId.ExtractSuccess))Play(SfxId.ExtractSuccess,Vector3.zero,false,1);}
         public void ContractTimedOut(string run){if(Session!=null&&Session.ContractState.Phase==ContractPhase.Failed&&ledger.Signal(run,SfxId.ContractFail))Play(SfxId.ContractFail,Vector3.zero,false,1);}

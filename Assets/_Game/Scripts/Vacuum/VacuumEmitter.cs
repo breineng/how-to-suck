@@ -15,6 +15,7 @@ namespace HowToSuck
         public Vector3 Forward => Source!=null ? Source.forward : transform.forward;
         public int LastAffectedCount { get; internal set; }
         public float LastLoad { get; internal set; }
+        public SuckableObject FocusedItem { get; internal set; }
         public bool HasClearSourcePath()
         {
             if(Physics.CheckSphere(Position,.015f,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))return false;

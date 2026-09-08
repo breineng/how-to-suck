@@ -19,13 +19,13 @@ namespace HowToSuck
                 Dispose();
                 current=new IngestionSnapshot(item,receiver,intake,player,truck,started,duration,size,start,rotation,scale,target,targetRotation,end,clock);
                 item.Ingestion=current;
-                if(receiver!=null)receiver.Current=current;
+                if(receiver!=null)receiver.Attach(current);
             }
             current.TargetPosition=target;current.TargetRotation=targetRotation;current.EndPosition=end;
         }
         public void Dispose()
         {
-            if(current!=null&&current.Receiver!=null&&ReferenceEquals(current.Receiver.Current,current))current.Receiver.Current=null;
+            if(current!=null&&current.Receiver!=null)current.Receiver.Release(current);
             if(item!=null&&ReferenceEquals(item.Ingestion,current))item.Ingestion=null;
             current=null;
         }

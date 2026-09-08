@@ -8,6 +8,8 @@ namespace HowToSuck
     {
         public Button PreviousButton,NextButton;
         public TMP_Text NameText,IndexText,DetailsText,RecommendationText,RoleText;
+        public Image MapPreview;
+        public TMP_Text QuotaValue,TimeValue,FailureValue;
         public SessionMenuView Menu;
         public ShopView Shop;
         [Tooltip("Optional existing guest-ready action. Authored by the networking lobby without a Runtime-to-Networking dependency.")]
@@ -23,7 +25,7 @@ namespace HowToSuck
             // Nine optional actions fit the bitmask. Runtime visibility still owns host/guest and modal availability.
             navigationButtons=new[]{PreviousButton,NextButton,Menu!=null?Menu.StartButton:null,ReadyNavigationButton,
                 Menu!=null?Menu.BackButton:null,Shop!=null?Shop.OpenButton:null,
-                localMenu!=null?localMenu.SettingsButton:null,localMenu!=null?localMenu.HelpButton:null,localMenu!=null?localMenu.CreditsButton:null};navigationMask=-1;
+                localMenu!=null?localMenu.SettingsButton:null};navigationMask=-1;
             session.Changed+=Refresh;PreviousButton.onClick.AddListener(Previous);NextButton.onClick.AddListener(Next);Refresh();
         }
         private void Previous()=>Change(-1);
@@ -68,11 +70,16 @@ namespace HowToSuck
             if(NameText==null)return;
             if(selected==null){NameText.text="Выбор карты";IndexText.text="";DetailsText.text=session!=null&&session.HasAuthority?"Доступная карта не найдена.":"Ожидаем выбор хозяина…";RecommendationText.text="";RoleText.text="Карту и начало контракта выбирает хозяин.";return;}
             NameText.text=selected.DisplayName;IndexText.text=(index+1)+" / "+entries.Length;
+            if(MapPreview!=null){MapPreview.sprite=selected.Preview;MapPreview.enabled=selected.Preview!=null;}
             int seconds=Mathf.CeilToInt(selected.TimeLimitSeconds);
+            if(QuotaValue!=null)QuotaValue.text=$"${selected.Quota:N0}";
+            if(TimeValue!=null)TimeValue.text=$"{seconds/60}:{seconds%60:00}";
+            if(FailureValue!=null)FailureValue.text=$"При неудаче: {selected.FailurePercent}% сданной стоимости";
             DetailsText.text=$"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса";
+            if(QuotaValue!=null)DetailsText.text="Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.";
             string current=TierName(session.DisplayedTierId),recommended=TierName(selected.RecommendedTierId);
-            RecommendationText.text=(current!=null?"Оборудование команды: "+current:"Ожидаем оборудование команды…")+
-                (recommended!=null?"\nРекомендуется "+recommended+". Можно играть с любым уровнем.":"\nКарта доступна с любым уровнем оборудования.");
+            RecommendationText.text=(current!=null?"Команда: "+current:"Ожидаем оборудование…")+
+                (recommended!=null?"\nРекомендуется: "+recommended:"\nЛюбая модель");
             bool unlocked=session.DisplayedContractUnlocked(selected.ContractId);
             string prerequisite=CampaignContractAccess.Prerequisite(selected.ContractId),priorName=prerequisite;
             if(entries!=null)foreach(var entry in entries)if(entry!=null&&entry.ContractId==prerequisite)priorName=entry.DisplayName;

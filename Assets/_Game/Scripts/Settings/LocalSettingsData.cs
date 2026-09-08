@@ -8,11 +8,11 @@ namespace HowToSuck
         public LocalVideoSettings Video;
         public LocalBindingOverride[] Bindings=Array.Empty<LocalBindingOverride>();
         public bool AudioMigrationCompleted;
-        public float Master=.7f,Vacuum=1,Truck=1,Impacts=1,UI=1;
+        public float Master=.7f,Vacuum=.25f,Truck=1,Impacts=1,UI=.5f;
         public float MouseSensitivity=.12f;
         public bool InvertY;
         public float FieldOfView=75;
-        public float CameraFeedback;
+        public float CameraFeedback=1f;
         public LocalSettingsData Copy(){var result=(LocalSettingsData)MemberwiseClone();result.Video=Video?.Copy();result.Bindings=GameplayBindingPolicy.Copy(Bindings);return result;}
         private static bool In(float n,float min,float max)=>!float.IsNaN(n)&&!float.IsInfinity(n)&&n>=min&&n<=max;
         public bool Valid=>Schema==2&&(Video==null||Video.Valid)&&GameplayBindingPolicy.ValidateShape(Bindings)&&In(Master,0,1)&&In(Vacuum,0,1)&&In(Truck,0,1)&&In(Impacts,0,1)&&In(UI,0,1)&&

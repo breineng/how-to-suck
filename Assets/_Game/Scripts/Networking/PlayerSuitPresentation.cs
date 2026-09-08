@@ -12,14 +12,14 @@ namespace HowToSuck
         public PlayerSuitPresentation(PlayerSuitSnapshot state,double observedAt,bool frozen)
         {
             GameplayReplicaPolicy.RequireRun(state.RunId);
-            if(!GameplayReplicaPolicy.Player(state.OwnerId)||state.Segments<0||state.Segments>3||
+            if(!GameplayReplicaPolicy.Player(state.OwnerId)||state.Segments<0||state.Segments>100||state.RepairCharges<0||state.RepairCharges>8||!Finite(state.RepairProgress)||state.RepairProgress<0||state.RepairProgress>1||
                 state.RecoveryPending!=(state.Segments==0)||!Finite(state.InvulnerableUntil)||state.InvulnerableUntil<0||!Finite(observedAt)||observedAt<0)
                 throw new ArgumentException("Invalid current-owner suit state or server observation time.");
             State=state;ObservedAt=observedAt;Frozen=frozen;
         }
         private static bool Finite(double time)=>!double.IsNaN(time)&&!double.IsInfinity(time);
         public bool SameValues(PlayerSuitPresentation x)=>State.RunId==x.State.RunId&&State.OwnerId==x.State.OwnerId&&
-            State.Segments==x.State.Segments&&State.RecoveryPending==x.State.RecoveryPending&&State.InvulnerableUntil==x.State.InvulnerableUntil&&ObservedAt==x.ObservedAt&&Frozen==x.Frozen;
+            State.RepairCharges==x.State.RepairCharges&&State.RepairProgress==x.State.RepairProgress&&State.Segments==x.State.Segments&&State.RecoveryPending==x.State.RecoveryPending&&State.InvulnerableUntil==x.State.InvulnerableUntil&&ObservedAt==x.ObservedAt&&Frozen==x.Frozen;
         public static void RequireAdvance(PlayerSuitPresentation previous,PlayerSuitPresentation next)
         {
             if(!next.IsKnown)throw new ArgumentException("Unknown suit is not an accepted snapshot.");

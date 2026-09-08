@@ -29,7 +29,11 @@ namespace HowToSuck
         public ulong BeginTracked(LocalVideoSettings value,double now,int frame,string pendingMessage,string completedMessage,Action<string> listener)
         {
             if(value==null||!value.Valid||double.IsNaN(now)||double.IsInfinity(now))throw new ArgumentException("Invalid display application.");
-            NewRequest();pending=value.Copy();deadline=now+3;issuedFrame=frame;fallback=false;completed=completedMessage;changed=listener;
+            // Returning to a fresh menu must not reapply an already active OS window.
+            bool alreadyApplied=!Pending&&matches(value);
+            NewRequest();completed=completedMessage;changed=listener;
+            if(alreadyApplied){Notify(completed);return Ticket;}
+            pending=value.Copy();deadline=now+3;issuedFrame=frame;fallback=false;
             ulong issued=Ticket;apply(pending.Copy());Notify(pendingMessage);return issued;
         }
         public void DetachListener(ulong ticket){if(IsCurrent(ticket))changed=null;}

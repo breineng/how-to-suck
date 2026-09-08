@@ -63,6 +63,8 @@ namespace HowToSuck
         private void ApplyActual(PendingForce hit,Rigidbody body,Vector3 force,Vector3 point)
         {
             if(force.x==0f&&force.y==0f&&force.z==0f)return;
+            // A handheld lock pulls through the centre of mass so an off-centre ray cannot whip the prop around.
+            if(hit.Source.FocusedItem==hit.Item)point=body.worldCenterOfMass;
             body.AddForceAtPosition(force,point,ForceMode.Force);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Both attraction and any COM stabilizer are actual applied vectors, with their real
@@ -80,6 +82,7 @@ namespace HowToSuck
                     var body=batch.Body;if(body==null)continue;
                     for(int i=batch.Forces.Count-1;i>=0;i--)if(!Live(batch.Forces[i],body))batch.Forces.RemoveAt(i);
                     if(batch.Forces.Count==0)continue;
+                    foreach(var hit in batch.Forces)if(hit.Source.FocusedItem==hit.Item){body.angularVelocity*=Mathf.Exp(-5f*step);break;}
                     batch.Forces.Sort((a,b)=>{int c=a.EmitterId.CompareTo(b.EmitterId);return c!=0?c:a.SourceId.CompareTo(b.SourceId);});
                     float nearest=float.PositiveInfinity;double stiffness=0;var total=new SuctionStepVector(0,0,0);
                     foreach(var hit in batch.Forces){nearest=Mathf.Min(nearest,hit.Distance);stiffness+=hit.Stiffness;total+=D(hit.Force);}
@@ -111,7 +114,39 @@ namespace HowToSuck
         public IReadOnlyList<SuctionContact> Collect(VacuumEmitter source)
         {
             contacts.Clear();seen.Clear();
-            if(source==null || !source.Active || source.Definition==null || source.Range<=0 || !source.HasClearSourcePath()) return contacts;
+            if(source==null)return contacts;
+            if(!source.Active || source.Definition==null || source.Range<=0 || !source.HasClearSourcePath()) {source.FocusedItem=null;return contacts;}
+            var receiver=source.GetComponent<IntakeReceiver>();
+            if(receiver!=null&&!receiver.IsTruck)
+            {
+                if(receiver.Storage==null||!receiver.Storage.HasSpace){source.FocusedItem=null;return contacts;}
+                // Pick with the eye ray, then keep that one physical item while the held pull brings it to the nozzle.
+                var aim=source.OriginGuard!=null?source.OriginGuard:source.Source;
+                Vector3 eye=aim!=null?aim.position:source.Position,forward=aim!=null?aim.forward:source.Forward;
+                var motor=source.GetComponent<PlayerMotor>();
+                if(motor!=null){var ray=motor.AimRay;eye=ray.origin;forward=ray.direction;}
+                var selected=source.FocusedItem;
+                if(selected!=null&&(selected.State!=SuckableState.Available||selected.WorldFrozen||
+                    Vector3.Distance(eye,selected.Body.worldCenterOfMass)>source.Range+selected.RequiredIntakeSize||
+                    Vector3.Angle(forward,selected.Body.worldCenterOfMass-eye)>65))selected=null;
+                if(selected==null&&Physics.Raycast(eye,forward,out var hit,source.Range,blockerMask|LayerMask.GetMask("Enemies"),QueryTriggerInteraction.Ignore))
+                    selected=hit.rigidbody!=null?hit.rigidbody.GetComponent<SuckableObject>():null;
+                source.FocusedItem=selected;
+                if(selected==null||selected.State!=SuckableState.Available||selected.WorldFrozen||selected.RunId!=registry.RunId||
+                    !registry.Items.TryGetValue(selected.InstanceId,out var actual)||actual!=selected)return contacts;
+                Vector3 point=selected.Body.worldCenterOfMass;
+                float best=float.PositiveInfinity;
+                foreach(var c in selected.GameplayColliders)
+                {
+                    if(c==null||!c.enabled)continue;
+                    var p=c.ClosestPoint(source.Position);float distance=Vector3.Distance(p,source.Position);
+                    if(distance>=best||distance>source.Range)continue;
+                    if(distance>.02f&&Physics.Raycast(source.Position,(p-source.Position).normalized,out var block,distance+.015f,blockerMask,QueryTriggerInteraction.Ignore)&&block.rigidbody!=selected.Body)continue;
+                    best=distance;point=p;
+                }
+                if(!float.IsPositiveInfinity(best))contacts.Add(new SuctionContact(selected,point,best));
+                return contacts;
+            }
             int count;
             while(true)
             {
@@ -125,6 +160,7 @@ namespace HowToSuck
                 var collider=overlap[i];var body=collider.attachedRigidbody;
                 if(body==null || !seen.Add(body))continue;
                 var item=body.GetComponent<SuckableObject>();
+                if(receiver!=null&&receiver.IsTruck&&(item==null||item.State!=SuckableState.InFlight||item.DirectedIntakeId!=receiver.IntakeId))continue;
                 if(item==null || item.InstanceId==0 || item.RunId!=registry.RunId || !registry.Items.TryGetValue(item.InstanceId,out var registered) || registered!=item || (item.State!=SuckableState.Available && item.State!=SuckableState.InFlight) || item.WorldFrozen)continue;
                 if(TryFindSurface(source,item,out Vector3 point))
                     contacts.Add(new SuctionContact(item,point,Vector3.Distance(source.Position,point)));

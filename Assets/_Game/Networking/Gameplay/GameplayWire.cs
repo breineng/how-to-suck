@@ -10,6 +10,7 @@ namespace HowToSuck.Networking
         public uint Sequence;
         public uint Jump;
         public uint Fire;
+        public bool FireHeld;
         public Vector2 Move;
         public float Yaw;
         public float Pitch;
@@ -24,6 +25,7 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Sequence);
             s.SerializeValue(ref Jump);
             s.SerializeValue(ref Fire);
+            s.SerializeValue(ref FireHeld);
             s.SerializeValue(ref Move);
             s.SerializeValue(ref Yaw);
             s.SerializeValue(ref Pitch);
@@ -38,6 +40,7 @@ namespace HowToSuck.Networking
             Sequence.Equals(x.Sequence) &&
             Jump.Equals(x.Jump) &&
             Fire.Equals(x.Fire) &&
+            FireHeld.Equals(x.FireHeld) &&
             Move.Equals(x.Move) &&
             Yaw.Equals(x.Yaw) &&
             Pitch.Equals(x.Pitch) &&
@@ -60,6 +63,7 @@ namespace HowToSuck.Networking
         public float Pitch;
         public float Vertical;
         public float PlanarSpeed;
+        public float FireCharge;
         public bool Grounded;
         public bool Sprint;
         public bool Vacuum;
@@ -71,6 +75,9 @@ namespace HowToSuck.Networking
         public FixedString64Bytes StorageNextType;
         public byte StorageNextRole;
         public int SuitSegments;
+        public FixedString4096Bytes StorageTypes;
+        public int RepairCharges;
+        public float RepairProgress;
         public bool SuitRecoveryPending;
         public double SuitInvulnerableUntil;
         public double SuitObservedAt;
@@ -89,6 +96,7 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Pitch);
             s.SerializeValue(ref Vertical);
             s.SerializeValue(ref PlanarSpeed);
+            s.SerializeValue(ref FireCharge);
             s.SerializeValue(ref Grounded);
             s.SerializeValue(ref Sprint);
             s.SerializeValue(ref Vacuum);
@@ -100,6 +108,7 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref StorageNextType);
             s.SerializeValue(ref StorageNextRole);
             s.SerializeValue(ref SuitSegments);
+            s.SerializeValue(ref StorageTypes);s.SerializeValue(ref RepairCharges);s.SerializeValue(ref RepairProgress);
             s.SerializeValue(ref SuitRecoveryPending);
             s.SerializeValue(ref SuitInvulnerableUntil);
             s.SerializeValue(ref SuitObservedAt);
@@ -118,6 +127,7 @@ namespace HowToSuck.Networking
             Pitch.Equals(x.Pitch) &&
             Vertical.Equals(x.Vertical) &&
             PlanarSpeed.Equals(x.PlanarSpeed) &&
+            FireCharge.Equals(x.FireCharge) &&
             Grounded.Equals(x.Grounded) &&
             Sprint.Equals(x.Sprint) &&
             Vacuum.Equals(x.Vacuum) &&
@@ -128,7 +138,8 @@ namespace HowToSuck.Networking
             StorageCapacity.Equals(x.StorageCapacity) &&
             StorageNextType.Equals(x.StorageNextType) &&
             StorageNextRole.Equals(x.StorageNextRole) &&
-            SuitSegments.Equals(x.SuitSegments) &&
+            SuitSegments.Equals(x.SuitSegments) && StorageTypes.Equals(x.StorageTypes) &&
+            RepairCharges==x.RepairCharges && RepairProgress.Equals(x.RepairProgress) &&
             SuitRecoveryPending.Equals(x.SuitRecoveryPending) &&
             SuitInvulnerableUntil.Equals(x.SuitInvulnerableUntil) &&
             SuitObservedAt.Equals(x.SuitObservedAt) &&

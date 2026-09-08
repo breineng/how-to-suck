@@ -11,6 +11,14 @@ namespace HowToSuck
         private readonly SuckableObject item;
         private readonly LootKey key;
         private readonly Shape[] shapes;
+        internal bool SupportsSweptCcd
+        {
+            get
+            {
+                foreach (var shape in shapes) if (shape.Mesh != null) return false;
+                return true;
+            }
+        }
         private sealed class Shape
         {
             internal Collider Collider;

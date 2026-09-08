@@ -8,10 +8,13 @@ namespace HowToSuck
     {
         public readonly string RunId;
         public readonly int OwnerId, Segments;
+        public int Health=>Segments;
+        public readonly int RepairCharges;
+        public readonly float RepairProgress;
         public readonly double InvulnerableUntil;
         public readonly bool RecoveryPending;
-        public PlayerSuitSnapshot(string run,int owner,int segments,double until,bool pending)
-        {RunId=run;OwnerId=owner;Segments=segments;InvulnerableUntil=until;RecoveryPending=pending;}
+        public PlayerSuitSnapshot(string run,int owner,int segments,double until,bool pending,int repairs=0,float repairProgress=0)
+        {RunId=run;OwnerId=owner;Segments=segments;InvulnerableUntil=until;RecoveryPending=pending;RepairCharges=repairs;RepairProgress=repairProgress;}
     }
     // One authority world owns the clock, attacks, suits, recovery and enemy/cargo lifetimes.
     // MonoBehaviour animation/collision callbacks cannot advance this service.
@@ -31,7 +34,16 @@ namespace HowToSuck
         private readonly List<Pose> cargoCandidates=new List<Pose>();
         private readonly List<SuckableObject> recoverCargo=new List<SuckableObject>();
         private readonly Dictionary<ulong,double> cargoRetry=new Dictionary<ulong,double>();
-        private sealed class Suit {public int Segments=3;public double InvulnerableUntil,RetryAt;public bool Pending;public ulong AudioOccurrence;}
+        private sealed class Suit {public int Segments=100,UsedRepairs,Reviver;public double InvulnerableUntil,RetryAt,RepairStarted=-1;public bool Pending,SelfReviveArmed;public Vector3 DownPosition;public ulong AudioOccurrence;}
+        public const double ReviveSeconds=3;
+        public const double SelfRevivePenalty=15;
+        public const float ReviveDistance=2.2f;
+        private sealed class Dormant {public EnemySpawnPoint Spawn;public SuckableObject Cover;public Vector3 Position;public ulong Id;public bool Awakened;}
+        private readonly List<Dormant> dormant=new List<Dormant>();
+        private EnemySpawnPoint bossSpawn;
+        private ulong bossId;
+        private int encounterCrew;
+        private int EarnedRepairs=>1+(contract!=null?(int)Math.Min(3,contract.State.DeliveredValue*4/Math.Max(1,contract.State.Quota)):0);
         public IReadOnlyDictionary<ulong,EnemyActor> Actors=>actors;
         public bool AdvancedEncounter=>contract!=null&&contract.State.ContractId.EndsWith("_ii",StringComparison.Ordinal);
         public IReadOnlyDictionary<int,PlayerMotor> Players=>world.Players;
@@ -42,7 +54,8 @@ namespace HowToSuck
         public bool RegisteredItem(SuckableObject item)=>item!=null&&item.RunId==run&&world.Loot.Items.TryGetValue(item.InstanceId,out var actual)&&actual==item;
         public bool CanDefeat(BossKey key)=>contract!=null&&contract.State.Boss.Status==BossObjectiveStatus.Active&&contract.State.Boss.Key.Equals(key);
         public bool RequiresRecovery(int owner)=>suits.TryGetValue(owner,out var suit)&&suit.Pending;
-        public PlayerSuitSnapshot SuitSnapshot(int owner)=>suits.TryGetValue(owner,out var s)?new PlayerSuitSnapshot(run,owner,s.Segments,s.InvulnerableUntil,s.Pending):default;
+        public PlayerSuitSnapshot SuitSnapshot(int owner)=>suits.TryGetValue(owner,out var s)?new PlayerSuitSnapshot(run,owner,s.Segments,s.InvulnerableUntil,s.Pending,
+            Math.Max(0,EarnedRepairs-s.UsedRepairs),s.RepairStarted>=0?Mathf.Clamp01((float)((now-s.RepairStarted)/(s.Pending?ReviveSeconds:1.5))):0):default;
         public bool InsideWorld(Vector3 point)=>level!=null&&level.BoundsGuard!=null&&point.y>=level.BoundsGuard.MinimumY&&level.BoundsGuard.AllowedBounds.Contains(point);
         public void Prepare(LevelContext context,IWorldSpawner spawnOwner,ContractController controller,int crewSize)
         {
@@ -65,21 +78,57 @@ namespace HowToSuck
             if(definitions.Count(a=>a.Definition.IsBoss)!=1||definitions.Single(a=>a.Definition.IsBoss).Definition.EnemyId!=required)
                 throw new InvalidOperationException("This encounter must contain exactly the contract's required boss type.");
             level=context;spawner=spawnOwner??throw new ArgumentNullException(nameof(spawnOwner));contract=controller;run=controller.State.RunId;
-            ulong next=0;
+            encounterCrew=crewSize;ulong next=0;
+            var covers=world.Loot.Items.Values.Where(x=>x!=null&&x.CargoRole==CargoRole.OrdinaryLoot&&x.CanBeSwallowedByPlayer).OrderBy(x=>UnityEngine.Random.value).ToList();
             foreach(var point in entries[0].Spawns)
             {
-                var instance=spawner.Spawn(point.Prefab,point.transform.position,point.transform.rotation);
+                ulong id=++next;
+                if(point.Prefab.GetComponent<EnemyActor>().Definition.IsBoss){bossSpawn=point;bossId=id;continue;}
+                if(covers.Count==0)continue;
+                var cover=covers[0];covers.RemoveAt(0);
+                dormant.Add(new Dormant{Spawn=point,Cover=cover,Position=cover.transform.position,Id=id});
+            }
+        }
+        private bool TrySpawn(EnemySpawnPoint point,Vector3 position,ulong id,bool boss)
+        {
+            var template=point.Prefab.GetComponent<EnemyActor>();var shape=point.Prefab.GetComponent<BoxCollider>();
+            for(int sample=0;sample<17;sample++)
+            {
+                float angle=sample*Mathf.PI*.25f,radius=sample==0?0:sample<=8?.65f:1.3f;
+                var candidate=position+new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius;
+                if(!UnityEngine.AI.NavMesh.SamplePosition(candidate,out var nav,1.5f,UnityEngine.AI.NavMesh.AllAreas)||!InsideWorld(nav.position))continue;
+                bool blocked=false;
+                foreach(var c in Physics.OverlapBox(nav.position+point.transform.rotation*shape.center+Vector3.up*.06f,
+                    Vector3.Max(Vector3.one*.02f,shape.size*.5f-Vector3.one*.04f),point.transform.rotation,LayerMask.GetMask("World","Items","Player","Enemies"),QueryTriggerInteraction.Ignore))
+                    if(c.bounds.max.y>nav.position.y+.16f){blocked=true;break;}
+                if(blocked)continue;
+                var instance=spawner.Spawn(point.Prefab,nav.position,point.transform.rotation);
                 if(instance==null)throw new InvalidOperationException("Enemy spawn failed.");
                 try
                 {
-                    var actor=instance.GetComponent<EnemyActor>();ulong id=++next;
-                    var key=actor.Definition.IsBoss?new BossKey(run,required,id):default;
-                    actor.Initialize(this,run,id,key,crewSize,point.transform.position);actors.Add(id,actor);
-                    if(key.IsValid&&!contract.TryAssignBoss(key))throw new InvalidOperationException("Current boss assignment failed.");
-                    (spawner as IWorldSpawnCommitter)?.CommitSpawn(instance);
+                    var actor=instance.GetComponent<EnemyActor>();var key=boss?new BossKey(run,template.Definition.EnemyId,id):default;
+                    actor.Initialize(this,run,id,key,encounterCrew,nav.position);actors.Add(id,actor);
+                    if(boss&&!contract.TryAssignBoss(key))throw new InvalidOperationException("Delayed boss assignment failed.");
+                    // Publish the prepared frozen snapshot first, as required by the network spawn adapter.
+                    (spawner as IWorldSpawnCommitter)?.CommitSpawn(instance);actor.SetFrozen(false);
+                    return true;
                 }
-                catch{spawner.Despawn(instance);throw;}
+                catch{actors.Remove(id);spawner.Despawn(instance);throw;}
             }
+            return false;
+        }
+        private void StepSpawns()
+        {
+            for(int i=dormant.Count-1;i>=0;i--)
+            {
+                var hidden=dormant[i];
+                if(hidden.Cover==null){dormant.RemoveAt(i);continue;}
+                if(hidden.Cover.State==SuckableState.Ingesting||hidden.Cover.State==SuckableState.Stored||
+                    (hidden.Cover.transform.position-hidden.Position).sqrMagnitude>.64f)hidden.Awakened=true;
+                if(hidden.Awakened&&TrySpawn(hidden.Spawn,hidden.Position,hidden.Id,false))dormant.RemoveAt(i);
+            }
+            if(bossSpawn!=null&&contract.State.Boss.Status==BossObjectiveStatus.Unassigned&&contract.State.DeliveredValue>contract.State.Quota/2)
+                if(TrySpawn(bossSpawn,bossSpawn.transform.position,bossId,true))bossSpawn=null;
         }
         public void RegisterPlayer(int owner)
         {if(string.IsNullOrEmpty(run)||owner<1||owner>4)throw new InvalidOperationException("Register suit in the prepared run.");suits.Add(owner,new Suit());}
@@ -98,12 +147,23 @@ namespace HowToSuck
             if(!CanApplyAt(now))return;
             foreach(var pair in suits)
             {
-                var suit=pair.Value;if(!suit.Pending||now<suit.RetryAt||!world.Players.TryGetValue(pair.Key,out var motor)||motor==null)continue;
-                suit.RetryAt=now+.25;
-                if(level.BoundsGuard.TryFindRecoveryPosition(motor,out var position)&&world.TryRecoverCombatPlayer(motor,position,now))
-                {suit.Segments=3;suit.Pending=false;suit.InvulnerableUntil=now+2;
+                var suit=pair.Value;if(!suit.Pending||!world.Players.TryGetValue(pair.Key,out var motor)||motor==null)continue;
+                bool solo=world.Players.Count==1;
+                var intent=world.RecoveryIntent(pair.Key);
+                if(!intent.InteractHeld)suit.SelfReviveArmed=true;
+                int helper=solo?(suit.SelfReviveArmed&&intent.InteractHeld?pair.Key:0):FindReviver(pair.Key,motor);
+                if(helper==0){suit.RepairStarted=-1;suit.Reviver=0;continue;}
+                if(suit.RepairStarted<0||suit.Reviver!=helper){suit.RepairStarted=now;suit.Reviver=helper;continue;}
+                if(now-suit.RepairStarted<ReviveSeconds||!StandingRoom(motor,suit.DownPosition))continue;
+                if(solo)
+                {
+                    contract.ApplyDeadlinePenalty(SelfRevivePenalty,now);
+                    if(!CanApplyAt(now))return;
+                }
+                if(world.TryRecoverCombatPlayer(motor,suit.DownPosition,now))
+                {suit.Segments=25;suit.Pending=false;suit.RepairStarted=-1;suit.Reviver=0;suit.InvulnerableUntil=now+2;
                     if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
-                        run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,3,motor.transform.position));}
+                        run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,25,motor.transform.position));}
             }
             // A disconnected owner's original FIFO survives until each item has a checked physical return pose.
             foreach(var storage in world.Storages.Values)
@@ -126,6 +186,7 @@ namespace HowToSuck
         public void StepActors(float dt)
         {
             if(!CanApplyAt(now))return;retired.Clear();
+            StepSpawns();
             foreach(var actor in actors.Values)
             {
                 if(!CanApplyAt(now))break;
@@ -139,23 +200,73 @@ namespace HowToSuck
             if(!CanApplyAt(time)||actor==null||actor.Health!=0||!actors.TryGetValue(actor.InstanceId,out var current)||current!=actor||
                 !contract.TryDefeatBoss(actor.BossKey,time))throw new InvalidOperationException("Real current boss defeat lost its exact authority identity.");
         }
-        internal bool TryDamagePlayer(EnemyActor enemy,PlayerMotor player,double time)
+        internal bool TryDamagePlayer(EnemyActor enemy,PlayerMotor player,double time,bool ranged=false)
         {
             if(!CanApplyAt(time)||enemy==null||!enemy.IsAlive||enemy.RunId!=run||!actors.TryGetValue(enemy.InstanceId,out var current)||current!=enemy||
                 player==null||!player.isActiveAndEnabled||!world.Players.TryGetValue(player.PlayerId,out var actual)||actual!=player||
                 !suits.TryGetValue(player.PlayerId,out var suit)||suit.Pending||time<suit.InvulnerableUntil)return false;
-            suit.Segments--;suit.InvulnerableUntil=time+1.5;
+            int damage=ranged?enemy.RangedDamage:enemy.ContactDamage;
+            suit.Segments=Math.Max(0,suit.Segments-Mathf.Clamp(damage,1,100));suit.InvulnerableUntil=time+.65;suit.RepairStarted=-1;
             if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
                 run,Audio.CommittedAudioKind.SuitHit,++suit.AudioOccurrence,0,enemy.InstanceId,player.PlayerId,0,false,time,0,suit.Segments,player.transform.position));
             if(suit.Segments==0)
             {
-                suit.Pending=true;suit.RetryAt=time;
+                suit.Pending=true;suit.DownPosition=player.transform.position;suit.SelfReviveArmed=false;suit.Reviver=0;
+                // A lethal hit during a jump revives on the floor directly below,
+                // while the ragdoll itself still starts at the actual hit position.
+                if(Physics.Raycast(suit.DownPosition+Vector3.up*.1f,Vector3.down,out var floor,
+                    Mathf.Max(3,player.Settings.JumpHeight+2),LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)&&
+                    floor.normal.y>.6f&&suit.DownPosition.y-floor.point.y>.2f)
+                    suit.DownPosition.y=floor.point.y+.025f;
                 var emitter=player.GetComponent<VacuumEmitter>();if(emitter!=null)emitter.Active=false;
-                world.Ingestion.CancelOwner(player.PlayerId);player.SuspendForRecovery(player.LastIntent);
-                // This transition happens once per depletion; timeout may synchronously freeze the whole world.
-                contract.ApplyDeadlinePenalty(15,time);
+                world.Ingestion.CancelOwner(player.PlayerId);player.SetDowned(true);
             }
             return true;
+        }
+        public void StepRepairs()
+        {
+            if(!CanApplyAt(now))return;
+            foreach(var pair in suits)
+            {
+                var suit=pair.Value;
+                if(suit.Pending)continue; // The revival hold has its own clock and must survive this pass.
+                if(!world.Players.TryGetValue(pair.Key,out var player)||player==null||suit.Pending||suit.Segments>=100||
+                    suit.UsedRepairs>=EarnedRepairs||!world.IsPlayerInExtraction(pair.Key)||!player.LastIntent.InteractHeld||
+                    contract.State.ObjectivesComplete||now<suit.InvulnerableUntil)
+                {suit.RepairStarted=-1;continue;}
+                if(suit.RepairStarted<0){suit.RepairStarted=now;continue;}
+                if(now-suit.RepairStarted<1.5)continue;
+                suit.Segments=Math.Min(100,suit.Segments+45);suit.UsedRepairs++;suit.RepairStarted=-1;
+                if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
+                    run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,suit.Segments,player.transform.position));
+            }
+        }
+        private int FindReviver(int owner,PlayerMotor fallen)
+        {
+            int selected=0;float nearest=ReviveDistance*ReviveDistance;
+            foreach(var candidate in world.Players)
+            {
+                var helper=candidate.Value;
+                if(candidate.Key==owner||helper==null||!suits.TryGetValue(candidate.Key,out var state)||state.Pending||
+                    now<state.InvulnerableUntil||!world.RecoveryIntent(candidate.Key).InteractHeld||helper.PlanarSpeed>.5f)continue;
+                float distance=(helper.transform.position-fallen.transform.position).sqrMagnitude;
+                if(distance>nearest||Physics.Linecast(helper.transform.position+Vector3.up*.9f,fallen.transform.position+Vector3.up*.45f,
+                    LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))continue;
+                // One held interaction can lift only the nearest fallen teammate.
+                bool nearer=false;
+                foreach(var other in suits)if(other.Key!=owner&&other.Value.Pending&&
+                    world.Players.TryGetValue(other.Key,out var body)&&body!=null&&
+                    (body.transform.position-helper.transform.position).sqrMagnitude<distance){nearer=true;break;}
+                if(nearer)continue;
+                selected=candidate.Key;nearest=distance;
+            }
+            return selected;
+        }
+        private static bool StandingRoom(PlayerMotor motor,Vector3 position)
+        {
+            float radius=motor.Settings.CapsuleRadius*.92f;
+            return !Physics.CheckCapsule(position+Vector3.up*(radius+.10f),
+                position+Vector3.up*(motor.Settings.CapsuleHeight-radius),radius,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore);
         }
         internal bool CompleteDefeat(EnemyActor actor)
         {
@@ -210,6 +321,7 @@ namespace HowToSuck
             foreach(var actor in actors.Values)if(actor!=null)spawner?.Despawn(actor.gameObject);
             // Pending cargo is registered; AuthorityWorld's ordinary loot teardown owns its one destruction.
             actors.Clear();suits.Clear();retired.Clear();pendingCargo.Clear();cargoCandidates.Clear();recoverCargo.Clear();cargoRetry.Clear();
+            dormant.Clear();bossSpawn=null;bossId=0;
             run=null;level=null;contract=null;spawner=null;
         }
     }

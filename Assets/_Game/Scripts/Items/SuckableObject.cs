@@ -35,6 +35,8 @@ namespace HowToSuck
         public string LastStorageTierId { get; private set; }
         public ulong ActiveShotId { get; private set; }
         public int ShotOwner { get; private set; }
+        // Authority-only delivery intent, scoped to the current shot. Loose cargo is never passively accepted.
+        public int DirectedIntakeId { get; internal set; }
         private Transform capturedVisual;
         private Vector3 visualPosition, visualScale;
         private Quaternion visualRotation;
@@ -144,7 +146,7 @@ namespace HowToSuck
             if (boundBossKey.IsValid && !boundBossKey.Equals(key)) throw new InvalidOperationException("Replica boss identity cannot be rebound.");
             boundBossKey = key;
         }
-        public void CancelFlightProvenance() { ActiveShotId = 0; ShotOwner = 0; }
+        public void CancelFlightProvenance() { ActiveShotId = 0; ShotOwner = 0; DirectedIntakeId = 0; }
         internal bool TryStore(int owner, string tier)
         {
             if (!HasPhysicsAuthority || !initialized || WorldFrozen || State != SuckableState.Ingesting || Body == null || capturedVisual == null || owner <= 0 || string.IsNullOrWhiteSpace(tier)) return false;
@@ -200,6 +202,12 @@ namespace HowToSuck
             bool kinematic = !HasPhysicsAuthority || WorldFrozen || (State != SuckableState.Available && State != SuckableState.InFlight);
             if (kinematic)
             {
+                // Swept CCD is a flight-only mode and cannot accompany a
+                // kinematic intake/storage/freeze. The fire service restores its
+                // original mode when this flight ends.
+                if (body.collisionDetectionMode == CollisionDetectionMode.ContinuousDynamic ||
+                    body.collisionDetectionMode == CollisionDetectionMode.Continuous)
+                    body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 // Unity rejects velocity writes on a body that is already kinematic.
                 if (!body.isKinematic)
                 {

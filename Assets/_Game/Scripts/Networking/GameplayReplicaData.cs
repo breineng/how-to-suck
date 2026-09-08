@@ -16,10 +16,12 @@ namespace HowToSuck
     public readonly struct PlayerStorageSnapshot
     {
         public readonly string RunId,NextTypeId;
+        public readonly string SlotTypes;
+        public string TypeAt(int index) { var types=(SlotTypes??"").Split('\n'); return index>=0&&index<types.Length?types[index]:""; }
         public readonly int OwnerId,Count,Reserved,Capacity;
         public readonly CargoRole NextCargoRole;
         public bool IsKnown=>!string.IsNullOrEmpty(RunId);
-        public PlayerStorageSnapshot(string run,int owner,int count,int reserved,int capacity,string nextType,CargoRole nextRole)
+        public PlayerStorageSnapshot(string run,int owner,int count,int reserved,int capacity,string nextType,CargoRole nextRole,string slotTypes=null)
         {
             GameplayReplicaPolicy.RequireRun(run);
             if(!GameplayReplicaPolicy.Player(owner)||capacity<1||capacity>16||count<0||reserved<0||count>capacity||reserved>capacity-count)
@@ -27,9 +29,12 @@ namespace HowToSuck
             if(count==0 ? !string.IsNullOrEmpty(nextType)||nextRole!=CargoRole.OrdinaryLoot : !GameplayReplicaPolicy.StableId(nextType)||!GameplayReplicaPolicy.Role(nextRole))
                 throw new ArgumentException("FIFO description must correspond to committed stored count.");
             RunId=run;OwnerId=owner;Count=count;Reserved=reserved;Capacity=capacity;NextTypeId=nextType??"";NextCargoRole=nextRole;
+            SlotTypes=slotTypes??NextTypeId;
+            if(slotTypes!=null&&count>0){var types=slotTypes.Split('\n');if(types.Length!=count||types[0]!=NextTypeId)throw new ArgumentException("Slot icons must describe the complete ordered FIFO.");foreach(var type in types)if(!GameplayReplicaPolicy.StableId(type))throw new ArgumentException("Invalid slot type.");}
+            if(count==0&&SlotTypes.Length!=0)throw new ArgumentException("Empty storage has no slot types.");
         }
         public bool SameValues(PlayerStorageSnapshot other)=>RunId==other.RunId&&OwnerId==other.OwnerId&&Count==other.Count&&
-            Reserved==other.Reserved&&Capacity==other.Capacity&&NextTypeId==other.NextTypeId&&NextCargoRole==other.NextCargoRole;
+            Reserved==other.Reserved&&Capacity==other.Capacity&&NextTypeId==other.NextTypeId&&NextCargoRole==other.NextCargoRole&&SlotTypes==other.SlotTypes;
     }
     public static class GameplayReplicaPolicy
     {

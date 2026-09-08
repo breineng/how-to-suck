@@ -18,7 +18,7 @@ namespace HowToSuck
         public float Sensitivity=>preview?.MouseSensitivity??.12f;
         public bool InvertY=>preview!=null&&preview.InvertY;
         public float FieldOfView=>preview?.FieldOfView??75;
-        public float Feedback=>preview?.CameraFeedback??0;
+        public float Feedback=>preview?.CameraFeedback??1;
         public string StoragePath=>repository?.PathName;
         public string RuntimeError=>Audio!=null?Audio.SettingsMixerError:"";
         private LocalSettingsRepository repository;

@@ -58,7 +58,7 @@ namespace HowToSuck
   {
    if(!LocalVideoApplicationOwner.TryGet(out application))return;
    applicationTicket=application.BeginTracked(value,Time.realtimeSinceStartupAsDouble,Time.frameCount,message,completed,ApplicationMessage);
-   LastError=message;
+   LastError=application.Message;
   }
   public bool BeginTrial(LocalVideoSettings value)
   {

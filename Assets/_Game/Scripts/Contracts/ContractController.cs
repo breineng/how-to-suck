@@ -53,8 +53,7 @@ namespace HowToSuck
         {
             if (phase != ContractPhase.Preparing)
                 throw new InvalidOperationException("Prepare the run world before starting its timer.");
-            if (boss == null || boss.Status != BossObjectiveStatus.Active)
-                throw new InvalidOperationException("Assign the actual current boss before starting the main contract.");
+            if (boss == null) throw new InvalidOperationException("Prepare the boss objective before starting.");
             double newDeadline = now + rules.TimeLimitSeconds;
             if (!Finite(now) || !Finite(newDeadline) || newDeadline <= now)
                 throw new ArgumentOutOfRangeException(nameof(now), "The deadline must be finite and later than now.");
@@ -86,7 +85,8 @@ namespace HowToSuck
             return true;
         }
 
-        public bool TryAssignBoss(BossKey key) => phase == ContractPhase.Preparing && boss != null && boss.TryAssign(key);
+        public bool TryAssignBoss(BossKey key) => (phase == ContractPhase.Preparing ||
+            phase == ContractPhase.Running && collectedMoney > rules.Quota / 2) && boss != null && boss.TryAssign(key);
 
         public bool TryDefeatBoss(BossKey key, double now)
         {
@@ -232,4 +232,3 @@ namespace HowToSuck
         private static bool Finite(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
     }
 }
-

@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.ContractDefinition
   ContractId: old_house
   DisplayName: Old House
+  Preview: {fileID: 21300000, guid: 418a04d9e30352045800eb293c5fd6c1, type: 3}
+  RequiredBossId: 
+  RecommendedTierId: 
   SceneName: OldHouse
   Quota: 1500
   TimeLimitSeconds: 420

@@ -13,7 +13,8 @@ namespace HowToSuck
         [System.NonSerialized] public Transform PresentationTarget;
         [Min(.01f)] public float AdmissionRadius=.24f;
         [Range(.35f,1.2f)] public float Duration=.7f;
-        public IngestionSnapshot Current { get; internal set; }
+        private readonly System.Collections.Generic.List<IngestionSnapshot> ingestions=new System.Collections.Generic.List<IngestionSnapshot>();
+        public IngestionSnapshot Current { get; private set; }
         public bool Busy => Current!=null;
         public PlayerStorage Storage { get; private set; }
         public void BindStorage(PlayerStorage storage)
@@ -25,13 +26,27 @@ namespace HowToSuck
         public Vector3 Position => Target!=null ? Target.position : Emitter.Position;
         public Quaternion Rotation => Target!=null ? Target.rotation : Quaternion.LookRotation(Emitter.Forward);
         public Vector3 EndPosition => VisualEndPoint!=null ? VisualEndPoint.position : Position-Rotation*Vector3.forward*.14f;
-        public bool CanAdmit => isActiveAndEnabled && Emitter!=null && Emitter.Active &&
-            Emitter.Definition!=null && ValidTiming && Emitter.HasClearSourcePath() && !Busy &&
+        internal bool CanReceive => isActiveAndEnabled && Emitter!=null && Emitter.isActiveAndEnabled &&
+            Emitter.Definition!=null && ValidTiming && Emitter.HasClearSourcePath() && (IsTruck || !Busy) &&
             (IsTruck || Storage != null && Storage.OwnerId == PlayerId && Storage.HasSpace);
+        public bool CanAdmit => CanReceive && Emitter.Active;
+        internal bool Owns(IngestionSnapshot snapshot)=>ingestions.Contains(snapshot);
+        internal void Attach(IngestionSnapshot snapshot)
+        {
+            if(ingestions.Contains(snapshot))return;
+            // Authority admission enforces the player's single slot. Replica item
+            // updates can briefly arrive in a different order within one frame.
+            ingestions.Add(snapshot);
+            ingestions.Sort((a,b)=>{int result=a.StartedAt.CompareTo(b.StartedAt);return result!=0?result:a.InstanceId.CompareTo(b.InstanceId);});
+            Current=IsTruck?ingestions[0]:ingestions[ingestions.Count-1];
+        }
+        internal void Release(IngestionSnapshot snapshot)
+        {ingestions.Remove(snapshot);Current=ingestions.Count>0?ingestions[IsTruck?0:ingestions.Count-1]:null;}
         private bool ValidTiming => !float.IsNaN(Duration) && !float.IsInfinity(Duration) && Duration>0 &&
             !float.IsNaN(AdmissionRadius) && !float.IsInfinity(AdmissionRadius) && AdmissionRadius>0;
         public bool Accepts(SuckableObject item) => item!=null &&
-            (IsTruck ? item.CanBeSwallowedByTruck : item.CanBeSwallowedByPlayer) && Emitter!=null && Emitter.Definition!=null &&
+            (IsTruck ? item.CanBeSwallowedByTruck && item.State==SuckableState.InFlight && item.DirectedIntakeId==IntakeId :
+                item.CanBeSwallowedByPlayer && Emitter!=null && Emitter.FocusedItem==item) && Emitter!=null && Emitter.Definition!=null &&
             Emitter.Definition.IntakeSize>=item.RequiredIntakeSize;
     }
 }

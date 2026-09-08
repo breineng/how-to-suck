@@ -13,6 +13,10 @@ namespace HowToSuck
         public int Reserved => queue.Reserved;
         public bool IsDetached => queue.Closed;
         public bool HasSpace => queue.HasSpace;
+        public string SlotTypes
+        {
+            get { var types=new string[Count]; for(int i=0;i<types.Length;i++)types[i]=queue.At(i).Item.TypeId; return string.Join("\n",types); }
+        }
         public PlayerStorage(string runId, int ownerId, int capacity)
         {
             if (ownerId <= 0) throw new ArgumentOutOfRangeException(nameof(ownerId));

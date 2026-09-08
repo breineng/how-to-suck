@@ -30,6 +30,8 @@ namespace HowToSuck
         private LocalSettingsController localSettings;
         private Camera feedbackCamera;
         private Quaternion feedbackBase;
+        private Vector3 feedbackPosition;
+        private PlayerGaitFeedback gait;
         private bool feedbackApplied;
         public void BindLocalSettings(LocalSettingsController owner)
         {
@@ -39,20 +41,26 @@ namespace HowToSuck
         }
         private void RestoreCameraFeedback()
         {
-            if(feedbackApplied&&feedbackCamera!=null)feedbackCamera.transform.localRotation=feedbackBase;
+            if(feedbackApplied&&feedbackCamera!=null)feedbackCamera.transform.SetLocalPositionAndRotation(feedbackPosition,feedbackBase);
             feedbackApplied=false;feedbackCamera=null;
         }
         private void ApplyCameraFeedback()
         {
             if(!IsLocal||localSettings==null||!localSettings.isActiveAndEnabled||localSettings.Feedback<=0||
                 boundCamera==null||Motor==null||boundCamera.transform==Motor.CameraPivot||Input==null||Input.MenuOpen||
-                !Input.GameplayAvailable||!Input.LatestIntent.VacuumHeld||localSettings.Session.Phase!=SessionPhase.Playing)return;
-            // Optional, default off: the camera child alone receives a tiny cosmetic motor vibration.
-            // CameraPivot, tool mounts, authoritative aim, input and physical actors are never written here.
-            feedbackCamera=boundCamera;feedbackBase=boundCamera.transform.localRotation;feedbackApplied=true;
+                !Input.GameplayAvailable||localSettings.Session.Phase!=SessionPhase.Playing)return;
+            feedbackCamera=boundCamera;feedbackBase=boundCamera.transform.localRotation;
+            feedbackPosition=boundCamera.transform.localPosition;feedbackApplied=true;
             float phase=(float)(Time.unscaledTimeAsDouble%10)*25.132741f,amount=localSettings.Feedback;
-            boundCamera.transform.localRotation=feedbackBase*Quaternion.Euler(Mathf.Sin(phase)*.08f*amount,
-                Mathf.Cos(phase)*.05f*amount,Mathf.Sin(phase*.75f)*.1f*amount);
+            Vector3 offset=gait!=null?gait.CameraOffset:Vector3.zero;
+            float roll=gait!=null?gait.CameraRoll:0;
+            if(Input.LatestIntent.VacuumHeld){offset+=new Vector3(Mathf.Sin(phase)*.0012f,Mathf.Cos(phase)*.0015f,0);roll+=Mathf.Sin(phase*.75f)*.1f;}
+            // Orbit the same visible hit point: bob adds motion without making the
+            // centre reticle select a different small prop than the gameplay ray.
+            var cameraTransform=boundCamera.transform;var ray=new Ray(cameraTransform.position,cameraTransform.forward);
+            var focus=Physics.Raycast(ray,out var hit,100,LayerMask.GetMask("World","Items","Enemies"),QueryTriggerInteraction.Ignore)?hit.point:ray.GetPoint(100);
+            cameraTransform.localPosition=feedbackPosition+offset*amount;
+            cameraTransform.rotation=Quaternion.LookRotation(focus-cameraTransform.position,Motor.CameraPivot.up)*Quaternion.Euler(0,0,roll*amount);
         }
         private IntakeReceiver publishedReceiver;
         private Transform publishedIntake;
@@ -101,6 +109,8 @@ namespace HowToSuck
             RestoreCameraFeedback();
             BindCamera();
             BindLocalTool();
+            if(gait==null)gait=GetComponent<PlayerGaitFeedback>();
+            gait?.SampleCamera(Time.unscaledDeltaTime);
             if (!IsLocal || Motor == null || Motor.CameraPivot == null) return;
             if (Input != null)
             {
@@ -117,8 +127,15 @@ namespace HowToSuck
                 float pitch = Input != null ? Input.LatestIntent.Pitch : Motor.LastIntent.Pitch;
                 if (!Motor.TryGetNozzleLocalPosition(pitch,out var nozzle)) { boundModel.gameObject.SetActive(false); ReleasePresentation(); return; }
                 Vector3 position = mount.Position + nozzle - mount.NozzlePosition;
+                // Keep the local tool below/right of the aiming point, including steep downward views.
+                float lower=Mathf.SmoothStep(0,1,Mathf.InverseLerp(18,75,pitch));
+                position+=new Vector3(.12f+lower*.08f,-.13f-lower*.23f,0);
+                float charge=Motor.IsDowned?0:Motor.FireCharge;
+                float phase=Time.unscaledTime*(34+charge*48);
+                position+=new Vector3(Mathf.Sin(phase),Mathf.Sin(phase*1.37f),Mathf.Cos(phase*.83f))*(charge*charge*.014f);
+                var shake=Quaternion.Euler(Mathf.Sin(phase*.93f)*charge*2,0,Mathf.Cos(phase*1.17f)*charge*2.8f);
                 boundModel.SetPositionAndRotation(aimOrigin + Motor.CameraPivot.rotation * position,
-                    Motor.CameraPivot.rotation * mount.Rotation);
+                    Motor.CameraPivot.rotation * mount.Rotation * shake);
             }
             ApplyCameraFeedback();
         }
@@ -160,7 +177,7 @@ namespace HowToSuck
                     }
                 }
             }
-            bool active = IsLocal && isActiveAndEnabled;
+            bool active = IsLocal && isActiveAndEnabled && !Motor.IsDowned;
             if (boundModel == null || mount == null) { ReleasePresentation(); return; }
             boundModel.gameObject.SetActive(active);
             if (!active) { ReleasePresentation(); return; }

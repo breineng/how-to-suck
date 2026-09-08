@@ -11,6 +11,7 @@ namespace HowToSuck
         public Vector2 Move;
         public bool SprintHeld;
         public bool VacuumHeld;
+        public bool FireHeld;
         public bool InteractHeld;
         public float Yaw;
         public float Pitch;
@@ -23,6 +24,7 @@ namespace HowToSuck
             intent.Move = Vector2.zero;
             intent.SprintHeld = false;
             intent.VacuumHeld = false;
+            intent.FireHeld = false;
             intent.InteractHeld = false;
             intent.SuppressJump = true;
             intent.SuppressFire = true; // Sticky cancellation for this counter; only a fresh press may clear it.
