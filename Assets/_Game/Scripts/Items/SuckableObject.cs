@@ -256,7 +256,7 @@ namespace HowToSuck
             if (float.IsNaN(body.mass) || float.IsInfinity(body.mass) || body.mass <= 0f)
                 return Invalid("must have a finite positive Rigidbody mass", out error);
             if (!UnitScale(transform.localScale) || !UnitScale(transform.lossyScale))
-                return Invalid("must have unit root/world scale; resize its visuals and authored colliders instead", out error);
+                return Invalid($"must have unit root/world scale (local {transform.localScale.ToString("R")}, world {transform.lossyScale.ToString("R")}); resize its visuals and authored colliders instead", out error);
             if (VisualRoot == null || VisualRoot == transform || !VisualRoot.IsChildOf(transform))
                 return Invalid("needs a distinct child VisualRoot for presentation", out error);
             if (gameplayColliders.Length == 0)
@@ -276,8 +276,15 @@ namespace HowToSuck
             return true;
         }
 
+        // NGO's spawn message copies the host's lossyScale into the replica's
+        // localScale. Rotation/matrix roundoff is then applied a second time by
+        // the replica's lossyScale, exceeding Mathf.Approximately's 1e-6 tolerance.
+        // Allow only numerical drift (0.001%); actual root/parent resizing is invalid.
+        private const float UnitScaleTolerance = 0.00001f;
         private static bool UnitScale(Vector3 scale) =>
-            Mathf.Approximately(scale.x, 1f) && Mathf.Approximately(scale.y, 1f) && Mathf.Approximately(scale.z, 1f);
+            Mathf.Abs(scale.x - 1f) <= UnitScaleTolerance &&
+            Mathf.Abs(scale.y - 1f) <= UnitScaleTolerance &&
+            Mathf.Abs(scale.z - 1f) <= UnitScaleTolerance;
 
         private bool Invalid(string reason, out string error)
         {

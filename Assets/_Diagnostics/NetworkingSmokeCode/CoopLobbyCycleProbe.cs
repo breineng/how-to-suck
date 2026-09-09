@@ -40,7 +40,17 @@ namespace HowToSuck.Diagnostics
                     Record("Both clients observe ready state "+cycle);
                     if(game.HasAuthority){await Task.Delay(700);Need(game.Session.StartSelectedContract(),"Start contract rejected");}
                     await Until(()=>game.Session.Phase==SessionPhase.Playing,"Contract load and prepared barrier",90);
-                    Record("Playing "+cycle+": "+game.Session.RunId);
+                    var loot=FindObjectsByType<NetworkLootAdapter>(FindObjectsSortMode.None);
+                    Need(loot.Length>0,"Contract spawned no loot");
+                    await Until(()=>Array.TrueForAll(loot,x=>x!=null&&x.HasAcceptedCurrentSnapshot&&x.Item.InstanceId!=0),"Every loot replica initialized");
+                    var level=FindFirstObjectByType<LevelContext>();
+                    Need(level!=null&&loot.Length==level.LootSpawns.Length,"Spawned loot count differs from the authored level");
+                    if(Array.IndexOf(args,"--hts-require-house")>=0)
+                    {
+                        Need(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name=="OldHouseNetwork","House scene was not loaded");
+                        Need(Array.Exists(loot,x=>x.Item.TypeId=="pan"),"Expected the house pan replica");
+                    }
+                    Record("Playing "+cycle+": "+game.Session.RunId+", scene="+UnityEngine.SceneManagement.SceneManager.GetActiveScene().name+", initialized loot="+loot.Length);
                     if(game.HasAuthority){await Task.Delay(1500);game.Session.Controller.Abort(game.Driver.Now);}
                     await Until(()=>game.Session.Phase==SessionPhase.Results,"Terminal result");
                     if(!game.HasAuthority){Need(!game.Session.CanReturnToLobby&&!game.Session.ReturnToLobby(),"Guest result action must wait without leaving");Need(game.Manager.IsConnectedClient,"Guest result action disconnected");}
