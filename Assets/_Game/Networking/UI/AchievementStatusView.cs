@@ -82,7 +82,7 @@ namespace HowToSuck.Networking
                 productSteam,bound,profile?.PendingSteam.Length??0,service?.PlatformBlocked??false,!string.IsNullOrEmpty(service?.LastError));
             Set(CountText,text.Count);Set(ContextText,text.Context);Set(IssueText,text.Issue);
         }
-        private static void Set(TMP_Text text,string value){if(text==null)return;text.richText=false;text.raycastTarget=false;if(text.text!=value)text.text=value;}
+        private static void Set(TMP_Text text,string value){if(text==null)return;text.richText=false;text.raycastTarget=false;if(text.text!=value)HowToSuck.LocalizedText.Set(text, value);}
         private void OnDisable(){Unsubscribe();if(group!=null)group.alpha=0;}
         private void OnDestroy(){Unsubscribe();bridge=null;connection=null;session=null;}
     }

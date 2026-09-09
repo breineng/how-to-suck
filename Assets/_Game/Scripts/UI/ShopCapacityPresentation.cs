@@ -44,25 +44,25 @@ namespace HowToSuck
             bool pending=session.DisplayedSavePending;
             CapacityBuyButton.gameObject.SetActive(!pending);CapacityBuyButton.interactable=!working&&offer.CanBuy;
             if(!known){
-                CapacityText.text="Вместимость: ожидаем данные кампании";CapacityPriceText.text="";
-                CapacityMessageText.text="Покупки совершает хозяин кампании.";
+                HowToSuck.LocalizedText.Set(CapacityText, "Вместимость: ожидаем данные кампании");HowToSuck.LocalizedText.Set(CapacityPriceText, "");
+                HowToSuck.LocalizedText.Set(CapacityMessageText, "Покупки совершает хозяин кампании.");
             }else{
                 CampaignCapacityRules.TryModel(currentModel.TierId,out int basis,out int max);
-                CapacityText.text=$"{current} / {max} СЛОТОВ";
-                CapacityPriceText.text=next>current?$"+1 СЛОТ  /  ${price:N0}":$"МАКСИМУМ: {max} СЛОТОВ";
+                HowToSuck.LocalizedText.Set(CapacityText, $"{current} / {max} СЛОТОВ");
+                HowToSuck.LocalizedText.Set(CapacityPriceText, next>current?$"+1 СЛОТ  /  ${price:N0}":$"МАКСИМУМ: {max} СЛОТОВ");
                 if(CapacityIcons!=null)for(int i=0;i<CapacityIcons.Length;i++)if(CapacityIcons[i]!=null){CapacityIcons[i].gameObject.SetActive(i<max);CapacityIcons[i].color=i<current?new Color(.1f,.1f,.1f,1):new Color(.1f,.1f,.1f,.2f);}
                 if(nextModel!=null) {
                     int future=CampaignCapacityRules.Effective(nextModel.TierId,bonus);
                     CampaignCapacityRules.TryModel(nextModel.TierId,out _,out int futureMax);
-                    if(NextCapacity!=null)NextCapacity.text=$"СЛОТЫ  {future} / {futureMax}";
-                }else if(NextCapacity!=null)NextCapacity.text="Последняя модель";
+                    if(NextCapacity!=null)HowToSuck.LocalizedText.Set(NextCapacity, $"СЛОТЫ  {future} / {futureMax}");
+                }else if(NextCapacity!=null)HowToSuck.LocalizedText.Set(NextCapacity, "Последняя модель");
                 switch(offer.Kind){
-                    case ShopOfferKind.ReadOnly:CapacityMessageText.text="Общий бонус сохраняется при смене модели. Покупает хост.";break;
-                    case ShopOfferKind.Insufficient:CapacityMessageText.text=$"Для слота не хватает ${offer.MissingFunds:N0}.";break;
-                    case ShopOfferKind.MaximumTier:CapacityMessageText.text="Бонус сохранён. Следующая модель покупается отдельно.";break;
+                    case ShopOfferKind.ReadOnly:HowToSuck.LocalizedText.Set(CapacityMessageText, "Общий бонус сохраняется при смене модели. Покупает хост.");break;
+                    case ShopOfferKind.Insufficient:HowToSuck.LocalizedText.Set(CapacityMessageText, $"Для слота не хватает ${offer.MissingFunds:N0}.");break;
+                    case ShopOfferKind.MaximumTier:HowToSuck.LocalizedText.Set(CapacityMessageText, "Бонус сохранён. Следующая модель покупается отдельно.");break;
                     case ShopOfferKind.PendingPurchase:case ShopOfferKind.PendingResult:case ShopOfferKind.Saving:
-                        CapacityMessageText.text="Показана подтверждённая вместимость. Сначала завершите сохранение.";break;
-                    default:CapacityMessageText.text="Бонусные слоты сохраняются при смене модели.";break;
+                        HowToSuck.LocalizedText.Set(CapacityMessageText, "Показана подтверждённая вместимость. Сначала завершите сохранение.");break;
+                    default:HowToSuck.LocalizedText.Set(CapacityMessageText, "Бонусные слоты сохраняются при смене модели.");break;
                 }
             }
             var buttons=new List<Button>();foreach(var b in new[]{BuyButton,CapacityBuyButton,RetryButton,CloseButton})if(b!=null&&b.gameObject.activeInHierarchy&&b.IsInteractable())buttons.Add(b);

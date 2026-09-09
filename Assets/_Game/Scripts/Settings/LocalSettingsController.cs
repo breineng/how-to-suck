@@ -99,7 +99,7 @@ namespace HowToSuck
         public void Reload(){if(!IsInitialized)return;Load();ApplyRuntime();Changed?.Invoke();}
         private static void SetBus(LocalSettingsData data,AudioBus bus,float value)
         {switch(bus){case AudioBus.Master:data.Master=value;break;case AudioBus.Vacuum:data.Vacuum=value;break;case AudioBus.Truck:data.Truck=value;break;case AudioBus.Impacts:data.Impacts=value;break;case AudioBus.UI:data.UI=value;break;}}
-        private void ApplyRuntime(){if(Audio!=null)Audio.ApplyLocalSettings(this,preview);RefreshPlayer();}
+        private void ApplyRuntime(){GameLocalization.Select(preview.Language);if(Audio!=null)Audio.ApplyLocalSettings(this,preview);RefreshPlayer();}
         private void RefreshPlayer()
         {
             var motor=Session!=null?Session.LocalPlayer:null;
@@ -118,7 +118,7 @@ namespace HowToSuck
         {
             if(Session!=null&&subscribed)Session.Changed-=RefreshPlayer;subscribed=false;
             if(reader!=null)reader.BindLocalSettings(null);if(view!=null)view.BindLocalSettings(null);reader=null;view=null;
-            if(IsInitialized){preview=confirmed.Copy();if(Audio!=null){Audio.ApplyLocalSettings(this,preview);Audio.UnbindLocalSettings(this);}}
+            if(IsInitialized){preview=confirmed.Copy();GameLocalization.Select(preview.Language);if(Audio!=null){Audio.ApplyLocalSettings(this,preview);Audio.UnbindLocalSettings(this);}}
         }
         private void OnDestroy(){Changed=null;}
     }

@@ -24,12 +24,12 @@ namespace HowToSuck.Networking
             var control=game.Control;
             if(LobbyOnlyPanel!=null)LobbyOnlyPanel.SetActive(lobby&&!game.HasAuthority&&game.Connection.Mode!=ConnectionMode.SoloLoopback&&(Menu==null||!Menu.ModalBlocksLobby));
             if(ReadyButton!=null){ReadyButton.gameObject.SetActive(lobby&&!game.HasAuthority);ReadyButton.interactable=control!=null&&control.IsSpawned&&control.HasAcceptedCurrentSnapshot&&(Menu==null||!Menu.ModalBlocksLobby);}
-            if(ReadyLabel!=null)ReadyLabel.text=control!=null&&control.LocalReady?"Не готов":"Готов";
-            if(Status!=null)Status.text=!lobby?"":game.HasAuthority?(game.Session.CanStartContract?"Все готовы":"Ожидаем готовность игроков"):
-                control!=null&&control.LocalReady?"Вы готовы. Контракт выбирает хозяин":"Подтвердите готовность";
-            if(LeaveConfirmation!=null)LeaveConfirmation.text=game.HasAuthority?
+            if(ReadyLabel!=null)HowToSuck.LocalizedText.Set(ReadyLabel, control!=null&&control.LocalReady?"Не готов":"Готов");
+            if(Status!=null)HowToSuck.LocalizedText.Set(Status, !lobby?"":game.HasAuthority?(game.Session.CanStartContract?"Все готовы":"Ожидаем готовность игроков"):
+                control!=null&&control.LocalReady?"Вы готовы. Контракт выбирает хозяин":"Подтвердите готовность");
+            if(LeaveConfirmation!=null)HowToSuck.LocalizedText.Set(LeaveConfirmation, game.HasAuthority?
                 "Прервать контракт для всех? Выплата при ручном выходе — $0.":
-                "Покинуть сессию? Остальные игроки смогут продолжить контракт. Ваша локальная кампания не изменится.";
+                "Покинуть сессию? Остальные игроки смогут продолжить контракт. Ваша локальная кампания не изменится.");
         }
         private void LateUpdate(){if(game!=null&&ReplacedGuestStart!=null)ReplacedGuestStart.gameObject.SetActive(originalStartActive&&(game.HasAuthority||game.Session.Phase!=SessionPhase.Lobby));}
         private void OnDisable(){if(LobbyOnlyPanel!=null)LobbyOnlyPanel.SetActive(false);if(ReplacedGuestStart!=null)ReplacedGuestStart.gameObject.SetActive(originalStartActive);}

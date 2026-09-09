@@ -25,10 +25,10 @@ namespace HowToSuck
   void Refresh()
   {
    if(controller==null)return;
-   for(int i=0;i<BindButtons.Length;i++){BindLabels[i].text=KeyOnlyLabels?controller.Label(i):controller.Slots[i].Label+"\n"+controller.Label(i);BindButtons[i].interactable=!controller.Capturing;}
+   for(int i=0;i<BindButtons.Length;i++){HowToSuck.LocalizedText.Set(BindLabels[i], KeyOnlyLabels?controller.Label(i):controller.Slots[i].Label+"\n"+controller.Label(i));BindButtons[i].interactable=!controller.Capturing;}
    SaveButton.interactable=DefaultsButton.interactable=!controller.Capturing;CancelCaptureButton.gameObject.SetActive(controller.WaitingForRelease);
    string message=string.IsNullOrEmpty(controller.LastError)?"Esc и управление меню не меняются. Выберите действие, затем клавишу. Нажмите Esc для отмены назначения.":controller.LastError;
-   InlineKeycaps.Set(Message,message.Replace("Esc",InlineKeycaps.Key("ESC")));
+   InlineKeycaps.SetEscapeHint(Message,message);
   }
   void OnEnable(){if(controller!=null){controller.CancelDraft();Refresh();}}
   void OnDisable()=>Close();

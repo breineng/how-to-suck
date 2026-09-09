@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 6017053480433288746}
   - component: {fileID: 8831327994359461917}
   - component: {fileID: 7738735885807663193}
+  - component: {fileID: 7132287399132653887}
   m_Layer: 0
   m_Name: Heading
   m_TagString: Untagged
@@ -170,9 +171,9 @@ MonoBehaviour:
   m_fontSize: 80
   m_fontSizeBase: 80
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 49.6
+  m_fontSizeMax: 80
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -212,6 +213,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7132287399132653887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65491736248178777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0421\u041D\u0410\u0420\u042F\u0416\u0415\u041D\u0418\u0415"
+  Literal: 0
 --- !u!1 &149657573155831503
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +238,7 @@ GameObject:
   - component: {fileID: 8576634356389304795}
   - component: {fileID: 861531240178831790}
   - component: {fileID: 7538205319534426373}
+  - component: {fileID: 5071934042222792131}
   m_Layer: 0
   m_Name: FutureSlots
   m_TagString: Untagged
@@ -307,9 +323,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -349,6 +365,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5071934042222792131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149657573155831503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &155146899595831462
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,6 +696,7 @@ GameObject:
   - component: {fileID: 2794018358279303006}
   - component: {fileID: 8153701990763744036}
   - component: {fileID: 4560782769368067563}
+  - component: {fileID: 4632953290985514190}
   m_Layer: 0
   m_Name: Balance
   m_TagString: Untagged
@@ -750,9 +781,9 @@ MonoBehaviour:
   m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 24.8
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -792,6 +823,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4632953290985514190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484505598582366816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &515555148480960664
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,6 +848,7 @@ GameObject:
   - component: {fileID: 2686071771881486602}
   - component: {fileID: 3988514540204819132}
   - component: {fileID: 970129874450121782}
+  - component: {fileID: 8531583349597557011}
   m_Layer: 0
   m_Name: Heading
   m_TagString: Untagged
@@ -887,9 +933,9 @@ MonoBehaviour:
   m_fontSize: 86
   m_fontSizeBase: 86
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 53.32
+  m_fontSizeMax: 86
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -929,6 +975,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8531583349597557011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515555148480960664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0421\u043D\u0430\u0440\u044F\u0436\u0435\u043D\u0438\u0435"
+  Literal: 0
 --- !u!1 &560585786802130578
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,6 +1075,7 @@ GameObject:
   - component: {fileID: 705257882126295233}
   - component: {fileID: 5093905556484584221}
   - component: {fileID: 2884679821159752811}
+  - component: {fileID: 1917957773411373512}
   m_Layer: 0
   m_Name: Price
   m_TagString: Untagged
@@ -1099,9 +1160,9 @@ MonoBehaviour:
   m_fontSize: 33
   m_fontSizeBase: 33
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 20.460001
+  m_fontSizeMax: 33
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -1141,6 +1202,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1917957773411373512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561901876791078833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &583183538034120423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,6 +1377,7 @@ GameObject:
   - component: {fileID: 4109087358739359481}
   - component: {fileID: 7624283177724304844}
   - component: {fileID: 2448584478176605876}
+  - component: {fileID: 8622206512223758072}
   m_Layer: 0
   m_Name: Campaign
   m_TagString: Untagged
@@ -1386,9 +1462,9 @@ MonoBehaviour:
   m_fontSize: 23
   m_fontSizeBase: 23
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16
+  m_fontSizeMax: 23
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -1428,6 +1504,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8622206512223758072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999389667361566549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &1056411604510825819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1439,6 +1529,7 @@ GameObject:
   - component: {fileID: 3559124951528285755}
   - component: {fileID: 610844889869885793}
   - component: {fileID: 8364722573110158619}
+  - component: {fileID: 4962217489107166982}
   m_Layer: 0
   m_Name: CurrentTier
   m_TagString: Untagged
@@ -1523,9 +1614,9 @@ MonoBehaviour:
   m_fontSize: 37
   m_fontSizeBase: 37
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 22.94
+  m_fontSizeMax: 37
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -1565,6 +1656,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4962217489107166982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056411604510825819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &1348922950648786862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1576,6 +1681,7 @@ GameObject:
   - component: {fileID: 4057835035901864412}
   - component: {fileID: 1173977146129704902}
   - component: {fileID: 3102370420818888577}
+  - component: {fileID: 2117682366418741905}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -1660,9 +1766,9 @@ MonoBehaviour:
   m_fontSize: 30
   m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18.6
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -1702,6 +1808,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2117682366418741905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348922950648786862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u041A\u0423\u041F\u0418\u0422\u042C \u041C\u041E\u0414\u0415\u041B\u042C"
+  Literal: 0
 --- !u!1 &1424694796678771727
 GameObject:
   m_ObjectHideFlags: 0
@@ -1938,6 +2058,7 @@ GameObject:
   - component: {fileID: 4112097966394299969}
   - component: {fileID: 8955364781184218591}
   - component: {fileID: 1872688224288167588}
+  - component: {fileID: 6489390306362372648}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -2022,9 +2143,9 @@ MonoBehaviour:
   m_fontSize: 30
   m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18.6
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -2064,6 +2185,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6489390306362372648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753454964386414115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0421\u041E\u0425\u0420\u0410\u041D\u0418\u0422\u042C \u0421\u041D\u041E\u0412\u0410"
+  Literal: 0
 --- !u!1 &1973359469278894914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,6 +2510,7 @@ GameObject:
   - component: {fileID: 5786844236235840372}
   - component: {fileID: 5976015477382062211}
   - component: {fileID: 4467021610713657740}
+  - component: {fileID: 5240716532802378446}
   m_Layer: 0
   m_Name: CapacityMessage
   m_TagString: Untagged
@@ -2459,9 +2595,9 @@ MonoBehaviour:
   m_fontSize: 23
   m_fontSizeBase: 23
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16
+  m_fontSizeMax: 23
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -2501,6 +2637,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5240716532802378446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2533782916307220524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &2631264950627138854
 GameObject:
   m_ObjectHideFlags: 0
@@ -2732,6 +2882,7 @@ GameObject:
   - component: {fileID: 698947108784723221}
   - component: {fileID: 2503572483824172838}
   - component: {fileID: 5129164357483485379}
+  - component: {fileID: 3554915773520918783}
   m_Layer: 0
   m_Name: CapacityHeading
   m_TagString: Untagged
@@ -2816,9 +2967,9 @@ MonoBehaviour:
   m_fontSize: 39
   m_fontSizeBase: 39
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 24.18
+  m_fontSizeMax: 39
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -2858,6 +3009,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3554915773520918783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2879585110528164184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0412\u043C\u0435\u0441\u0442\u0438\u043C\u043E\u0441\u0442\u044C"
+  Literal: 0
 --- !u!1 &2939902751666567535
 GameObject:
   m_ObjectHideFlags: 0
@@ -3681,6 +3846,7 @@ GameObject:
   - component: {fileID: 38216070478937239}
   - component: {fileID: 4067221424708604934}
   - component: {fileID: 904865359598047298}
+  - component: {fileID: 8996349226353435403}
   m_Layer: 0
   m_Name: Message
   m_TagString: Untagged
@@ -3765,9 +3931,9 @@ MonoBehaviour:
   m_fontSize: 23
   m_fontSizeBase: 23
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16
+  m_fontSizeMax: 23
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -3807,6 +3973,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8996349226353435403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569105386561347911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &3884532853660310034
 GameObject:
   m_ObjectHideFlags: 0
@@ -4432,6 +4612,7 @@ GameObject:
   - component: {fileID: 8297026478958404529}
   - component: {fileID: 6074321625376545814}
   - component: {fileID: 1789688294318143045}
+  - component: {fileID: 8237730346807823139}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -4516,9 +4697,9 @@ MonoBehaviour:
   m_fontSize: 30
   m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18.6
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -4558,6 +4739,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8237730346807823139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207235699430052753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0414\u041E\u0411\u0410\u0412\u0418\u0422\u042C \u0421\u041B\u041E\u0422"
+  Literal: 0
 --- !u!1 &5563427483860119931
 GameObject:
   m_ObjectHideFlags: 0
@@ -4569,6 +4764,7 @@ GameObject:
   - component: {fileID: 3147806364875852309}
   - component: {fileID: 8065783153030903012}
   - component: {fileID: 5101419307111065658}
+  - component: {fileID: 8899905018223434079}
   m_Layer: 0
   m_Name: Stats
   m_TagString: Untagged
@@ -4653,9 +4849,9 @@ MonoBehaviour:
   m_fontSize: 27
   m_fontSizeBase: 27
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16.74
+  m_fontSizeMax: 27
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -4695,6 +4891,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8899905018223434079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5563427483860119931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &5995174500140917601
 GameObject:
   m_ObjectHideFlags: 0
@@ -4866,6 +5076,7 @@ GameObject:
   - component: {fileID: 8618099414068542956}
   - component: {fileID: 7422703627101862561}
   - component: {fileID: 2041768930634595773}
+  - component: {fileID: 86311655224174789}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -4950,9 +5161,9 @@ MonoBehaviour:
   m_fontSize: 34
   m_fontSizeBase: 34
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 21.08
+  m_fontSizeMax: 34
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 4096
@@ -4992,6 +5203,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &86311655224174789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6143615757624185022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0421\u043D\u0430\u0440\u044F\u0436\u0435\u043D\u0438\u0435"
+  Literal: 0
 --- !u!1 &6238201017307447139
 GameObject:
   m_ObjectHideFlags: 0
@@ -5078,6 +5303,7 @@ GameObject:
   - component: {fileID: 672440572354773480}
   - component: {fileID: 8629201941361524168}
   - component: {fileID: 1685931964488182325}
+  - component: {fileID: 6724976475656632124}
   m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
@@ -5163,9 +5389,9 @@ MonoBehaviour:
   m_fontSize: 32
   m_fontSizeBase: 32
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 19.84
+  m_fontSizeMax: 32
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -5205,6 +5431,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6724976475656632124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6466378565264308189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u041E\u0431\u043E\u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u0435
+    \u0438 \u0432\u043C\u0435\u0441\u0442\u0438\u043C\u043E\u0441\u0442\u044C"
+  Literal: 0
 --- !u!1 &6527441611370496189
 GameObject:
   m_ObjectHideFlags: 0
@@ -5461,6 +5702,7 @@ GameObject:
   - component: {fileID: 6916075372144692108}
   - component: {fileID: 2834224507331309212}
   - component: {fileID: 4966528415292132157}
+  - component: {fileID: 737104471720678979}
   m_Layer: 0
   m_Name: Caption
   m_TagString: Untagged
@@ -5545,9 +5787,9 @@ MonoBehaviour:
   m_fontSize: 29
   m_fontSizeBase: 29
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 17.98
+  m_fontSizeMax: 29
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -5587,6 +5829,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &737104471720678979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6773889379743509775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0412\u041C\u0415\u0421\u0422\u0418\u041C\u041E\u0421\u0422\u042C"
+  Literal: 0
 --- !u!1 &6908181935159448552
 GameObject:
   m_ObjectHideFlags: 0
@@ -5757,6 +6013,7 @@ GameObject:
   - component: {fileID: 6519937295143032672}
   - component: {fileID: 47767269158336536}
   - component: {fileID: 516524892109291125}
+  - component: {fileID: 7569511297094126288}
   m_Layer: 0
   m_Name: Caption
   m_TagString: Untagged
@@ -5841,9 +6098,9 @@ MonoBehaviour:
   m_fontSize: 26
   m_fontSizeBase: 26
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16.12
+  m_fontSizeMax: 26
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -5883,6 +6140,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7569511297094126288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7182180052685091240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0422\u0415\u041A\u0423\u0429\u0410\u042F \u041C\u041E\u0414\u0415\u041B\u042C"
+  Literal: 0
 --- !u!1 &7575900805175274889
 GameObject:
   m_ObjectHideFlags: 0
@@ -5894,6 +6165,7 @@ GameObject:
   - component: {fileID: 4820927188912977811}
   - component: {fileID: 1617131960142753425}
   - component: {fileID: 6872439659047942562}
+  - component: {fileID: 8587139286390829787}
   m_Layer: 0
   m_Name: Caption
   m_TagString: Untagged
@@ -5978,9 +6250,9 @@ MonoBehaviour:
   m_fontSize: 26
   m_fontSizeBase: 26
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16.12
+  m_fontSizeMax: 26
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -6020,6 +6292,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8587139286390829787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7575900805175274889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u0421\u041B\u0415\u0414\u0423\u042E\u0429\u0410\u042F \u041C\u041E\u0414\u0415\u041B\u042C"
+  Literal: 0
 --- !u!1 &7670683842106189070
 GameObject:
   m_ObjectHideFlags: 0
@@ -6641,6 +6927,7 @@ GameObject:
   - component: {fileID: 6221812361097823954}
   - component: {fileID: 6336695483097518628}
   - component: {fileID: 7142162477361015817}
+  - component: {fileID: 5257415667783828473}
   m_Layer: 0
   m_Name: Capacity
   m_TagString: Untagged
@@ -6725,9 +7012,9 @@ MonoBehaviour:
   m_fontSize: 44
   m_fontSizeBase: 44
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 27.28
+  m_fontSizeMax: 44
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -6767,6 +7054,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5257415667783828473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8386604151218841562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &8402744817431677837
 GameObject:
   m_ObjectHideFlags: 0
@@ -6928,6 +7229,7 @@ GameObject:
   - component: {fileID: 586510464246334142}
   - component: {fileID: 7650869304985526247}
   - component: {fileID: 6885282997962223381}
+  - component: {fileID: 7936581437302065899}
   m_Layer: 0
   m_Name: ModelHeading
   m_TagString: Untagged
@@ -7012,9 +7314,9 @@ MonoBehaviour:
   m_fontSize: 39
   m_fontSizeBase: 39
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 24.18
+  m_fontSizeMax: 39
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -7054,6 +7356,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7936581437302065899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8484568107152866422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u041C\u043E\u0434\u0435\u043B\u044C"
+  Literal: 0
 --- !u!1 &8615002762999992679
 GameObject:
   m_ObjectHideFlags: 0
@@ -7065,6 +7381,7 @@ GameObject:
   - component: {fileID: 4387535585614005796}
   - component: {fileID: 8214089994419432613}
   - component: {fileID: 5725509361872895489}
+  - component: {fileID: 6866878456355307845}
   m_Layer: 0
   m_Name: NextTier
   m_TagString: Untagged
@@ -7149,9 +7466,9 @@ MonoBehaviour:
   m_fontSize: 37
   m_fontSizeBase: 37
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 22.94
+  m_fontSizeMax: 37
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -7191,6 +7508,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6866878456355307845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8615002762999992679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &8619091038937232985
 GameObject:
   m_ObjectHideFlags: 0
@@ -7250,6 +7581,7 @@ GameObject:
   - component: {fileID: 2032422607286167249}
   - component: {fileID: 1217321187587388786}
   - component: {fileID: 1968949031450023011}
+  - component: {fileID: 5286156814295293548}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -7334,9 +7666,9 @@ MonoBehaviour:
   m_fontSize: 30
   m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18.6
+  m_fontSizeMax: 30
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -7376,6 +7708,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5286156814295293548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8630696471741608093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: "\u041D\u0410\u0417\u0410\u0414"
+  Literal: 0
 --- !u!1 &8870977087965348267
 GameObject:
   m_ObjectHideFlags: 0
@@ -7387,6 +7733,7 @@ GameObject:
   - component: {fileID: 6709238573491820091}
   - component: {fileID: 7279525751401105288}
   - component: {fileID: 879365405289683038}
+  - component: {fileID: 5258944796780430083}
   m_Layer: 0
   m_Name: PowerAndIntake
   m_TagString: Untagged
@@ -7471,9 +7818,9 @@ MonoBehaviour:
   m_fontSize: 27
   m_fontSizeBase: 27
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 16.74
+  m_fontSizeMax: 27
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -7513,6 +7860,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5258944796780430083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8870977087965348267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &8874818981401875748
 GameObject:
   m_ObjectHideFlags: 0
@@ -7524,6 +7885,7 @@ GameObject:
   - component: {fileID: 5989887283690766006}
   - component: {fileID: 1953942977176685051}
   - component: {fileID: 6401901888629324730}
+  - component: {fileID: 4428649661427421636}
   m_Layer: 0
   m_Name: CapacityPrice
   m_TagString: Untagged
@@ -7608,9 +7970,9 @@ MonoBehaviour:
   m_fontSize: 33
   m_fontSizeBase: 33
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 20.460001
+  m_fontSizeMax: 33
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -7650,6 +8012,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4428649661427421636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8874818981401875748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7d2a33ee7f0b84e9166c98de714405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.LocalizedText
+  Source: 
+  Literal: 0
 --- !u!1 &8953883346023890501
 GameObject:
   m_ObjectHideFlags: 0

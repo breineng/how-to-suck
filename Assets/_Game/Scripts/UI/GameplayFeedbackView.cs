@@ -68,7 +68,7 @@ namespace HowToSuck
             if(current.IsKnown&&storage.IsKnown&&current.RunId==storage.RunId&&current.Count>storage.Count)
             {
                 pickup=1;audioRoot.Action(SfxId.ItemStored,player.transform.position);
-                if(PickupText!=null)PickupText.text="ПРЕДМЕТ СОБРАН  +1";
+                if(PickupText!=null)HowToSuck.LocalizedText.Set(PickupText, "ПРЕДМЕТ СОБРАН  +1");
             }
             storage=current;
             if(PickupText!=null)PickupText.color=new Color(.76f,1,.78f,pickup);
@@ -77,9 +77,9 @@ namespace HowToSuck
             var pull=vacuum!=null&&player.LastIntent.VacuumHeld?vacuum.PullMode:SuctionMode.Idle;
             bool hauling=pull==SuctionMode.Holding||pull==SuctionMode.NeedHelp;
             if(FullPanel!=null)FullPanel.SetActive(full||hauling);
-            if(FullText!=null)FullText.text=hauling?
+            if(FullText!=null)HowToSuck.LocalizedText.Set(FullText, hauling?
                 (pull==SuctionMode.NeedHelp?"ТЯЖЕЛО — НУЖНА ПОМОЩЬ":"ПРЕДМЕТ УДЕРЖИВАЕТСЯ")+$" · ТЯНУТ: {vacuum.PullingPlayers}\n"+(full?"Хранилище полно · несите предмет к грузовику":"Доставьте предмет к соплу грузовика"):
-                "ХРАНИЛИЩЕ ПОЛНО\nМожно переносить предметы · выстрелите, чтобы освободить слот";
+                "ХРАНИЛИЩЕ ПОЛНО\nМожно переносить предметы · выстрелите, чтобы освободить слот");
             if(full&&!hauling&&Time.unscaledTime>=fullSoundAt){fullSoundAt=Time.unscaledTime+1.1f;audioRoot.Action(SfxId.VacuumBlocked,player.transform.position);}
             var suit=player.GetComponent<PlayerSuitView>()?.Value??default;
             if(Time.unscaledTime>=crewScan){crewScan=Time.unscaledTime+.25f;crew=FindObjectsByType<PlayerMotor>(FindObjectsSortMode.None);}
@@ -101,7 +101,7 @@ namespace HowToSuck
             float charge=player.FireCharge;
             if(ChargePanel!=null)ChargePanel.SetActive(!down&&charge>0);
             if(ChargeFill!=null)ChargeFill.fillAmount=charge;
-            if(ChargeText!=null)ChargeText.text=$"ЗАРЯД {Mathf.RoundToInt(charge*100)}% · УРОН ×{1+1.5f*charge:0.0}";
+            if(ChargeText!=null)HowToSuck.LocalizedText.Set(ChargeText, $"ЗАРЯД {Mathf.RoundToInt(charge*100)}% · УРОН ×{1+1.5f*charge:0.0}");
             bool atTruck=session.World!=null&&session.World.IsPlayerInExtraction(player.PlayerId)&&!session.ContractState.ObjectivesComplete;
             if(RepairText!=null)
             {
@@ -116,7 +116,7 @@ namespace HowToSuck
             }
             bool showBoss=boss!=null&&boss.Health>0;
             if(BossPanel!=null)BossPanel.SetActive(showBoss);
-            if(showBoss){BossName.text=boss.Definition.DisplayName+(boss.Health<=boss.MaximumHealth/2?" · ЯРОСТЬ":"");BossHealth.text=$"{boss.Health} / {boss.MaximumHealth}";BossFill.fillAmount=Mathf.MoveTowards(BossFill.fillAmount,(float)boss.Health/boss.MaximumHealth,dt*2);}
+            if(showBoss){HowToSuck.LocalizedText.Set(BossName, boss.Definition.DisplayName+(boss.Health<=boss.MaximumHealth/2?" · ЯРОСТЬ":""));HowToSuck.LocalizedText.Set(BossHealth, $"{boss.Health} / {boss.MaximumHealth}");BossFill.fillAmount=Mathf.MoveTowards(BossFill.fillAmount,(float)boss.Health/boss.MaximumHealth,dt*2);}
             if(!down){Steps(Time.deltaTime);SuctionParticles();}else knownGround=false;
         }
         void OnFact(CommittedAudioFact fact)
@@ -131,7 +131,7 @@ namespace HowToSuck
             }
             if(fact.Kind==CommittedAudioKind.EnemyHit){if(local)hit=1;CombatParticles.Burst(fact.Position,new Color(1,.26f,.04f),25,3,.14f,.45f);}
             if(fact.Kind==CommittedAudioKind.SuitHit&&local)damage=1;
-            if(fact.Kind==CommittedAudioKind.SuitRecovered&&local){pickup=1;if(PickupText!=null)PickupText.text="КОСТЮМ ВОССТАНОВЛЕН";}
+            if(fact.Kind==CommittedAudioKind.SuitRecovered&&local){pickup=1;if(PickupText!=null)HowToSuck.LocalizedText.Set(PickupText, "КОСТЮМ ВОССТАНОВЛЕН");}
         }
         void Steps(float dt)
         {

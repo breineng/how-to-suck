@@ -15,7 +15,7 @@ namespace HowToSuck.Networking
         {
             if(SoloButton==null||QuitButton==null||Status==null){SetButtons(false,false);enabled=false;return;}
             SoloButton.onClick.AddListener(ChooseSolo);QuitButton.onClick.AddListener(Quit);if(CoopButton!=null)CoopButton.onClick.AddListener(OpenCoop);wired=true;
-            if(CoopStatus!=null)CoopStatus.text="Совместная игра пока недоступна в этой сборке.";
+            if(CoopStatus!=null)HowToSuck.LocalizedText.Set(CoopStatus, "Совместная игра пока недоступна в этой сборке.");
             BindCurrent();
         }
         private void OnEnable(){if(wired)BindCurrent();}
@@ -40,9 +40,9 @@ namespace HowToSuck.Networking
         private void SetButtons(bool solo,bool quit){if(SoloButton!=null)SoloButton.interactable=solo;if(QuitButton!=null)QuitButton.interactable=quit;if(CoopButton!=null)CoopButton.interactable=solo&&CoopView!=null;}
         private void Refresh()
         {
-            if(startup==null){SetButtons(false,false);if(Status!=null)Status.text="Открываем главное меню…";return;}
-            SetButtons(startup.CanStartSolo,startup.CanQuit);if(Status!=null)Status.text=startup.Status;
-            if(CoopStatus!=null)CoopStatus.text=CoopView!=null?"":startup.CoopStatus;
+            if(startup==null){SetButtons(false,false);if(Status!=null)HowToSuck.LocalizedText.Set(Status, "Открываем главное меню…");return;}
+            SetButtons(startup.CanStartSolo,startup.CanQuit);if(Status!=null)HowToSuck.LocalizedText.Set(Status, startup.Status);
+            if(CoopStatus!=null)HowToSuck.LocalizedText.Set(CoopStatus, CoopView!=null?"":startup.CoopStatus);
             if(EventSystem.current!=null&&EventSystem.current.currentSelectedGameObject==null)
             {
                 if(startup.CanStartSolo)EventSystem.current.SetSelectedGameObject(SoloButton.gameObject);

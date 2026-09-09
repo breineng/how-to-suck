@@ -1,0 +1,1972 @@
+{
+  "entries": [
+    {
+      "source": "\nЛюбая модель",
+      "text": "\nHer model"
+    },
+    {
+      "source": "\nРекомендуется: ",
+      "text": "\nÖnerilen: "
+    },
+    {
+      "source": " 2 секунды, чтобы уехать",
+      "text": " 2 saniye basılı tutarak ayrıl"
+    },
+    {
+      "source": " · ТЯНУТ: {0}\n",
+      "text": " · ÇEKENLER: {0}\n"
+    },
+    {
+      "source": " · ЯРОСТЬ",
+      "text": " · ÖFKE"
+    },
+    {
+      "source": " · загружается: {0}",
+      "text": " · yükleniyor: {0}"
+    },
+    {
+      "source": " · защита",
+      "text": " · koruma"
+    },
+    {
+      "source": " Гц",
+      "text": " Hz"
+    },
+    {
+      "source": " с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": " sn.\nEsc veya “Geri al” değişikliği iptal eder."
+    },
+    {
+      "source": " — ВЫПУСТИТЬ БОССА",
+      "text": " — BOSS'U BIRAK"
+    },
+    {
+      "source": " — ВЫСТРЕЛ · УДЕРЖАТЬ — ЗАРЯД",
+      "text": " — ATEŞ ET · ŞARJ İÇİN BASILI TUT"
+    },
+    {
+      "source": " — СОБРАТЬ",
+      "text": " — TOPLA"
+    },
+    {
+      "source": " — выпустить босса",
+      "text": " — boss'u bırak"
+    },
+    {
+      "source": " — выстрелить предметом",
+      "text": " — eşya fırlat"
+    },
+    {
+      "source": " — собрать предмет",
+      "text": " — eşya topla"
+    },
+    {
+      "source": " — эвакуация",
+      "text": " — tahliye"
+    },
+    {
+      "source": "). История другого аккаунта сохранена отдельно.",
+      "text": "). Diğer hesabın geçmişi ayrı saklandı."
+    },
+    {
+      "source": "). Одиночная игра доступна.",
+      "text": "). Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "+1 СЛОТ  /  ${0}",
+      "text": "+1 YUVA / ${0}"
+    },
+    {
+      "source": ". Выберите другую.",
+      "text": ". Başka bir tuş seç."
+    },
+    {
+      "source": "<line-height=66px>МОЩНОСТЬ  {0}\nПРИЁМНИК  {1} м",
+      "text": "<line-height=66px>GÜÇ {0}\nGİRİŞ {1} m"
+    },
+    {
+      "source": "Esc и управление меню не меняются. Выберите действие, затем клавишу. Нажмите Esc для отмены назначения.",
+      "text": "Esc ve menü kontrolleri değişmez. Bir eylem ve ardından bir tuş seç. Esc atamayı iptal eder."
+    },
+    {
+      "source": "How to Suck\nЗапустите игру через How to Suck → Играть в меню Unity.\nСтартовая сцена: Production/Scenes/ProductBootstrap.",
+      "text": "How to Suck\nUnity'de How to Suck → Play üzerinden başlat.\nBaşlangıç sahnesi: Production/Scenes/ProductBootstrap."
+    },
+    {
+      "source": "Steam временно недоступен.",
+      "text": "Steam geçici olarak kullanılamıyor."
+    },
+    {
+      "source": "Steam запущен с другим AppID. Проверьте выбранную конфигурацию разработки.",
+      "text": "Steam AppID yanlış. Derleme yapılandırmasını kontrol et."
+    },
+    {
+      "source": "Steam не завершил запрос вовремя. Одиночная игра остаётся доступной.",
+      "text": "Steam isteği zaman aşımına uğradı. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Steam не настроен для этой сборки. Одиночная игра доступна.",
+      "text": "Bu sürümde Steam yapılandırılmamış. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Steam не отправил приглашение. Обновите список и попробуйте ещё раз.",
+      "text": "Steam daveti gönderemedi. Yenile ve tekrar dene."
+    },
+    {
+      "source": "Steam не подтвердил хозяина лобби.",
+      "text": "Steam lobi sahibini doğrulayamadı."
+    },
+    {
+      "source": "Steam не подтвердил членство в лобби.",
+      "text": "Steam lobi üyeliğini doğrulayamadı."
+    },
+    {
+      "source": "Steam не принял вход в лобби.",
+      "text": "Steam lobiye katılmayı reddetti."
+    },
+    {
+      "source": "Steam не принял создание лобби.",
+      "text": "Steam lobi oluşturmayı reddetti."
+    },
+    {
+      "source": "Steam не создал лобби.",
+      "text": "Steam lobiyi oluşturamadı."
+    },
+    {
+      "source": "Steam не сообщил текущего пользователя.",
+      "text": "Steam mevcut kullanıcıyı belirleyemedi."
+    },
+    {
+      "source": "Steam не сохранил конфигурацию лобби.",
+      "text": "Steam lobi ayarlarını kaydedemedi."
+    },
+    {
+      "source": "Steam не удалось инициализировать. Одиночная игра доступна.",
+      "text": "Steam başlatılamadı. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Steam уже обслуживается другим владельцем сессии.",
+      "text": "Steam zaten başka bir oturum tarafından yönetiliyor."
+    },
+    {
+      "source": "{0} / {1} СЛОТОВ",
+      "text": "{0} / {1} YUVA"
+    },
+    {
+      "source": "БОСС ДОСТАВЛЕН",
+      "text": "BOSS TESLİM EDİLDİ"
+    },
+    {
+      "source": "БОСС ПОВЕРЖЕН",
+      "text": "BOSS YENİLDİ"
+    },
+    {
+      "source": "БОСС СКРЫВАЕТСЯ",
+      "text": "BOSS SAKLANIYOR"
+    },
+    {
+      "source": "Баланс: ${0}",
+      "text": "Bakiye: ${0}"
+    },
+    {
+      "source": "Бег",
+      "text": "Koş"
+    },
+    {
+      "source": "Без рамки",
+      "text": "Kenarlıksız"
+    },
+    {
+      "source": "Бонус сохранён. Следующая модель покупается отдельно.",
+      "text": "Bonus kaydedildi. Sonraki model ayrıca alınır."
+    },
+    {
+      "source": "Бонусные слоты сохраняются при смене модели.",
+      "text": "Bonus yuvalar model değiştirince korunur."
+    },
+    {
+      "source": "Босс доставлен",
+      "text": "Boss teslim edildi"
+    },
+    {
+      "source": "Босс доставлен\n",
+      "text": "BOSS TESLİM EDİLDİ\n"
+    },
+    {
+      "source": "Босс не доставлен\n",
+      "text": "Boss teslim edilmedi\n"
+    },
+    {
+      "source": "Босс повержен — доставьте тело в грузовик",
+      "text": "Boss yenildi — cesedi kamyona götür"
+    },
+    {
+      "source": "Босс: победите и доставьте в грузовик",
+      "text": "Boss: yen ve kamyona teslim et"
+    },
+    {
+      "source": "В ЛОББИ",
+      "text": "LOBİDE"
+    },
+    {
+      "source": "В СЕТИ",
+      "text": "ÇEVRİMİÇİ"
+    },
+    {
+      "source": "В кампании есть оборудование, которого нет в этой версии игры. Проверьте версию игры. Сохранение не изменено.",
+      "text": "Bu seferde mevcut sürümde bulunmayan ekipman var. Oyun sürümünü kontrol et. Kayıt değişmedi."
+    },
+    {
+      "source": "В лобби",
+      "text": "Lobiye dön"
+    },
+    {
+      "source": "В меню",
+      "text": "Ana menü"
+    },
+    {
+      "source": "В списке Steam пока нет друзей.",
+      "text": "Steam'de henüz arkadaş bulunamadı."
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 25% костюма",
+      "text": "KALDIRILIYORSUN\nKalkınca tulum %25 olur"
+    },
+    {
+      "source": "ВМЕСТИМОСТЬ",
+      "text": "KAPASİTE"
+    },
+    {
+      "source": "ВРЕМЯ",
+      "text": "SÜRE"
+    },
+    {
+      "source": "ВЫ · ",
+      "text": "SEN · "
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ",
+      "text": "YERE DÜŞTÜN"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища",
+      "text": "YERE DÜŞTÜN\nTakım arkadaşının yardımını bekle"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "YERE DÜŞTÜN\nKalkmak için {0} tuşunu 3 saniye tut\n%25 tulum · −15 saniye"
+    },
+    {
+      "source": "Ваша кампания · общее оборудование",
+      "text": "Senin seferin · ortak ekipman"
+    },
+    {
+      "source": "Вернуть",
+      "text": "Geri al"
+    },
+    {
+      "source": "Версии Steamworks.NET и native Steam API не совпадают.",
+      "text": "Steamworks.NET ve yerel Steam API sürümleri uyuşmuyor."
+    },
+    {
+      "source": "Вертикальная синхронизация",
+      "text": "Dikey senkronizasyon"
+    },
+    {
+      "source": "Взаимодействие",
+      "text": "Etkileşim"
+    },
+    {
+      "source": "Вибрация камеры",
+      "text": "Kamera sarsıntısı"
+    },
+    {
+      "source": "Видео",
+      "text": "Video"
+    },
+    {
+      "source": "Видеорежим ещё не применён или время подтверждения истекло.",
+      "text": "Görüntü modu uygulanmadı veya onay süresi doldu."
+    },
+    {
+      "source": "Видеорежим применён.",
+      "text": "Görüntü modu uygulandı."
+    },
+    {
+      "source": "Видеорежим сохранён.",
+      "text": "Görüntü modu kaydedildi."
+    },
+    {
+      "source": "Влево",
+      "text": "Sol"
+    },
+    {
+      "source": "Вместимость",
+      "text": "KAPASİTE"
+    },
+    {
+      "source": "Вместимость не куплена. Проверьте цену, баланс и максимум модели.",
+      "text": "Kapasite alınamıyor. Fiyatı, bakiyeyi ve model sınırını kontrol et."
+    },
+    {
+      "source": "Вместимость: ожидаем данные кампании",
+      "text": "Kapasite: sefer verileri bekleniyor"
+    },
+    {
+      "source": "Возвращаемся в главное меню…",
+      "text": "Ana menüye dönülüyor…"
+    },
+    {
+      "source": "Возвращается предыдущий видеорежим…",
+      "text": "Önceki görüntü moduna dönülüyor…"
+    },
+    {
+      "source": "Возвращён предыдущий видеорежим.",
+      "text": "Önceki görüntü modu geri yüklendi."
+    },
+    {
+      "source": "Восстановить настройки",
+      "text": "Ayarları geri yükle"
+    },
+    {
+      "source": "Вперёд",
+      "text": "İleri"
+    },
+    {
+      "source": "Вправо",
+      "text": "Sağ"
+    },
+    {
+      "source": "Время истекло",
+      "text": "Süre doldu"
+    },
+    {
+      "source": "Все готовы",
+      "text": "Herkes hazır"
+    },
+    {
+      "source": "Все игроки должны вернуться к грузовику",
+      "text": "Tüm oyuncular kamyona dönmeli"
+    },
+    {
+      "source": "Вчетвером пройти контракт от начала до успеха, сдав квоту и побеждённого босса.",
+      "text": "Dört kişilik ekiple işi baştan sona tamamla; kotayı ve yenilmiş boss'u teslim et."
+    },
+    {
+      "source": "Вы",
+      "text": "Sen"
+    },
+    {
+      "source": "Вы выведены из строя — требуется подъём",
+      "text": "Yere düştün — kaldırılman gerekiyor"
+    },
+    {
+      "source": "Вы готовы. Контракт выбирает хозяин",
+      "text": "Hazırsın. İşi ev sahibi seçer"
+    },
+    {
+      "source": "Вы начнёте с MK1 и нулевым балансом. Исходные повреждённые файлы останутся в папке сохранений.",
+      "text": "MK1 ve $0 ile başlayacaksın. Hasarlı özgün dosyalar kayıt klasöründe kalacak."
+    },
+    {
+      "source": "Вы покинули сессию.",
+      "text": "Oturumdan ayrıldın."
+    },
+    {
+      "source": "Выберите главу и начните контракт.",
+      "text": "Bir bölüm seç ve işi başlat."
+    },
+    {
+      "source": "Выберите друга",
+      "text": "Arkadaş seç"
+    },
+    {
+      "source": "Выберите игру друга или создайте свою.",
+      "text": "Arkadaşının oyununu seç veya kendi oyununu oluştur."
+    },
+    {
+      "source": "Выбор карты",
+      "text": "Harita seçimi"
+    },
+    {
+      "source": "Выбор хозяина · ожидаем начала контракта",
+      "text": "Ev sahibinin seçimi · işin başlaması bekleniyor"
+    },
+    {
+      "source": "Выйти",
+      "text": "Ayrıl"
+    },
+    {
+      "source": "Выйти из игры",
+      "text": "Oyundan çık"
+    },
+    {
+      "source": "Выключена",
+      "text": "Kapalı"
+    },
+    {
+      "source": "Выплата ещё не сохранена. Повторите сохранение, чтобы продолжить.",
+      "text": "Ödeme henüz kaydedilmedi. Devam etmek için yeniden kaydet."
+    },
+    {
+      "source": "Выстрел / выпуск",
+      "text": "Ateş et / bırak"
+    },
+    {
+      "source": "Выстрелите телом в приёмник грузовика",
+      "text": "Cesedi kamyon girişine fırlat"
+    },
+    {
+      "source": "ГОТОВ",
+      "text": "HAZIR"
+    },
+    {
+      "source": "Генеральная уборка",
+      "text": "Büyük temizlik"
+    },
+    {
+      "source": "Готов",
+      "text": "HAZIR"
+    },
+    {
+      "source": "Грузовик",
+      "text": "Kamyon"
+    },
+    {
+      "source": "ДО ОТЪЕЗДА",
+      "text": "HAREKETE KALAN"
+    },
+    {
+      "source": "ДОБАВИТЬ СЛОТ",
+      "text": "YUVA EKLE"
+    },
+    {
+      "source": "ДОСТАВЬТЕ БОССА",
+      "text": "BOSS'U TESLİM ET"
+    },
+    {
+      "source": "Диван",
+      "text": "Kanepe"
+    },
+    {
+      "source": "Для повтора синхронизации\nперезапустите игру.",
+      "text": "Senkronizasyonu tekrar denemek\niçin oyunu yeniden başlat."
+    },
+    {
+      "source": "Для слота не хватает ${0}.",
+      "text": "Bir yuva için ${0} eksik."
+    },
+    {
+      "source": "Для совместной игры нужен Steam.",
+      "text": "Eşli oyun için Steam gerekli."
+    },
+    {
+      "source": "Дождитесь завершения смены видеорежима.",
+      "text": "Görüntü modu değişikliğinin bitmesini bekle."
+    },
+    {
+      "source": "Дом вверх дном",
+      "text": "Ev altüst oldu"
+    },
+    {
+      "source": "Дополнительный слот сохранён. Бонус сохраняется при смене модели.",
+      "text": "Ek yuva kaydedildi. Model değişince bonus korunur."
+    },
+    {
+      "source": "Доставьте груз в грузовик и выполните квоту",
+      "text": "Yükü kamyona teslim et ve kotayı doldur"
+    },
+    {
+      "source": "Доставьте груз и побеждённого босса в грузовик",
+      "text": "Yükü ve yenilmiş boss'u kamyona teslim et"
+    },
+    {
+      "source": "Доставьте побеждённого босса в грузовик",
+      "text": "Yenilmiş boss'u kamyona teslim et"
+    },
+    {
+      "source": "Доставьте предмет к соплу грузовика",
+      "text": "Eşyayı kamyon başlığına götür"
+    },
+    {
+      "source": "Достижения ",
+      "text": "Başarımlar "
+    },
+    {
+      "source": "Достижения аккаунта ",
+      "text": "Hesap başarımları "
+    },
+    {
+      "source": "Достижения восстановлены из резервной копии; повреждённый файл сохранён.",
+      "text": "Başarımlar yedekten yüklendi. Hasarlı dosya korundu."
+    },
+    {
+      "source": "Достижения пока не сохранены: ",
+      "text": "Başarımlar henüz kaydedilmedi: "
+    },
+    {
+      "source": "Достижения —/8",
+      "text": "Başarımlar —/8"
+    },
+    {
+      "source": "Доступная карта не найдена.",
+      "text": "Kullanılabilir harita bulunamadı."
+    },
+    {
+      "source": "Друг Steam",
+      "text": "Steam arkadaşı"
+    },
+    {
+      "source": "Ещё раз",
+      "text": "Tekrar dene"
+    },
+    {
+      "source": "Жадность окупилась",
+      "text": "Açgözlülük işe yaradı"
+    },
+    {
+      "source": "ЗАГРУЖАЕТСЯ: {0}",
+      "text": "YÜKLENİYOR: {0}"
+    },
+    {
+      "source": "ЗАДАЧА",
+      "text": "HEDEF"
+    },
+    {
+      "source": "ЗАКРЫТЬ",
+      "text": "KAPAT"
+    },
+    {
+      "source": "ЗАРЯД {0}% · УРОН ×{1}",
+      "text": "ŞARJ %{0} · HASAR ×{1}"
+    },
+    {
+      "source": "ЗАЩИТА",
+      "text": "KORUMA"
+    },
+    {
+      "source": "Завершение Steam API прервалось; повторная сетевая сессия требует перезапуска приложения.",
+      "text": "Steam API kapatılamadı. Yeni çevrimiçi oturumdan önce oyunu yeniden başlat."
+    },
+    {
+      "source": "Завершите назначение клавиши.",
+      "text": "Önce tuş atamasını bitir."
+    },
+    {
+      "source": "Загружаем историю…",
+      "text": "Geçmiş yükleniyor…"
+    },
+    {
+      "source": "Загрузка…",
+      "text": "Yükleniyor…"
+    },
+    {
+      "source": "Засасывание",
+      "text": "Emiş"
+    },
+    {
+      "source": "Звук",
+      "text": "Ses"
+    },
+    {
+      "source": "Значения настроек недопустимы.",
+      "text": "Ayar değerleri geçersiz."
+    },
+    {
+      "source": "Игра друга",
+      "text": "Arkadaşın oyunu"
+    },
+    {
+      "source": "Играть",
+      "text": "Oyna"
+    },
+    {
+      "source": "Игрок {0}",
+      "text": "Oyuncu {0}"
+    },
+    {
+      "source": "Изменения ещё не сохранены.",
+      "text": "Değişiklikler henüz kaydedilmedi."
+    },
+    {
+      "source": "Изображение",
+      "text": "Görüntü"
+    },
+    {
+      "source": "Инверсия Y",
+      "text": "Y eksenini ters çevir"
+    },
+    {
+      "source": "Интерфейс",
+      "text": "Arayüz"
+    },
+    {
+      "source": "История пока недоступна",
+      "text": "Geçmiş kullanılamıyor"
+    },
+    {
+      "source": "История связана со Steam",
+      "text": "Geçmiş Steam'e bağlı"
+    },
+    {
+      "source": "Исходный режим не применился. Применено безопасное окно.",
+      "text": "Özgün mod geri yüklenemedi. Güvenli pencere modu uygulandı."
+    },
+    {
+      "source": "Ищем доступные игры друзей…",
+      "text": "Arkadaşların oyunları aranıyor…"
+    },
+    {
+      "source": "КВОТА",
+      "text": "KOTA"
+    },
+    {
+      "source": "КОМАНДА",
+      "text": "TAKIM"
+    },
+    {
+      "source": "КОМАНДА  {0} / 4",
+      "text": "TAKIM {0} / 4"
+    },
+    {
+      "source": "КОНТРАКТЫ",
+      "text": "İŞLER"
+    },
+    {
+      "source": "КООПЕРАТИВ",
+      "text": "EŞLİ OYUN"
+    },
+    {
+      "source": "КОСТЮМ",
+      "text": "TULUM"
+    },
+    {
+      "source": "КОСТЮМ ВОССТАНОВЛЕН",
+      "text": "TULUM ONARILDI"
+    },
+    {
+      "source": "КОСТЮМ ЦЕЛ · зарядов: {0}",
+      "text": "TULUM SAĞLAM · hak: {0}"
+    },
+    {
+      "source": "КУПИТЬ МОДЕЛЬ",
+      "text": "MODEL SATIN AL"
+    },
+    {
+      "source": "Каждый второй кадр",
+      "text": "İki karede bir"
+    },
+    {
+      "source": "Каждый кадр",
+      "text": "Her karede"
+    },
+    {
+      "source": "Кампания восстановлена из резервной копии. Исходный повреждённый файл сохранён.",
+      "text": "Sefer yedekten yüklendi. Hasarlı dosya korundu."
+    },
+    {
+      "source": "Кампания недоступна",
+      "text": "Sefer kullanılamıyor"
+    },
+    {
+      "source": "Кампания хоста · общее оборудование",
+      "text": "Ev sahibinin seferi · ortak ekipman"
+    },
+    {
+      "source": "Карту и начало контракта выбирает хозяин.",
+      "text": "Haritayı ev sahibi seçer ve işi başlatır."
+    },
+    {
+      "source": "Кастрюля",
+      "text": "Tencere"
+    },
+    {
+      "source": "Качество",
+      "text": "Kalite"
+    },
+    {
+      "source": "Квота: ${0}    Время: {1}:{2}\nПри неудаче: {3}% сданной стоимости\nЦель: квота и доставка побеждённого босса",
+      "text": "Kota: ${0}    Süre: {1}:{2}\nBaşarısızlıkta: teslim edilen değerin %{3} kadarı\nHedef: kota ve yenilmiş boss'un teslimi"
+    },
+    {
+      "source": "Клавиши",
+      "text": "Tuşlar"
+    },
+    {
+      "source": "Книга",
+      "text": "Kitap"
+    },
+    {
+      "source": "Кнопки не были отпущены. Повторите назначение.",
+      "text": "Tuşlar bırakılmadı. Atamayı tekrar dene."
+    },
+    {
+      "source": "Команда: ",
+      "text": "Takım: "
+    },
+    {
+      "source": "Контракт прерван",
+      "text": "İş iptal edildi"
+    },
+    {
+      "source": "Контракты",
+      "text": "İŞLER"
+    },
+    {
+      "source": "Кооператив",
+      "text": "EŞLİ OYUN"
+    },
+    {
+      "source": "Костюм: {0}%",
+      "text": "Tulum: %{0}"
+    },
+    {
+      "source": "Костюм: —",
+      "text": "Tulum: —"
+    },
+    {
+      "source": "Коэффициент выплаты: {0}%\nВыплата: ${1}\n\nБаланс: ${2}",
+      "text": "Ödeme oranı: %{0}\nÖdeme: ${1}\n\nBakiye: ${2}"
+    },
+    {
+      "source": "Лобби изменилось во время подключения.",
+      "text": "Bağlanırken lobi değişti."
+    },
+    {
+      "source": "Лобби относится к другой игре/сборке либо контракт уже начался.",
+      "text": "Lobi başka oyuna/sürüme ait veya iş zaten başladı."
+    },
+    {
+      "source": "Локальная история достижений привязана к ",
+      "text": "Yerel başarım geçmişinin bağlı olduğu hesap: "
+    },
+    {
+      "source": "МАКСИМУМ",
+      "text": "MAKSİMUM"
+    },
+    {
+      "source": "МАКСИМУМ: {0} СЛОТОВ",
+      "text": "MAKSİMUM: {0} YUVA"
+    },
+    {
+      "source": "Магазин доступен между контрактами после сохранения кампании.",
+      "text": "Dükkan, sefer kaydedildikten sonra işler arasında kullanılabilir."
+    },
+    {
+      "source": "Меню не останавливает контракт",
+      "text": "Menü işi duraklatmaz"
+    },
+    {
+      "source": "Место для друга",
+      "text": "Arkadaş için yer"
+    },
+    {
+      "source": "Микроволновка",
+      "text": "Mikrodalga"
+    },
+    {
+      "source": "Модель",
+      "text": "Model"
+    },
+    {
+      "source": "Модель: ${0}",
+      "text": "Model: ${0}"
+    },
+    {
+      "source": "Монитор",
+      "text": "Monitör"
+    },
+    {
+      "source": "Музыкальная пауза",
+      "text": "Müzik molası"
+    },
+    {
+      "source": "Мусорный катун",
+      "text": "Çöp yuvarlağı"
+    },
+    {
+      "source": "НАЗАД",
+      "text": "GERİ"
+    },
+    {
+      "source": "НАСТРОЙКИ",
+      "text": "AYARLAR"
+    },
+    {
+      "source": "НАЧАТЬ ЗАНОВО?",
+      "text": "YENİDEN BAŞLANSIN MI?"
+    },
+    {
+      "source": "НАЧАТЬ КОНТРАКТ",
+      "text": "İŞİ BAŞLAT"
+    },
+    {
+      "source": "НЕ В СЕТИ",
+      "text": "ÇEVRİMDIŞI"
+    },
+    {
+      "source": "НЕ ГОТОВ",
+      "text": "HAZIR DEĞİL"
+    },
+    {
+      "source": "НОВАЯ ИГРА",
+      "text": "YENİ OYUN"
+    },
+    {
+      "source": "Нажмите новую клавишу или кнопку мыши. Esc — отмена.",
+      "text": "Yeni tuşa veya fare düğmesine bas. Esc iptal eder."
+    },
+    {
+      "source": "Назад",
+      "text": "GERİ"
+    },
+    {
+      "source": "Назначение отменено.",
+      "text": "Atama iptal edildi."
+    },
+    {
+      "source": "Найти друзей",
+      "text": "Arkadaş bul"
+    },
+    {
+      "source": "Настольная лампа",
+      "text": "Masa lambası"
+    },
+    {
+      "source": "Настройки",
+      "text": "AYARLAR"
+    },
+    {
+      "source": "Настройки восстановлены из резервной копии. Повреждённый файл сохранён.",
+      "text": "Ayarlar yedekten yüklendi. Hasarlı dosya korundu."
+    },
+    {
+      "source": "Настройки изменены другим экземпляром игры. Повторите загрузку перед сохранением.",
+      "text": "Başka bir oyun örneği ayarları değiştirdi. Kaydetmeden önce yeniden yükle."
+    },
+    {
+      "source": "Настройки личные. Кампания и таймер контракта не изменяются.",
+      "text": "Kişisel ayarlar seferi ve işin süresini değiştirmez."
+    },
+    {
+      "source": "Настройки созданы в новой версии игры. Можно играть со стандартными значениями или явно сбросить только настройки.",
+      "text": "Ayarlar daha yeni oyun sürümünden. Varsayılanları kullan veya yalnızca ayarları sıfırla."
+    },
+    {
+      "source": "Настройки сохранены.",
+      "text": "Ayarlar kaydedildi."
+    },
+    {
+      "source": "Настройки экрана доступны в обычном окне игры.",
+      "text": "Ekran ayarları bağımsız oyun penceresinde kullanılabilir."
+    },
+    {
+      "source": "Начать новую кампанию?",
+      "text": "Yeni sefer başlatılsın mı?"
+    },
+    {
+      "source": "Начать с нуля",
+      "text": "Sıfırdan başla"
+    },
+    {
+      "source": "Не готов",
+      "text": "HAZIR DEĞİL"
+    },
+    {
+      "source": "Не найдена библиотека Steam для Windows x64. Одиночная игра доступна.",
+      "text": "Windows x64 Steam kitaplığı eksik. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Не удалось войти в лобби Steam.",
+      "text": "Steam lobisine girilemedi."
+    },
+    {
+      "source": "Не удалось восстановить главное меню. Перезапустите игру.",
+      "text": "Ana menü geri yüklenemedi. Oyunu yeniden başlat."
+    },
+    {
+      "source": "Не удалось восстановить кампанию из основного или резервного файла. Можно повторить загрузку или начать новую кампанию. Исходные файлы будут сохранены.",
+      "text": "Sefer ve yedek yüklenemedi. Tekrar dene veya yeni sefer başlat. Özgün dosyalar korunacak."
+    },
+    {
+      "source": "Не удалось завершить запуск одиночной игры.",
+      "text": "Tek oyunculu başlatma tamamlanamadı."
+    },
+    {
+      "source": "Не удалось завершить подключение. Возвращаемся в главное меню.",
+      "text": "Bağlantı tamamlanamadı. Ana menüye dönülüyor."
+    },
+    {
+      "source": "Не удалось завершить соединение. Перезапустите игру.",
+      "text": "Bağlantı kapatılamadı. Oyunu yeniden başlat."
+    },
+    {
+      "source": "Не удалось закрыть лобби перед контрактом.",
+      "text": "İşten önce lobi kapatılamadı."
+    },
+    {
+      "source": "Не удалось запросить данные лобби.",
+      "text": "Lobi verileri istenemedi."
+    },
+    {
+      "source": "Не удалось запустить Steam-хост.",
+      "text": "Steam ev sahibi başlatılamadı."
+    },
+    {
+      "source": "Не удалось запустить сетевой транспорт Steam.",
+      "text": "Steam ağ aktarımı başlatılamadı."
+    },
+    {
+      "source": "Не удалось найти игры друзей. Вернитесь в главное меню.",
+      "text": "Arkadaşların oyunları bulunamadı. Ana menüye dön."
+    },
+    {
+      "source": "Не удалось найти игры друзей. Проверьте Steam.",
+      "text": "Arkadaşların oyunları bulunamadı. Steam'i kontrol et."
+    },
+    {
+      "source": "Не удалось начать назначение. Закройте управление и повторите.",
+      "text": "Atama başlatılamadı. Kontrolleri kapat ve tekrar dene."
+    },
+    {
+      "source": "Не удалось начать новую игру. Текущая кампания сохранена.\n\n",
+      "text": "Yeni oyun başlatılamadı. Mevcut sefer korundu.\n\n"
+    },
+    {
+      "source": "Не удалось начать новую игру: ",
+      "text": "Yeni oyun başlatılamadı: "
+    },
+    {
+      "source": "Не удалось начать одиночную игру.",
+      "text": "Tek oyunculu oyun başlatılamadı."
+    },
+    {
+      "source": "Не удалось обновить состояние лобби.",
+      "text": "Lobi durumu güncellenemedi."
+    },
+    {
+      "source": "Не удалось открыть главное меню.",
+      "text": "Ana menü açılamadı."
+    },
+    {
+      "source": "Не удалось открыть кампанию.",
+      "text": "Sefer açılamadı."
+    },
+    {
+      "source": "Не удалось открыть кампанию: ",
+      "text": "Sefer açılamadı: "
+    },
+    {
+      "source": "Не удалось открыть лобби.",
+      "text": "Lobi açılamadı."
+    },
+    {
+      "source": "Не удалось открыть одиночную сессию.",
+      "text": "Tek oyunculu oturum açılamadı."
+    },
+    {
+      "source": "Не удалось открыть одиночную сетевую сессию.",
+      "text": "Tek oyunculu ağ oturumu açılamadı."
+    },
+    {
+      "source": "Не удалось открыть совместную игру.",
+      "text": "Eşli oyun açılamadı."
+    },
+    {
+      "source": "Не удалось открыть сохранение кампании. Проверьте доступ к папке сохранений, закройте другие экземпляры игры и повторите загрузку.",
+      "text": "Sefer kaydı açılamadı. Klasör erişimini kontrol et, diğer oyun örneklerini kapat ve yeniden yükle."
+    },
+    {
+      "source": "Не удалось подготовить совместную игру. Вернитесь в главное меню.",
+      "text": "Eşli oyun hazırlanamadı. Ana menüye dön."
+    },
+    {
+      "source": "Не удалось подключиться к Steam (",
+      "text": "Steam'e bağlanılamadı ("
+    },
+    {
+      "source": "Не удалось подключиться к Steam-хосту.",
+      "text": "Steam ev sahibine bağlanılamadı."
+    },
+    {
+      "source": "Не удалось подключиться к совместной игре.",
+      "text": "Eşli oyuna bağlanılamadı."
+    },
+    {
+      "source": "Не удалось применить громкость: группа микшера недоступна.",
+      "text": "Ses düzeyi uygulanamadı: mikser grubu kullanılamıyor."
+    },
+    {
+      "source": "Не удалось применить громкость: микшер недоступен.",
+      "text": "Ses düzeyi uygulanamadı: mikser kullanılamıyor."
+    },
+    {
+      "source": "Не удалось проверить настройки совместной игры. Одиночная игра доступна.",
+      "text": "Eşli oyun ayarları doğrulanamadı. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Не удалось прочитать личные настройки. Кампания не изменена.",
+      "text": "Kişisel ayarlar okunamadı. Sefer değişmedi."
+    },
+    {
+      "source": "Не удалось сохранить выплату. Результат остаётся в памяти: ",
+      "text": "Ödeme kaydedilemedi. Sonuç bellekte duruyor: "
+    },
+    {
+      "source": "Не удалось сохранить кампанию: ",
+      "text": "Sefer kaydedilemedi: "
+    },
+    {
+      "source": "Не удалось сохранить личные настройки. Проверьте доступ к папке и свободное место, затем повторите.",
+      "text": "Ayarlar kaydedilemedi. Klasör erişimini ve boş alanı kontrol edip tekrar dene."
+    },
+    {
+      "source": "Не хватает ${0}. Завершайте контракты, чтобы заработать.",
+      "text": "${0} eksik. Para kazanmak için işleri tamamla."
+    },
+    {
+      "source": "Невозможно начать вход в это лобби сейчас.",
+      "text": "Bu lobiye şu anda girilemiyor."
+    },
+    {
+      "source": "Недопустимые привязки управления.",
+      "text": "Kontrol atamaları geçersiz."
+    },
+    {
+      "source": "Недопустимый видеорежим.",
+      "text": "Görüntü modu geçersiz."
+    },
+    {
+      "source": "Нет доступных режимов",
+      "text": "Kullanılabilir mod yok"
+    },
+    {
+      "source": "Нет места перед соплом — отойдите",
+      "text": "Başlığın önünde yer yok — geri çekil"
+    },
+    {
+      "source": "Нет связи со Steam.\nПовторим отправку автоматически.",
+      "text": "Steam bağlantısı kesildi.\nGönderim otomatik tekrarlanacak."
+    },
+    {
+      "source": "Новая кампания",
+      "text": "Yeni sefer"
+    },
+    {
+      "source": "ОБНОВИТЬ СПИСОК",
+      "text": "LİSTEYİ YENİLE"
+    },
+    {
+      "source": "ОБОРУДОВАНИЕ",
+      "text": "EKİPMAN"
+    },
+    {
+      "source": "ОСТАВИТЬ ПРОГРЕСС",
+      "text": "İLERLEMEYİ KORU"
+    },
+    {
+      "source": "ОТПРАВЛЕНО",
+      "text": "GÖNDERİLDİ"
+    },
+    {
+      "source": "Обнаружен незавершённый файл сохранения. Игра сохранила его и остановила загрузку кампании. Обратитесь в поддержку, чтобы восстановить прогресс.",
+      "text": "Tamamlanmamış kayıt bulundu ve korundu. Sefer yüklemesi durdu. İlerlemeyi kurtarmak için destekle iletişime geç."
+    },
+    {
+      "source": "Оборудование и вместимость",
+      "text": "Ekipman ve kapasite"
+    },
+    {
+      "source": "Обработка событий Steam прервалась; сетевую сессию необходимо завершить.",
+      "text": "Steam olayları işlenemiyor. Çevrimiçi oturumu sonlandır."
+    },
+    {
+      "source": "Общая громкость",
+      "text": "Ana ses düzeyi"
+    },
+    {
+      "source": "Общий бонус сохраняется при смене модели. Покупает хост.",
+      "text": "Ortak bonus modeller arasında korunur. Satın almayı ev sahibi yapar."
+    },
+    {
+      "source": "Оверлей Steam недоступен. Выберите друга — он получит приглашение в Steam.",
+      "text": "Steam arayüzü kullanılamıyor. Steam daveti göndermek için bir arkadaş seç."
+    },
+    {
+      "source": "Одиночная сессия завершена. Возврат в главное меню.",
+      "text": "Tek oyunculu oturum bitti. Ana menüye dönülüyor."
+    },
+    {
+      "source": "Ожидаем выбор хозяина…",
+      "text": "Ev sahibinin seçimi bekleniyor…"
+    },
+    {
+      "source": "Ожидаем готовность игроков",
+      "text": "Oyuncuların hazır olması bekleniyor"
+    },
+    {
+      "source": "Ожидаем оборудование…",
+      "text": "Ekipman bekleniyor…"
+    },
+    {
+      "source": "Ожидаем хозяина",
+      "text": "Ev sahibi bekleniyor"
+    },
+    {
+      "source": "Окно",
+      "text": "Pencereli"
+    },
+    {
+      "source": "Оставить",
+      "text": "Koru"
+    },
+    {
+      "source": "Оставить прежние",
+      "text": "Mevcutları koru"
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через ",
+      "text": "Bu görüntü modu korunsun mu?\nGeri almaya kalan süre: "
+    },
+    {
+      "source": "Откройте меню управления перед изменением клавиш.",
+      "text": "Tuşları değiştirmeden önce kontrolleri aç."
+    },
+    {
+      "source": "Открываем вашу кампанию…",
+      "text": "Seferin açılıyor…"
+    },
+    {
+      "source": "Открываем главное меню…",
+      "text": "Ana menü açılıyor…"
+    },
+    {
+      "source": "Открываем кампанию…",
+      "text": "Sefer açılıyor…"
+    },
+    {
+      "source": "Открываем окно Steam…",
+      "text": "Steam açılıyor…"
+    },
+    {
+      "source": "Отмена",
+      "text": "İptal"
+    },
+    {
+      "source": "Отмена / назад",
+      "text": "İptal / geri"
+    },
+    {
+      "source": "Отменить ожидание",
+      "text": "Beklemeyi iptal et"
+    },
+    {
+      "source": "Отпустите нажатые кнопки, затем нажмите новую клавишу. Esc — отмена.",
+      "text": "Tuşları bırak, ardından yeni tuşa bas. Esc iptal eder."
+    },
+    {
+      "source": "Офисное кресло",
+      "text": "Ofis sandalyesi"
+    },
+    {
+      "source": "ПРЕДМЕТ СОБРАН  +1",
+      "text": "EŞYA TOPLANDI +1"
+    },
+    {
+      "source": "ПРЕДМЕТ УДЕРЖИВАЕТСЯ",
+      "text": "EŞYA TUTULUYOR"
+    },
+    {
+      "source": "ПРИГЛАСИТЬ",
+      "text": "DAVET ET"
+    },
+    {
+      "source": "ПРИГЛАСИТЬ ДРУГА",
+      "text": "ARKADAŞ DAVET ET"
+    },
+    {
+      "source": "ПЫЛЕСОС ЗАБИТ\nВыстрелите предметом, чтобы освободить слот",
+      "text": "SÜPÜRGE DOLU\nYer açmak için eşya fırlat"
+    },
+    {
+      "source": "Пауза",
+      "text": "Duraklat"
+    },
+    {
+      "source": "Первый глоток",
+      "text": "İlk yudum"
+    },
+    {
+      "source": "Перезапустите игру,\nчтобы повторить загрузку.",
+      "text": "Yüklemeyi tekrar denemek\niçin oyunu yeniden başlat."
+    },
+    {
+      "source": "Пианино",
+      "text": "Piyano"
+    },
+    {
+      "source": "По умолчанию",
+      "text": "Varsayılanlar"
+    },
+    {
+      "source": "Победите босса и доставьте его в грузовик",
+      "text": "Boss'u yen ve kamyona teslim et"
+    },
+    {
+      "source": "Победите босса и доставьте тело в грузовик",
+      "text": "Boss'u yen ve cesedini kamyona teslim et"
+    },
+    {
+      "source": "Повреждённые настройки сохранены отдельно. Пока применены стандартные значения.",
+      "text": "Hasarlı ayarlar ayrı korundu. Geçici olarak varsayılanlar uygulandı."
+    },
+    {
+      "source": "Повторить загрузку",
+      "text": "Yüklemeyi tekrar dene"
+    },
+    {
+      "source": "Повторить чтение",
+      "text": "Okumayı tekrar dene"
+    },
+    {
+      "source": "Подключаемся к игре…",
+      "text": "Oyuna bağlanılıyor…"
+    },
+    {
+      "source": "Подключаемся…",
+      "text": "Bağlanılıyor…"
+    },
+    {
+      "source": "Подтвердите готовность",
+      "text": "Hazır olduğunu onayla"
+    },
+    {
+      "source": "Подтверждение сброса кампании",
+      "text": "Sefer sıfırlamasını onayla"
+    },
+    {
+      "source": "Показана подтверждённая вместимость. Сначала завершите сохранение.",
+      "text": "Onaylanmış kapasite gösteriliyor. Önce kaydı bitir."
+    },
+    {
+      "source": "Покинуть сессию? Остальные игроки смогут продолжить контракт. Ваша локальная кампания не изменится.",
+      "text": "Oturumdan ayrılmak istiyor musun? Diğerleri işe devam edebilir. Yerel seferin değişmez."
+    },
+    {
+      "source": "Покупка вместимости недоступна. Проверьте цену, баланс и максимум модели.",
+      "text": "Kapasite alınamıyor. Fiyatı, bakiyeyi ve model sınırını kontrol et."
+    },
+    {
+      "source": "Покупка вместимости пока не подтверждена. Повторите сохранение в магазине.",
+      "text": "Kapasite alımı onaylanmadı. Dükkanda yeniden kaydet."
+    },
+    {
+      "source": "Покупка недоступна. Проверьте баланс и текущий уровень в магазине.",
+      "text": "Satın alma yapılamıyor. Dükkanda bakiyeyi ve seviyeyi kontrol et."
+    },
+    {
+      "source": "Покупка недоступна. Проверьте баланс и текущий уровень.",
+      "text": "Satın alma yapılamıyor. Bakiyeyi ve seviyeyi kontrol et."
+    },
+    {
+      "source": "Покупка пока не подтверждена. Повторите сохранение в магазине.",
+      "text": "Satın alma onaylanmadı. Dükkanda yeniden kaydet."
+    },
+    {
+      "source": "Покупка пока не подтверждена. Показаны последние подтверждённые баланс и оборудование. Проверьте свободное место и доступ к папке сохранений, затем нажмите «Сохранить снова».",
+      "text": "Satın alma onaylanmadı. Kayıtlı bakiye ve ekipman gösteriliyor. Boş alanı ve klasör erişimini kontrol edip “Yeniden kaydet” seç."
+    },
+    {
+      "source": "Покупка сохранена. Новое оборудование выбрано для следующего контракта.",
+      "text": "Satın alma kaydedildi. Yeni ekipman sonraki iş için seçildi."
+    },
+    {
+      "source": "Покупка списывает деньги один раз и сохраняется для всей кампании.",
+      "text": "Satın alma bir kez ücret keser ve tüm sefer için kaydedilir."
+    },
+    {
+      "source": "Покупки совершает хозяин кампании.",
+      "text": "Satın almayı seferin ev sahibi yapar."
+    },
+    {
+      "source": "Поле зрения",
+      "text": "Görüş alanı"
+    },
+    {
+      "source": "Полноэкранный",
+      "text": "Tam ekran"
+    },
+    {
+      "source": "Последняя модель",
+      "text": "Son model"
+    },
+    {
+      "source": "Последняя модель уже приобретена",
+      "text": "Son modele zaten sahipsin"
+    },
+    {
+      "source": "Последняя модель уже приобретена. Вместимость улучшается отдельно.",
+      "text": "Son model alındı. Kapasite ayrı geliştirilir."
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты",
+      "text": "Kotanın %50'sinden fazlası teslim edilince çıkar"
+    },
+    {
+      "source": "Предыдущая выплата ещё не сохранена. Сначала повторите сохранение.",
+      "text": "Önceki ödeme kaydedilmedi. Önce yeniden kaydet."
+    },
+    {
+      "source": "Предыдущее лобби или запрос ещё не завершены.",
+      "text": "Önceki lobi veya istek henüz bitmedi."
+    },
+    {
+      "source": "Прервать без выплаты",
+      "text": "Ödeme almadan iptal et"
+    },
+    {
+      "source": "Прервать контракт для всех? Выплата при ручном выходе — $0.",
+      "text": "İş herkes için iptal edilsin mi? Elle çıkışta ödeme $0 olur."
+    },
+    {
+      "source": "Прервать контракт?",
+      "text": "İş iptal edilsin mi?"
+    },
+    {
+      "source": "При неудаче: {0}% сданной стоимости",
+      "text": "Başarısızlıkta: teslim edilen değerin %{0} kadarı"
+    },
+    {
+      "source": "Привязка изменена. Нажмите «Сохранить управление».",
+      "text": "Atama değiştirildi. “Kontrolleri kaydet” seç."
+    },
+    {
+      "source": "Привязки созданы для другого набора действий. Сбросьте управление; Esc остаётся доступен.",
+      "text": "Atamalar başka eylemlere ait. Kontrolleri sıfırla; Esc kullanılabilir kalır."
+    },
+    {
+      "source": "Приглашение отправлено. Ждём друга в лобби.",
+      "text": "Davet gönderildi. Arkadaşın lobide bekleniyor."
+    },
+    {
+      "source": "Приглашения отправляются через Steam",
+      "text": "Davetler Steam üzerinden gönderilir"
+    },
+    {
+      "source": "Применить",
+      "text": "Uygula"
+    },
+    {
+      "source": "Применяется подтверждённый видеорежим…",
+      "text": "Onaylanmış görüntü modu uygulanıyor…"
+    },
+    {
+      "source": "Принять приглашение",
+      "text": "Daveti kabul et"
+    },
+    {
+      "source": "Пришло приглашение в игру. Подключиться можно после подтверждения.",
+      "text": "Oyun daveti alındı. Katılmadan önce onayla."
+    },
+    {
+      "source": "Проверьте AppID и зарегистрированные API names.",
+      "text": "AppID ve kayıtlı API adlarını kontrol et."
+    },
+    {
+      "source": "Проверьте место на диске.\nСохранение повторится само.",
+      "text": "Boş disk alanını kontrol et.\nKayıt otomatik tekrarlanacak."
+    },
+    {
+      "source": "Прогресс на этом устройстве",
+      "text": "Bu cihazdaki ilerleme"
+    },
+    {
+      "source": "Продолжить",
+      "text": "Devam et"
+    },
+    {
+      "source": "Продолжить контракт",
+      "text": "İşe devam et"
+    },
+    {
+      "source": "Пройти контракт с MK4 от начала до успеха, сдав квоту и побеждённого босса.",
+      "text": "MK4 ile işi baştan sona tamamla; kotayı ve yenilmiş boss'u teslim et."
+    },
+    {
+      "source": "Прыжок",
+      "text": "Zıpla"
+    },
+    {
+      "source": "Пылевой бегунок",
+      "text": "Toz koşucusu"
+    },
+    {
+      "source": "Пылевой плевун",
+      "text": "Toz tükürücüsü"
+    },
+    {
+      "source": "Пылесос",
+      "text": "Süpürge"
+    },
+    {
+      "source": "Пыльный староста",
+      "text": "Toz bilgesi"
+    },
+    {
+      "source": "Пыльный староста â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Toz bilgesi — yenildi"
+    },
+    {
+      "source": "РЕМОНТ ИСЧЕРПАН · следующий заряд за 25% квоты",
+      "text": "ONARIM HAKKI YOK · sonraki hak %25 kotada"
+    },
+    {
+      "source": "Радио",
+      "text": "Radyo"
+    },
+    {
+      "source": "Разрешение",
+      "text": "Çözünürlük"
+    },
+    {
+      "source": "Разрядность библиотеки Steam не совпадает со сборкой.",
+      "text": "Steam kitaplığının mimarisi oyunla uyuşmuyor."
+    },
+    {
+      "source": "Режим не подтвердился. Возвращаем безопасное окно…",
+      "text": "Mod onaylanmadı. Güvenli pencereye dönülüyor…"
+    },
+    {
+      "source": "Режим экрана",
+      "text": "Ekran modu"
+    },
+    {
+      "source": "СБРОСИТЬ И НАЧАТЬ",
+      "text": "SIFIRLA VE BAŞLAT"
+    },
+    {
+      "source": "СВОБОДНО",
+      "text": "BOŞ"
+    },
+    {
+      "source": "СДАНО",
+      "text": "TESLİM EDİLEN"
+    },
+    {
+      "source": "СЛЕДУЮЩАЯ МОДЕЛЬ",
+      "text": "SONRAKİ MODEL"
+    },
+    {
+      "source": "СЛЕДУЮЩИЙ",
+      "text": "SONRAKİ"
+    },
+    {
+      "source": "СЛОТЫ  {0} / {1}",
+      "text": "YUVALAR {0} / {1}"
+    },
+    {
+      "source": "СНАРЯЖЕНИЕ",
+      "text": "DONANIM"
+    },
+    {
+      "source": "СОХРАНИТЬ СНОВА",
+      "text": "YENİDEN KAYDET"
+    },
+    {
+      "source": "Сбросить настройки",
+      "text": "Ayarları sıfırla"
+    },
+    {
+      "source": "Сбросить только личные настройки?\nИсходный файл будет сохранён отдельно.\nДеньги, оборудование и кампания останутся прежними.",
+      "text": "Yalnızca kişisel ayarlar sıfırlansın mı?\nÖzgün dosya ayrı korunacak.\nPara, ekipman ve sefer değişmeyecek."
+    },
+    {
+      "source": "Сброшены только личные настройки. Кампания сохранена.",
+      "text": "Yalnızca kişisel ayarlar sıfırlandı. Sefer korundu."
+    },
+    {
+      "source": "Связка приборов",
+      "text": "Çatal bıçak demeti"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.",
+      "text": "Kotayı ve boss cesedini kamyona teslim et.\nBoss, kotanın %50'sinden fazlası teslim edilince çıkar."
+    },
+    {
+      "source": "Сдано $0 / $0",
+      "text": "Teslim edilen $0 / $0"
+    },
+    {
+      "source": "Сдано ${0} / ${1}",
+      "text": "Teslim edilen ${0} / ${1}"
+    },
+    {
+      "source": "Сдано в грузовик: ${0}\nКвота: ${1}\n",
+      "text": "Kamyona teslim edilen: ${0}\nKota: ${1}\n"
+    },
+    {
+      "source": "Сдать грузовику вещь, которую вы предварительно хранили в своём пылесосе.",
+      "text": "Önceden süpürgende sakladığın bir eşyayı kamyona teslim et."
+    },
+    {
+      "source": "Сдать обычное пианино, которое вы предварительно хранили с MK4.",
+      "text": "Önceden MK4 ile sakladığın normal bir piyanoyu teslim et."
+    },
+    {
+      "source": "Сетевая сессия завершена.",
+      "text": "Çevrimiçi oturum bitti."
+    },
+    {
+      "source": "Сетевой менеджер не завершился вовремя. Новый запуск заблокирован.",
+      "text": "Ağ yöneticisi zamanında durmadı. Yeni başlatma engellendi."
+    },
+    {
+      "source": "Система не применила безопасный видеорежим. Перезапустите игру; неподтверждённый режим не сохранён.",
+      "text": "Güvenli görüntü modu uygulanamadı. Oyunu yeniden başlat. Onaylanmamış mod kaydedilmedi."
+    },
+    {
+      "source": "Склад I",
+      "text": "Depo I"
+    },
+    {
+      "source": "Склад II",
+      "text": "Depo II"
+    },
+    {
+      "source": "Сковорода",
+      "text": "Tava"
+    },
+    {
+      "source": "Снаряжение",
+      "text": "DONANIM"
+    },
+    {
+      "source": "Сначала завершите предыдущий контракт маршрута.",
+      "text": "Önce rotadaki önceki işi tamamla."
+    },
+    {
+      "source": "Сначала повторите загрузку настроек или подтвердите сброс только настроек.",
+      "text": "Ayarları yeniden yükle veya yalnızca ayarları sıfırlamayı onayla."
+    },
+    {
+      "source": "Сначала подтвердите или отмените текущий видеорежим.",
+      "text": "Önce mevcut görüntü modunu onayla veya iptal et."
+    },
+    {
+      "source": "Совместная игра ещё не настроена для этой сборки. Одиночная игра доступна.",
+      "text": "Bu sürümde eşli oyun yapılandırılmamış. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Совместная игра настроена для проверки. Для подключения нужен Steam.",
+      "text": "Eşli oyun test için ayarlandı. Bağlanmak için Steam gerekli."
+    },
+    {
+      "source": "Совместная игра не настроена для этой сборки. Одиночная игра доступна.",
+      "text": "Bu sürümde eşli oyun yapılandırılmamış. Tek oyunculu oyun kullanılabilir."
+    },
+    {
+      "source": "Совместная игра пока недоступна в этой сборке.",
+      "text": "Bu sürümde eşli oyun henüz kullanılamıyor."
+    },
+    {
+      "source": "Соединение с хозяином завершено.",
+      "text": "Ev sahibiyle bağlantı sona erdi."
+    },
+    {
+      "source": "Создайте игру или выберите друга.",
+      "text": "Oyun oluştur veya bir arkadaş seç."
+    },
+    {
+      "source": "Создайте игру или выберите игру друга.",
+      "text": "Oyun oluştur veya arkadaşının oyununu seç."
+    },
+    {
+      "source": "Создать игру",
+      "text": "Oyun oluştur"
+    },
+    {
+      "source": "Сорный валун",
+      "text": "Çöp kayası"
+    },
+    {
+      "source": "Сорный валун â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Çöp kayası — yenildi"
+    },
+    {
+      "source": "Сохранение завершено. Можно продолжать.",
+      "text": "Kayıt tamamlandı. Devam edebilirsin."
+    },
+    {
+      "source": "Сохранение покупки…",
+      "text": "Satın alma kaydediliyor…"
+    },
+    {
+      "source": "Сохранить снова",
+      "text": "YENİDEN KAYDET"
+    },
+    {
+      "source": "Сохранить управление",
+      "text": "Kontrolleri kaydet"
+    },
+    {
+      "source": "Сохраняем достижения…",
+      "text": "Başarımlar kaydediliyor…"
+    },
+    {
+      "source": "Сохранённый видеорежим недоступен. Применено безопасное окно.",
+      "text": "Kayıtlı görüntü modu kullanılamıyor. Güvenli pencere uygulandı."
+    },
+    {
+      "source": "Сохранённый режим недоступен. Применено безопасное окно.",
+      "text": "Kayıtlı görüntü modu kullanılamıyor. Güvenli pencere uygulandı."
+    },
+    {
+      "source": "Сохранённый режим недоступен. Применяется безопасное окно…",
+      "text": "Kayıtlı mod kullanılamıyor. Güvenli pencere uygulanıyor…"
+    },
+    {
+      "source": "Стандартные клавиши выбраны. Сохраните или отмените изменения.",
+      "text": "Varsayılan tuşlar seçildi. Değişiklikleri kaydet veya iptal et."
+    },
+    {
+      "source": "Старый дом I",
+      "text": "Eski ev I"
+    },
+    {
+      "source": "Старый дом II",
+      "text": "Eski ev II"
+    },
+    {
+      "source": "Стиральная машина",
+      "text": "Çamaşır makinesi"
+    },
+    {
+      "source": "Столкновения",
+      "text": "Çarpışmalar"
+    },
+    {
+      "source": "Супермаркет I",
+      "text": "Süpermarket I"
+    },
+    {
+      "source": "Супермаркет II",
+      "text": "Süpermarket II"
+    },
+    {
+      "source": "ТЕКУЩАЯ МОДЕЛЬ",
+      "text": "MEVCUT MODEL"
+    },
+    {
+      "source": "ТЯЖЕЛО — НУЖНА ПОМОЩЬ",
+      "text": "ÇOK AĞIR — YARDIM GEREKLİ"
+    },
+    {
+      "source": "Табурет",
+      "text": "Tabure"
+    },
+    {
+      "source": "Текущая кампания будет заменена новой. Деньги, купленное снаряжение, дополнительные слоты и прохождение контрактов будут сброшены.\n\nВы начнёте с MK1 и балансом $0. Настройки сохранятся. Друзья останутся в лобби и смогут снова подтвердить готовность.",
+      "text": "Mevcut sefer değiştirilecek. Para, satın alınan ekipman, ek yuvalar ve iş ilerlemesi sıfırlanacak.\n\nMK1 ve $0 ile başlayacaksın. Ayarlar korunacak. Arkadaşların lobide kalıp yeniden hazır olabilecek."
+    },
+    {
+      "source": "Текущий контракт завершится без выплаты.\nСобранные в нём деньги не попадут на баланс.",
+      "text": "Mevcut iş ödeme yapılmadan bitecek.\nToplanan para bakiyene eklenmeyecek."
+    },
+    {
+      "source": "Телевизор",
+      "text": "Televizyon"
+    },
+    {
+      "source": "Тумба",
+      "text": "Küçük dolap"
+    },
+    {
+      "source": "УЖЕ В КОМАНДЕ",
+      "text": "ZATEN TAKIMDA"
+    },
+    {
+      "source": "Удерживайте ",
+      "text": "Basılı tut: "
+    },
+    {
+      "source": "Удерживайте {0} 2 секунды, чтобы уехать",
+      "text": "Ayrılmak için {0} tuşunu 2 saniye tut"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 25% HP",
+      "text": "Arkadaşını kaldırmak için {0} tuşunu 3 saniye tut · %25 can"
+    },
+    {
+      "source": "Удерживайте {0} — ремонт +45 HP · зарядов: {1}",
+      "text": "+45 can onarımı için {0} tuşunu tut · hak: {1}"
+    },
+    {
+      "source": "Удерживайте {0} — эвакуация",
+      "text": "{0} tuşunu tut — tahliye"
+    },
+    {
+      "source": "Улучшения покупает хозяин кампании. Вся команда получает их в следующем контракте.",
+      "text": "Yükseltmeleri ev sahibi alır. Sonraki işte tüm takım kullanır."
+    },
+    {
+      "source": "Управление",
+      "text": "Kontroller"
+    },
+    {
+      "source": "Управление сохранено.",
+      "text": "Kontroller kaydedildi."
+    },
+    {
+      "source": "Успешно завершить контракт дома: сдать квоту и побеждённого босса.",
+      "text": "Ev işini tamamla: kotayı ve yenilmiş boss'u teslim et."
+    },
+    {
+      "source": "Успешно завершить контракт магазина: сдать квоту и побеждённого босса.",
+      "text": "Market işini tamamla: kotayı ve yenilmiş boss'u teslim et."
+    },
+    {
+      "source": "Успешно завершить контракт склада: сдать квоту и побеждённого босса.",
+      "text": "Depo işini tamamla: kotayı ve yenilmiş boss'u teslim et."
+    },
+    {
+      "source": "Успешно завершить контракт, сдав не меньше двойной квоты и побеждённого босса.",
+      "text": "En az iki kat kota ve yenilmiş boss'u teslim ederek işi tamamla."
+    },
+    {
+      "source": "ХОЗЯИН · ",
+      "text": "EV SAHİBİ · "
+    },
+    {
+      "source": "ХРАНИЛИЩЕ {0} / {1}",
+      "text": "DEPOLAMA {0} / {1}"
+    },
+    {
+      "source": "ХРАНИЛИЩЕ ПОЛНО\nМожно переносить предметы · выстрелите, чтобы освободить слот",
+      "text": "DEPOLAMA DOLU\nEşyaları sürükleyebilirsin · yer açmak için ateş et"
+    },
+    {
+      "source": "ХРАНИЛИЩЕ —",
+      "text": "DEPOLAMA —"
+    },
+    {
+      "source": "Хозяин не подтвердил соединение вовремя.",
+      "text": "Ev sahibi bağlantıyı zamanında onaylamadı."
+    },
+    {
+      "source": "Хозяин покинул сессию. Возврат в меню.",
+      "text": "Ev sahibi ayrıldı. Menüye dönülüyor."
+    },
+    {
+      "source": "Хозяин покинул сессию. Переноса игрового мира к другому игроку нет.",
+      "text": "Ev sahibi ayrıldı. Ev sahibi aktarımı desteklenmiyor."
+    },
+    {
+      "source": "Хост сохраняет изменения. Пока показаны подтверждённые баланс и оборудование.",
+      "text": "Ev sahibi kaydediyor. Onaylanmış bakiye ve ekipman gösteriliyor."
+    },
+    {
+      "source": "Хранилище полно · несите предмет к грузовику",
+      "text": "Depolama dolu · eşyayı kamyona sürükle"
+    },
+    {
+      "source": "Хранилище: {0} / {1}",
+      "text": "Depolama: {0} / {1}"
+    },
+    {
+      "source": "Хранилище: —",
+      "text": "Depolama: —"
+    },
+    {
+      "source": "Цель выполнена",
+      "text": "Hedef tamamlandı"
+    },
+    {
+      "source": "Цеховой клубок",
+      "text": "Atölye yumağı"
+    },
+    {
+      "source": "Цеховой клубок â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Atölye yumağı — yenildi"
+    },
+    {
+      "source": "Четыре хобота",
+      "text": "Dört hortum"
+    },
+    {
+      "source": "Чистые полки",
+      "text": "Temiz raflar"
+    },
+    {
+      "source": "Чтобы открыть, завершите «",
+      "text": "Açmak için şunu tamamla: “"
+    },
+    {
+      "source": "Чувствительность мыши",
+      "text": "Fare hassasiyeti"
+    },
+    {
+      "source": "Эвакуация завершена",
+      "text": "Tahliye tamamlandı"
+    },
+    {
+      "source": "Эта кампания создана в более новой версии игры. Обновите игру, чтобы продолжить. Сохранение не изменено.",
+      "text": "Sefer daha yeni oyun sürümünde oluşturulmuş. Devam etmek için güncelle. Kayıt değişmedi."
+    },
+    {
+      "source": "Эта клавиша не поддерживается. Выберите другую или сбросьте управление.",
+      "text": "Bu tuş desteklenmiyor. Başkasını seç veya kontrolleri sıfırla."
+    },
+    {
+      "source": "Эта клавиша уже используется: ",
+      "text": "Bu tuş zaten kullanılıyor: "
+    },
+    {
+      "source": "Это вообще законно?",
+      "text": "Bu yasal mı ki?"
+    },
+    {
+      "source": "Этот видеорежим сейчас недоступен.",
+      "text": "Bu görüntü modu şu an kullanılamıyor."
+    },
+    {
+      "source": "← Назад",
+      "text": "← Geri"
+    },
+    {
+      "source": "Язык",
+      "text": "Dil"
+    },
+    {
+      "source": "Язык Steam (автоматически)",
+      "text": "Steam dili (otomatik)"
+    },
+    {
+      "source": "Язык Steam выбирается автоматически. Без Steam используется язык системы. Нажмите «Применить», чтобы сохранить выбор.",
+      "text": "Steam dili otomatik seçilir. Steam yoksa sistem dili kullanılır. Seçimini kaydetmek için “Uygula” seç."
+    },
+    {
+      "source": "Barrel",
+      "text": "Varil"
+    },
+    {
+      "source": "BenchGrinder",
+      "text": "Tezgâh taşlama makinesi"
+    },
+    {
+      "source": "Bottle",
+      "text": "Şişe"
+    },
+    {
+      "source": "BoxSmall",
+      "text": "Küçük kutu"
+    },
+    {
+      "source": "CabinetMetal",
+      "text": "Metal dolap"
+    },
+    {
+      "source": "Can",
+      "text": "Teneke kutu"
+    },
+    {
+      "source": "CashRegister",
+      "text": "Yazarkasa"
+    },
+    {
+      "source": "ChairDining",
+      "text": "Yemek sandalyesi"
+    },
+    {
+      "source": "Compressor",
+      "text": "Kompresör"
+    },
+    {
+      "source": "ContainerMetal",
+      "text": "Metal konteyner"
+    },
+    {
+      "source": "CrateWooden",
+      "text": "Ahşap kasa"
+    },
+    {
+      "source": "FoodCarton",
+      "text": "Yiyecek kutusu"
+    },
+    {
+      "source": "Forklift",
+      "text": "Forklift"
+    },
+    {
+      "source": "FreezerChest",
+      "text": "Sandık tipi dondurucu"
+    },
+    {
+      "source": "FreezerDisplay",
+      "text": "Dondurucu vitrin"
+    },
+    {
+      "source": "Generator",
+      "text": "Jeneratör"
+    },
+    {
+      "source": "IndustrialMachine",
+      "text": "Sanayi makinesi"
+    },
+    {
+      "source": "Pallet",
+      "text": "Palet"
+    },
+    {
+      "source": "ProductCrate",
+      "text": "Ürün kasası"
+    },
+    {
+      "source": "Refrigerator",
+      "text": "Buzdolabı"
+    },
+    {
+      "source": "SafeLarge",
+      "text": "Büyük kasa"
+    },
+    {
+      "source": "ShelfSmall",
+      "text": "Küçük raf"
+    },
+    {
+      "source": "ShoppingBasket",
+      "text": "Alışveriş sepeti"
+    },
+    {
+      "source": "ShoppingCart",
+      "text": "Alışveriş arabası"
+    },
+    {
+      "source": "VendingMachine",
+      "text": "Otomat"
+    },
+    {
+      "source": "Old House",
+      "text": "Eski ev"
+    },
+    {
+      "source": "Supermarket",
+      "text": "Süpermarket"
+    },
+    {
+      "source": "Training Room",
+      "text": "Eğitim odası"
+    },
+    {
+      "source": "Warehouse",
+      "text": "Depo"
+    },
+    {
+      "source": "Mobile",
+      "text": "Mobil"
+    },
+    {
+      "source": "PC",
+      "text": "PC"
+    }
+  ]
+}

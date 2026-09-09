@@ -24,6 +24,9 @@ namespace HowToSuck
   public GameObject ConcreteTabs;
   public CanvasGroup ConcreteControls,ConcreteAudio,ConcreteVideo;
   public Button ControlsTab,AudioTab,ImageTab;
+  public Button LanguageTab;
+  public CanvasGroup ConcreteLanguage;
+  public LanguageSettingsView LanguageScreen;
   public GameObject[] TabMarks;
   public bool IsOpen {get;private set;}
   public LocalMenuNavigation Navigation {get;private set;}
@@ -41,6 +44,7 @@ namespace HowToSuck
    if(VideoOpenButton!=null)VideoOpenButton.onClick.AddListener(OpenVideo);if(BindingsOpenButton!=null)BindingsOpenButton.onClick.AddListener(OpenBindings);
    if(VideoScreen!=null)VideoScreen.Bind(owner.Video);if(BindingScreen!=null)BindingScreen.Bind(owner.Bindings);
    owner.Settings.Changed+=Refresh;
+   if(LanguageTab!=null)LanguageTab.onClick.AddListener(OpenLanguageTab);
    if(ConcreteTabsEnabled){ControlsTab.onClick.AddListener(OpenControlsTab);AudioTab.onClick.AddListener(OpenAudioTab);ImageTab.onClick.AddListener(OpenImageTab);
     if(owner.Bindings!=null)owner.Bindings.Changed+=Refresh;if(owner.Video!=null)owner.Video.Changed+=Refresh;}
    Panel.SetActive(false);ResetConfirmation.SetActive(false);
@@ -65,23 +69,25 @@ namespace HowToSuck
    ((Navigation.Video!=null&&Navigation.Video.TrialActive)||(Navigation.Bindings!=null&&Navigation.Bindings.Capturing));
   private void Apply(){if(IsOpen&&!confirming&&!TabOperationPending){bool saved=Navigation.Settings.Apply();
    if(saved&&ConcreteTabsEnabled&&Navigation.Bindings!=null&&Navigation.Bindings.HasUnapplied)saved=Navigation.Bindings.Save();
-   Refresh();Status.text=saved?"Настройки сохранены.":Navigation.Settings.LastError+" "+(Navigation.Bindings!=null?Navigation.Bindings.LastError:"");}}
+   Refresh();HowToSuck.LocalizedText.Set(Status, saved?"Настройки сохранены.":Navigation.Settings.LastError+" "+(Navigation.Bindings!=null?Navigation.Bindings.LastError:""));}}
   public void OpenControlsTab()=>SetPage(0);public void OpenAudioTab()=>SetPage(5);public void OpenImageTab()=>SetPage(3);
+  public void OpenLanguageTab()=>SetPage(6);
   private void Defaults(){if(!IsOpen||confirming||TabOperationPending)return;
    if(!ConcreteTabsEnabled){Navigation.Settings.PreviewDefaults();return;}
    var d=Navigation.Settings.DraftCopy();var defaults=new LocalSettingsData();
-   if(page==0){d.MouseSensitivity=defaults.MouseSensitivity;d.InvertY=defaults.InvertY;d.FieldOfView=defaults.FieldOfView;d.CameraFeedback=defaults.CameraFeedback;Navigation.Bindings?.PreviewDefaults();}
+   if(page==6)d.Language=defaults.Language;
+   else if(page==0){d.MouseSensitivity=defaults.MouseSensitivity;d.InvertY=defaults.InvertY;d.FieldOfView=defaults.FieldOfView;d.CameraFeedback=defaults.CameraFeedback;Navigation.Bindings?.PreviewDefaults();}
    else if(page==5){d.Master=defaults.Master;d.Vacuum=defaults.Vacuum;d.Truck=defaults.Truck;d.Impacts=defaults.Impacts;d.UI=defaults.UI;}
    Navigation.Settings.Preview(d); // Preserve video; changing video always goes through its existing 15-second trial.
   }
   private void Reload(){if(IsOpen&&!confirming){Navigation.Settings.Reload();Refresh();}}
   private void AskReset(){if(!IsOpen)return;confirming=true;Refresh();Select(CancelResetButton);}
-  private void ConfirmReset(){if(!confirming)return;bool saved=Navigation.Settings.ResetDefaultsAndSave();confirming=false;Refresh();if(saved)Status.text="Сброшены только личные настройки. Кампания сохранена.";Select(CloseButton);}
+  private void ConfirmReset(){if(!confirming)return;bool saved=Navigation.Settings.ResetDefaultsAndSave();confirming=false;Refresh();if(saved)HowToSuck.LocalizedText.Set(Status, "Сброшены только личные настройки. Кампания сохранена.");Select(CloseButton);}
   private void CancelReset(){confirming=false;Refresh();Select(ResetFileButton.gameObject.activeInHierarchy?ResetFileButton:CloseButton);}
   public void OpenVideo(){if(IsOpen&&VideoScreen!=null&&Navigation.Video!=null)SetPage(3);}
   public void OpenBindings(){if(IsOpen&&BindingScreen!=null&&Navigation.Bindings!=null)SetPage(4);}
   private void SetPage(int target){if(!IsOpen)return;
-   if(ConcreteTabsEnabled){if(TabOperationPending||confirming)return;page=target;Refresh();Select(target==0?(Selectable)Sensitivity:target==5?Master:VideoScreen.Previous[0]);return;}
+   if(ConcreteTabsEnabled){if(TabOperationPending||confirming)return;page=target;Refresh();Select(target==6?LanguageScreen.Options[0]:target==0?(Selectable)Sensitivity:target==5?Master:VideoScreen.Previous[0]);return;}
    if(page==3&&VideoScreen!=null)VideoScreen.Close();if(page==4&&BindingScreen!=null)BindingScreen.Close();page=target;Refresh();Select(CloseButton);
   }
   private void Back(){if(ConcreteTabsEnabled)Close(true);else if(page>=3)SetPage(0);else Close(true);}
@@ -104,25 +110,27 @@ namespace HowToSuck
   {
    if(!IsOpen||Navigation==null)return;refreshing=true;
    try{
-    var settings=Navigation.Settings;var d=settings.DraftCopy();Title.text=page==0?"Настройки":page==3?"Видео":"Клавиши";
-    SettingsPanel.SetActive(page==0||(ConcreteTabsEnabled&&(page==3||page==5)));ResetConfirmation.SetActive(confirming);CloseLabel.text=page==0?"Отмена / назад":"Назад";
+    var settings=Navigation.Settings;var d=settings.DraftCopy();HowToSuck.LocalizedText.Set(Title, page==0?"Настройки":page==3?"Видео":"Клавиши");
+    SettingsPanel.SetActive(page==0||page==6||(ConcreteTabsEnabled&&(page==3||page==5)));ResetConfirmation.SetActive(confirming);HowToSuck.LocalizedText.Set(CloseLabel, page==0?"Отмена / назад":"Назад");
     if(AdvancedButtons!=null)AdvancedButtons.SetActive(!ConcreteTabsEnabled&&page==0&&Navigation.Video!=null&&Navigation.Bindings!=null);
     if(ConcreteTabsEnabled){
-     bool family=page==0||page==3||page==5;ConcreteTabs.SetActive(family);Title.text="НАСТРОЙКИ";
-     Group(ConcreteControls,family&&page==0);Group(ConcreteAudio,family&&page==5);Group(ConcreteVideo,family&&page==3);
+     bool family=page==0||page==3||page==5||page==6;ConcreteTabs.SetActive(family);HowToSuck.LocalizedText.Set(Title, "НАСТРОЙКИ");
+     Group(ConcreteControls,family&&page==0);Group(ConcreteAudio,family&&page==5);Group(ConcreteVideo,family&&page==3);Group(ConcreteLanguage,family&&page==6);
      // Remain enabled while switching tabs: LocalBindingView.OnDisable would discard an unsaved key draft.
      VideoScreen.gameObject.SetActive(family);BindingScreen.gameObject.SetActive(family);
      ControlsTab.interactable=AudioTab.interactable=ImageTab.interactable=!TabOperationPending&&!confirming;
-     if(TabMarks!=null&&TabMarks.Length==3)for(int i=0;i<3;i++)if(TabMarks[i]!=null)TabMarks[i].SetActive(i==(page==0?0:page==5?1:2));
+     if(LanguageTab!=null)LanguageTab.interactable=!TabOperationPending&&!confirming;
+     if(LanguageScreen!=null){LanguageScreen.Refresh();foreach(var option in LanguageScreen.Options)option.interactable=!confirming&&!TabOperationPending;}
+     if(TabMarks!=null)for(int i=0;i<TabMarks.Length;i++)if(TabMarks[i]!=null)TabMarks[i].SetActive(i==(page==0?0:page==5?1:page==3?2:3));
      ApplyButton.gameObject.SetActive(family&&page!=3);DefaultsButton.gameObject.SetActive(family&&page!=3);
-     ReloadButton.gameObject.SetActive(family&&page!=3&&!settings.CanWrite);CloseLabel.text="Назад";
+     ReloadButton.gameObject.SetActive(family&&page!=3&&!settings.CanWrite);HowToSuck.LocalizedText.Set(CloseLabel, "Назад");
      CloseButton.gameObject.SetActive(Navigation.Video==null||!Navigation.Video.TrialActive);
     }else{if(VideoScreen!=null)VideoScreen.gameObject.SetActive(page==3);if(BindingScreen!=null)BindingScreen.gameObject.SetActive(page==4);}
     Master.SetValueWithoutNotify(d.Master);Vacuum.SetValueWithoutNotify(d.Vacuum);Truck.SetValueWithoutNotify(d.Truck);Impacts.SetValueWithoutNotify(d.Impacts);UI.SetValueWithoutNotify(d.UI);
     Sensitivity.SetValueWithoutNotify(d.MouseSensitivity);Fov.SetValueWithoutNotify(d.FieldOfView);Feedback.SetValueWithoutNotify(d.CameraFeedback);InvertY.SetIsOnWithoutNotify(d.InvertY);
-    MasterValue.text=Mathf.RoundToInt(d.Master*100)+"%";VacuumValue.text=Mathf.RoundToInt(d.Vacuum*100)+"%";TruckValue.text=Mathf.RoundToInt(d.Truck*100)+"%";ImpactsValue.text=Mathf.RoundToInt(d.Impacts*100)+"%";UIValue.text=Mathf.RoundToInt(d.UI*100)+"%";
-    SensitivityValue.text=d.MouseSensitivity.ToString("0.00");FovValue.text=Mathf.RoundToInt(d.FieldOfView)+"°";FeedbackValue.text=Mathf.RoundToInt(d.CameraFeedback*100)+"%";
-    Status.text=!string.IsNullOrEmpty(settings.LastError)?settings.LastError:!string.IsNullOrEmpty(settings.RuntimeError)?settings.RuntimeError:(settings.HasUnappliedChanges||ConcreteTabsEnabled&&Navigation.Bindings!=null&&Navigation.Bindings.HasUnapplied)?"Изменения ещё не сохранены.":"Настройки личные. Кампания и таймер контракта не изменяются.";
+    HowToSuck.LocalizedText.Set(MasterValue, Mathf.RoundToInt(d.Master*100)+"%");HowToSuck.LocalizedText.Set(VacuumValue, Mathf.RoundToInt(d.Vacuum*100)+"%");HowToSuck.LocalizedText.Set(TruckValue, Mathf.RoundToInt(d.Truck*100)+"%");HowToSuck.LocalizedText.Set(ImpactsValue, Mathf.RoundToInt(d.Impacts*100)+"%");HowToSuck.LocalizedText.Set(UIValue, Mathf.RoundToInt(d.UI*100)+"%");
+    HowToSuck.LocalizedText.Set(SensitivityValue, d.MouseSensitivity.ToString("0.00"));HowToSuck.LocalizedText.Set(FovValue, Mathf.RoundToInt(d.FieldOfView)+"°");HowToSuck.LocalizedText.Set(FeedbackValue, Mathf.RoundToInt(d.CameraFeedback*100)+"%");
+    HowToSuck.LocalizedText.Set(Status, !string.IsNullOrEmpty(settings.LastError)?settings.LastError:!string.IsNullOrEmpty(settings.RuntimeError)?settings.RuntimeError:(settings.HasUnappliedChanges||ConcreteTabsEnabled&&Navigation.Bindings!=null&&Navigation.Bindings.HasUnapplied)?"Изменения ещё не сохранены.":"Настройки личные. Кампания и таймер контракта не изменяются.");
     foreach(var slider in Sliders())slider.interactable=!confirming;InvertY.interactable=!confirming;
     ApplyButton.interactable=!confirming&&!TabOperationPending&&settings.CanWrite;DefaultsButton.interactable=ReloadButton.interactable=!confirming&&!TabOperationPending;CloseButton.interactable=!confirming;
     ResetFileButton.gameObject.SetActive(!settings.CanWrite&&(!ConcreteTabsEnabled||page!=3));ResetFileButton.interactable=!confirming;
@@ -146,6 +154,7 @@ namespace HowToSuck
   {
    if(Navigation!=owner||Navigation==null)return;Close(false);Navigation.Settings.Changed-=Refresh;
    SettingsButton.onClick.RemoveListener(OpenSettings);
+   if(LanguageTab!=null)LanguageTab.onClick.RemoveListener(OpenLanguageTab);
    if(ConcreteTabsEnabled){ControlsTab.onClick.RemoveListener(OpenControlsTab);AudioTab.onClick.RemoveListener(OpenAudioTab);ImageTab.onClick.RemoveListener(OpenImageTab);
     if(owner.Bindings!=null)owner.Bindings.Changed-=Refresh;if(owner.Video!=null)owner.Video.Changed-=Refresh;}
    ApplyButton.onClick.RemoveListener(Apply);DefaultsButton.onClick.RemoveListener(Defaults);ReloadButton.onClick.RemoveListener(Reload);ResetFileButton.onClick.RemoveListener(AskReset);

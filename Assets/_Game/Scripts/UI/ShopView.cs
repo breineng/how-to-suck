@@ -95,21 +95,21 @@ namespace HowToSuck
             if(OpenButton!=null)OpenButton.interactable=lobby&&known&&!working;
             if(!opened)return;
             var offer=Offer(current,next);
-            CampaignText.text=session.HasAuthority?"Ваша кампания · общее оборудование":"Кампания хоста · общее оборудование";
-            BalanceText.text=$"Баланс: ${session.DisplayedBalance:N0}";
-            CurrentText.text=current.DisplayName;
-            NextText.text=next!=null?next.DisplayName:"МАКСИМУМ";
+            HowToSuck.LocalizedText.Set(CampaignText, session.HasAuthority?"Ваша кампания · общее оборудование":"Кампания хоста · общее оборудование");
+            HowToSuck.LocalizedText.Set(BalanceText, $"Баланс: ${session.DisplayedBalance:N0}");
+            HowToSuck.LocalizedText.Set(CurrentText, current.DisplayName);
+            HowToSuck.LocalizedText.Set(NextText, next!=null?next.DisplayName:"МАКСИМУМ");
             var shown=next!=null?next:current;
             if(CurrentPreview!=null){CurrentPreview.sprite=current.Preview;CurrentPreview.enabled=current.Preview!=null;}
             if(NextPreview!=null){NextPreview.sprite=shown.Preview;NextPreview.enabled=shown.Preview!=null;}
             float maxPower=1,maxSize=1;foreach(var definition in session.Catalog.Vacuums){maxPower=Mathf.Max(maxPower,definition.Power);maxSize=Mathf.Max(maxSize,definition.IntakeSize);}
-            if(CurrentStats!=null)CurrentStats.text=$"<line-height=66px>МОЩНОСТЬ  {current.Power:N0}\nПРИЁМНИК  {current.IntakeSize:0.##} м";
+            if(CurrentStats!=null)HowToSuck.LocalizedText.Set(CurrentStats, $"<line-height=66px>МОЩНОСТЬ  {current.Power:N0}\nПРИЁМНИК  {current.IntakeSize:0.##} м");
             if(CurrentPowerFill!=null)CurrentPowerFill.fillAmount=Mathf.Clamp01(current.Power/maxPower);
             if(NextPowerFill!=null)NextPowerFill.fillAmount=Mathf.Clamp01(shown.Power/maxPower);
             if(CurrentSizeFill!=null)CurrentSizeFill.fillAmount=Mathf.Clamp01(current.IntakeSize/maxSize);
             if(NextSizeFill!=null)NextSizeFill.fillAmount=Mathf.Clamp01(shown.IntakeSize/maxSize);
-            StatsText.text=$"<line-height=66px>МОЩНОСТЬ  {shown.Power:N0}\nПРИЁМНИК  {shown.IntakeSize:0.##} м";
-            PriceText.text=next!=null?$"Модель: ${next.Price:N0}":"Последняя модель уже приобретена";
+            HowToSuck.LocalizedText.Set(StatsText, $"<line-height=66px>МОЩНОСТЬ  {shown.Power:N0}\nПРИЁМНИК  {shown.IntakeSize:0.##} м");
+            HowToSuck.LocalizedText.Set(PriceText, next!=null?$"Модель: ${next.Price:N0}":"Последняя модель уже приобретена");
             bool retryVisible=offer.CanRetry||offer.Kind==ShopOfferKind.Saving;
             bool actionWasSelected=EventSystem.current!=null&&(EventSystem.current.currentSelectedGameObject==BuyButton.gameObject||EventSystem.current.currentSelectedGameObject==RetryButton.gameObject);
             BuyButton.gameObject.SetActive(!retryVisible);
@@ -124,14 +124,14 @@ namespace HowToSuck
             CloseButton.navigation=new Navigation{mode=Navigation.Mode.Explicit,selectOnLeft=destination,selectOnRight=destination,selectOnUp=destination,selectOnDown=destination};
             if(actionWasSelected&&!working&&(EventSystem.current.currentSelectedGameObject==null||!EventSystem.current.currentSelectedGameObject.activeInHierarchy))Select(destination);
             switch(offer.Kind) {
-                case ShopOfferKind.ReadOnly:MessageText.text=session.DisplayedSavePending?"Хост сохраняет изменения. Пока показаны подтверждённые баланс и оборудование.":"Улучшения покупает хозяин кампании. Вся команда получает их в следующем контракте.";break;
-                case ShopOfferKind.Saving:MessageText.text="Сохранение покупки…";break;
-                case ShopOfferKind.PendingPurchase:MessageText.text="Покупка пока не подтверждена. Показаны последние подтверждённые баланс и оборудование. Проверьте свободное место и доступ к папке сохранений, затем нажмите «Сохранить снова».";break;
-                case ShopOfferKind.PendingResult:MessageText.text="Предыдущая выплата ещё не сохранена. Сначала повторите сохранение.";break;
-                case ShopOfferKind.Insufficient:MessageText.text=notice??$"Не хватает ${offer.MissingFunds:N0}. Завершайте контракты, чтобы заработать.";break;
-                case ShopOfferKind.MaximumTier:MessageText.text=notice??"Последняя модель уже приобретена. Вместимость улучшается отдельно.";break;
-                case ShopOfferKind.Available:MessageText.text=notice??"Покупка списывает деньги один раз и сохраняется для всей кампании.";break;
-                default:MessageText.text="Магазин доступен между контрактами после сохранения кампании.";break;
+                case ShopOfferKind.ReadOnly:HowToSuck.LocalizedText.Set(MessageText, session.DisplayedSavePending?"Хост сохраняет изменения. Пока показаны подтверждённые баланс и оборудование.":"Улучшения покупает хозяин кампании. Вся команда получает их в следующем контракте.");break;
+                case ShopOfferKind.Saving:HowToSuck.LocalizedText.Set(MessageText, "Сохранение покупки…");break;
+                case ShopOfferKind.PendingPurchase:HowToSuck.LocalizedText.Set(MessageText, "Покупка пока не подтверждена. Показаны последние подтверждённые баланс и оборудование. Проверьте свободное место и доступ к папке сохранений, затем нажмите «Сохранить снова».");break;
+                case ShopOfferKind.PendingResult:HowToSuck.LocalizedText.Set(MessageText, "Предыдущая выплата ещё не сохранена. Сначала повторите сохранение.");break;
+                case ShopOfferKind.Insufficient:HowToSuck.LocalizedText.Set(MessageText, notice??$"Не хватает ${offer.MissingFunds:N0}. Завершайте контракты, чтобы заработать.");break;
+                case ShopOfferKind.MaximumTier:HowToSuck.LocalizedText.Set(MessageText, notice??"Последняя модель уже приобретена. Вместимость улучшается отдельно.");break;
+                case ShopOfferKind.Available:HowToSuck.LocalizedText.Set(MessageText, notice??"Покупка списывает деньги один раз и сохраняется для всей кампании.");break;
+                default:HowToSuck.LocalizedText.Set(MessageText, "Магазин доступен между контрактами после сохранения кампании.");break;
             }
             RefreshCapacity(current,next);
         }

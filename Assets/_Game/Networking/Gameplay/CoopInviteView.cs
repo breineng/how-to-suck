@@ -55,7 +55,7 @@ namespace HowToSuck.Networking
             if (waitingForOverlay)
             {
                 overlayDeadline = Time.unscaledTime + 3f;
-                Message.text = "Открываем окно Steam…";
+                HowToSuck.LocalizedText.Set(Message, "Открываем окно Steam…");
                 RefreshButton.interactable = false;
             }
             else RefreshFriends();
@@ -115,8 +115,8 @@ namespace HowToSuck.Networking
                 button.onClick.AddListener(() => Send(row)); rows.Add(row);
                 SteamFriends.RequestUserInformation(id, false); RefreshRow(row);
             }
-            Message.text = friends.Count == 0 ? "В списке Steam пока нет друзей." :
-                "Оверлей Steam недоступен. Выберите друга — он получит приглашение в Steam.";
+            HowToSuck.LocalizedText.Set(Message, friends.Count == 0 ? "В списке Steam пока нет друзей." :
+                "Оверлей Steam недоступен. Выберите друга — он получит приглашение в Steam.");
             RefreshButton.interactable = true;
             Canvas.ForceUpdateCanvases(); Scroll.verticalNormalizedPosition = 1;
         }
@@ -124,12 +124,12 @@ namespace HowToSuck.Networking
         private void RefreshRow(FriendRow row)
         {
             var id = new CSteamID(row.Id); string name = SteamFriends.GetFriendPersonaName(id);
-            row.Name.richText = false; row.Name.text = string.IsNullOrEmpty(name) ? "Друг Steam" : name;
-            row.Initial.text = string.IsNullOrEmpty(name) ? "?" : System.Globalization.StringInfo.GetNextTextElement(name).ToUpperInvariant();
+            row.Name.richText = false; HowToSuck.LocalizedText.SetLiteral(row.Name, string.IsNullOrEmpty(name) ? GameLocalization.Text("Друг Steam") : name);
+            HowToSuck.LocalizedText.Set(row.Initial, string.IsNullOrEmpty(name) ? "?" : System.Globalization.StringInfo.GetNextTextElement(name).ToUpperInvariant());
             bool member = lobby.ContainsMember(row.Id), offline = IsOffline(id);
             bool sent = sentAt.TryGetValue(row.Id, out float at) && Time.unscaledTime - at < 15;
-            row.Status.text = member ? "УЖЕ В КОМАНДЕ" : offline ? "НЕ В СЕТИ" : "В СЕТИ";
-            row.Action.text = sent ? "ОТПРАВЛЕНО" : member ? "В ЛОББИ" : "ПРИГЛАСИТЬ";
+            HowToSuck.LocalizedText.Set(row.Status, member ? "УЖЕ В КОМАНДЕ" : offline ? "НЕ В СЕТИ" : "В СЕТИ");
+            HowToSuck.LocalizedText.Set(row.Action, sent ? "ОТПРАВЛЕНО" : member ? "В ЛОББИ" : "ПРИГЛАСИТЬ");
             row.Button.interactable = !member && !offline && !sent;
             if (row.Texture == null)
             {
@@ -155,8 +155,8 @@ namespace HowToSuck.Networking
             // Never invite while rendering or refreshing: only an explicit click selects a recipient.
             bool accepted = source.InviteFriend(row.Id);
             if (accepted) sentAt[row.Id] = Time.unscaledTime;
-            Message.text = accepted ? "Приглашение отправлено. Ждём друга в лобби." :
-                "Steam не отправил приглашение. Обновите список и попробуйте ещё раз.";
+            HowToSuck.LocalizedText.Set(Message, accepted ? "Приглашение отправлено. Ждём друга в лобби." :
+                "Steam не отправил приглашение. Обновите список и попробуйте ещё раз.");
             Debug.Log("Steam lobby invitation " + (accepted ? "accepted" : "rejected"));
             RefreshRow(row);
         }

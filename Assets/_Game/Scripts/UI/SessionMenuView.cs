@@ -57,7 +57,7 @@ namespace HowToSuck
                 && session.Catalog != null && session.Catalog.TryValidate(out _)
                 && session.DisplayedContractUnlocked(session.SelectedLobbyContract.ContractId);
             if (BackButton != null) BackButton.interactable = exit != null && session.Phase == SessionPhase.Lobby ? exit.CanExitSessionMenu(session) : !loading && session.Phase != SessionPhase.ShuttingDown;
-            if (Status != null) Status.text = loading ? "Загрузка…" : session.LastError;
+            if (Status != null) HowToSuck.LocalizedText.Set(Status, loading ? "Загрузка…" : session.LastError);
         }
         private void Unbind()
         {

@@ -63,8 +63,8 @@ namespace HowToSuck
                 return;
             }
             bool confirm=confirmation!=null,corrupt=session.CampaignOpenStatus.Kind==SaveOpenKind.Corrupt;
-            Title.text=confirm?"Начать новую кампанию?":"Кампания недоступна";
-            Message.text=confirm?"Вы начнёте с MK1 и нулевым балансом. Исходные повреждённые файлы останутся в папке сохранений.":Describe(session.CampaignOpenStatus.Kind);
+            HowToSuck.LocalizedText.Set(Title, confirm?"Начать новую кампанию?":"Кампания недоступна");
+            HowToSuck.LocalizedText.Set(Message, confirm?"Вы начнёте с MK1 и нулевым балансом. Исходные повреждённые файлы останутся в папке сохранений.":Describe(session.CampaignOpenStatus.Kind));
             RetryButton.gameObject.SetActive(!confirm);
             NewButton.gameObject.SetActive(!confirm&&corrupt);
             ConfirmButton.gameObject.SetActive(confirm);

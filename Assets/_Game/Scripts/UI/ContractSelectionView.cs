@@ -68,22 +68,22 @@ namespace HowToSuck
             bool canChoose=isActiveAndEnabled&&session!=null&&session.HasAuthority&&session.Phase==SessionPhase.Lobby&&!wasBlocked&&index>=0&&entries.Length>1;
             if(PreviousButton!=null)PreviousButton.interactable=canChoose;if(NextButton!=null)NextButton.interactable=canChoose;
             if(NameText==null)return;
-            if(selected==null){NameText.text="Выбор карты";IndexText.text="";DetailsText.text=session!=null&&session.HasAuthority?"Доступная карта не найдена.":"Ожидаем выбор хозяина…";RecommendationText.text="";RoleText.text="Карту и начало контракта выбирает хозяин.";return;}
-            NameText.text=selected.DisplayName;IndexText.text=(index+1)+" / "+entries.Length;
+            if(selected==null){HowToSuck.LocalizedText.Set(NameText, "Выбор карты");HowToSuck.LocalizedText.Set(IndexText, "");HowToSuck.LocalizedText.Set(DetailsText, session!=null&&session.HasAuthority?"Доступная карта не найдена.":"Ожидаем выбор хозяина…");HowToSuck.LocalizedText.Set(RecommendationText, "");HowToSuck.LocalizedText.Set(RoleText, "Карту и начало контракта выбирает хозяин.");return;}
+            HowToSuck.LocalizedText.Set(NameText, selected.DisplayName);HowToSuck.LocalizedText.Set(IndexText, (index+1)+" / "+entries.Length);
             if(MapPreview!=null){MapPreview.sprite=selected.Preview;MapPreview.enabled=selected.Preview!=null;}
             int seconds=Mathf.CeilToInt(selected.TimeLimitSeconds);
-            if(QuotaValue!=null)QuotaValue.text=$"${selected.Quota:N0}";
-            if(TimeValue!=null)TimeValue.text=$"{seconds/60}:{seconds%60:00}";
-            if(FailureValue!=null)FailureValue.text=$"При неудаче: {selected.FailurePercent}% сданной стоимости";
-            DetailsText.text=$"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса";
-            if(QuotaValue!=null)DetailsText.text="Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.";
+            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(QuotaValue, $"${selected.Quota:N0}");
+            if(TimeValue!=null)HowToSuck.LocalizedText.Set(TimeValue, $"{seconds/60}:{seconds%60:00}");
+            if(FailureValue!=null)HowToSuck.LocalizedText.Set(FailureValue, $"При неудаче: {selected.FailurePercent}% сданной стоимости");
+            HowToSuck.LocalizedText.Set(DetailsText, $"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса");
+            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(DetailsText, "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.");
             string current=TierName(session.DisplayedTierId),recommended=TierName(selected.RecommendedTierId);
-            RecommendationText.text=(current!=null?"Команда: "+current:"Ожидаем оборудование…")+
-                (recommended!=null?"\nРекомендуется: "+recommended:"\nЛюбая модель");
+            HowToSuck.LocalizedText.Set(RecommendationText, (current!=null?"Команда: "+current:"Ожидаем оборудование…")+
+                (recommended!=null?"\nРекомендуется: "+recommended:"\nЛюбая модель"));
             bool unlocked=session.DisplayedContractUnlocked(selected.ContractId);
             string prerequisite=CampaignContractAccess.Prerequisite(selected.ContractId),priorName=prerequisite;
             if(entries!=null)foreach(var entry in entries)if(entry!=null&&entry.ContractId==prerequisite)priorName=entry.DisplayName;
-            RoleText.text=!unlocked?"Чтобы открыть, завершите «"+priorName+"»":session.HasAuthority?"Выберите главу и начните контракт.":"Выбор хозяина · ожидаем начала контракта";
+            HowToSuck.LocalizedText.Set(RoleText, !unlocked?"Чтобы открыть, завершите «"+priorName+"»":session.HasAuthority?"Выберите главу и начните контракт.":"Выбор хозяина · ожидаем начала контракта");
         }
         private void Unbind()
         {

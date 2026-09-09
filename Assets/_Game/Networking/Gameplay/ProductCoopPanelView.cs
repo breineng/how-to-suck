@@ -76,8 +76,8 @@ namespace HowToSuck.Networking
             bool browse=source.IsBrowsingCoop;HostButton.interactable=RefreshButton.interactable=browse;
             AcceptInvitationButton.gameObject.SetActive(browse&&source.HasPendingInvitation);
             BackButton.interactable=source.CanCancelEntry||source.CanStartSolo;
-            Message.text=browse?(string.IsNullOrWhiteSpace(source.Status)?"Создайте игру или выберите друга.":source.Status):
-                source.Phase==SoloEntryPhase.Starting?"Подключаемся…":!string.IsNullOrWhiteSpace(source.Status)?source.Status:source.CoopStatus;
+            HowToSuck.LocalizedText.Set(Message, browse?(string.IsNullOrWhiteSpace(source.Status)?"Создайте игру или выберите друга.":source.Status):
+                source.Phase==SoloEntryPhase.Starting?"Подключаемся…":!string.IsNullOrWhiteSpace(source.Status)?source.Status:source.CoopStatus);
             var friends=source.FriendLobbies;int count=Math.Min(friends.Count,128);bool rebuild=count!=displayed.Count;
             if(!rebuild)for(int i=0;i<count;i++)if(friends[i].LobbyId!=displayed[i]){rebuild=true;break;}
             if(rebuild){ClearRows();foreach(var friend in friends){if(rows.Count==128)break;
@@ -86,7 +86,7 @@ namespace HowToSuck.Networking
                 var cancel=row.GetComponent<ProductCoopCancel>();if(cancel!=null)cancel.Panel=this;
             }}
             for(int i=0;i<rows.Count;i++){
-                var text=rows[i].GetComponentInChildren<TMP_Text>();text.richText=false;text.text=string.IsNullOrWhiteSpace(friends[i].HostName)?"Игра друга":friends[i].HostName;
+                var text=rows[i].GetComponentInChildren<TMP_Text>();text.richText=false;HowToSuck.LocalizedText.SetLiteral(text, string.IsNullOrWhiteSpace(friends[i].HostName)?GameLocalization.Text("Игра друга"):friends[i].HostName);
                 rows[i].interactable=browse;
             }
         }

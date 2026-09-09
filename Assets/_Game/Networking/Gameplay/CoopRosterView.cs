@@ -63,7 +63,7 @@ namespace HowToSuck.Networking
             var control=game.Control;var roster=control!=null&&control.IsSpawned?control.Roster:null;
             int count=roster?.Count??0;
             bool invite=CanInvite;
-            if(Heading!=null)Heading.text=$"КОМАНДА  {count} / 4";
+            if(Heading!=null)HowToSuck.LocalizedText.Set(Heading, $"КОМАНДА  {count} / 4");
             for(int i=0;i<Rows.Length;i++)
             {
                 var row=Rows[i];bool occupied=i<count;
@@ -74,12 +74,12 @@ namespace HowToSuck.Networking
                 }
                 if(!occupied)
                 {
-                    Show(row,"Место для друга","СВОБОДНО",null,false);
-                    if(invite&&row.Status!=null)row.Status.text="ПРИГЛАСИТЬ";
+                    Show(row,GameLocalization.Text("Место для друга"),"СВОБОДНО",null,false);
+                    if(invite&&row.Status!=null)HowToSuck.LocalizedText.Set(row.Status, "ПРИГЛАСИТЬ");
                     continue;
                 }
                 var member=roster[i];bool local=member.ClientId==game.Connection.Manager.LocalClientId;
-                string name=local?"Вы":$"Игрок {i+1}";Texture2D avatar=null;
+                string name=GameLocalization.Text(local?"Вы":$"Игрок {i+1}");Texture2D avatar=null;
                 if(member.SteamId!=0&&game.Connection.ActiveSteamRuntime?.Initialized==true)
                 {
                     var profile=Resolve(member.SteamId);if(!string.IsNullOrEmpty(profile.Name))name=profile.Name;avatar=profile.Avatar;
@@ -118,10 +118,10 @@ namespace HowToSuck.Networking
         }
         private static void Show(Row row,string name,string status,Texture2D avatar,bool ready)
         {
-            if(row.Name!=null){row.Name.richText=false;row.Name.text=name;}
-            if(row.Status!=null){row.Status.text=status;row.Status.color=ready?new Color(.16f,.38f,.23f):new Color(.48f,.40f,.32f);}
+            if(row.Name!=null){row.Name.richText=false;HowToSuck.LocalizedText.SetLiteral(row.Name, name);}
+            if(row.Status!=null){HowToSuck.LocalizedText.Set(row.Status, status);row.Status.color=ready?new Color(.16f,.38f,.23f):new Color(.48f,.40f,.32f);}
             if(row.Avatar!=null){row.Avatar.texture=avatar;row.Avatar.enabled=avatar!=null;row.Avatar.uvRect=new Rect(0,1,1,-1);}
-            if(row.Initial!=null){row.Initial.gameObject.SetActive(avatar==null);row.Initial.text=status=="СВОБОДНО"?"+":string.IsNullOrEmpty(name)?"?":System.Globalization.StringInfo.GetNextTextElement(name).ToUpperInvariant();}
+            if(row.Initial!=null){row.Initial.gameObject.SetActive(avatar==null);HowToSuck.LocalizedText.Set(row.Initial, status=="СВОБОДНО"?"+":string.IsNullOrEmpty(name)?"?":System.Globalization.StringInfo.GetNextTextElement(name).ToUpperInvariant());}
         }
         private void OnDestroy()
         {

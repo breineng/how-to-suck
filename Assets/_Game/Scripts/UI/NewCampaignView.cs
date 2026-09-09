@@ -33,7 +33,7 @@ namespace HowToSuck
         {
             if (session == null || !session.CanStartNewCampaign || Menu.ModalBlocksLobby) return;
             observed = session.Campaign;
-            Message.text = Explanation;
+            HowToSuck.LocalizedText.Set(Message, Explanation);
             Panel.SetActive(true);
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(CancelButton.gameObject);
         }
@@ -42,7 +42,7 @@ namespace HowToSuck
             if (!IsOpen || observed == null || session == null) return;
             if (!session.CanStartNewCampaign || !ReferenceEquals(observed, session.Campaign)) { Close(); return; }
             if (session.StartNewCampaign(observed)) Close();
-            else if (IsOpen) Message.text = "Не удалось начать новую игру. Текущая кампания сохранена.\n\n" + session.LastError;
+            else if (IsOpen) HowToSuck.LocalizedText.Set(Message, "Не удалось начать новую игру. Текущая кампания сохранена.\n\n" + session.LastError);
         }
         public void Close()
         {

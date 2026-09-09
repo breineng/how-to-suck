@@ -1,0 +1,1972 @@
+{
+  "entries": [
+    {
+      "source": "\nЛюбая модель",
+      "text": "\nQualquer modelo"
+    },
+    {
+      "source": "\nРекомендуется: ",
+      "text": "\nRecomendado: "
+    },
+    {
+      "source": " 2 секунды, чтобы уехать",
+      "text": " 2 segundos para sair"
+    },
+    {
+      "source": " · ТЯНУТ: {0}\n",
+      "text": " · PUXANDO: {0}\n"
+    },
+    {
+      "source": " · ЯРОСТЬ",
+      "text": " · FÚRIA"
+    },
+    {
+      "source": " · загружается: {0}",
+      "text": " · carregando: {0}"
+    },
+    {
+      "source": " · защита",
+      "text": " · proteção"
+    },
+    {
+      "source": " Гц",
+      "text": " Hz"
+    },
+    {
+      "source": " с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": " s.\nEsc ou “Reverter” cancela a alteração."
+    },
+    {
+      "source": " — ВЫПУСТИТЬ БОССА",
+      "text": " — SOLTAR CHEFE"
+    },
+    {
+      "source": " — ВЫСТРЕЛ · УДЕРЖАТЬ — ЗАРЯД",
+      "text": " — DISPARAR · SEGURE PARA CARREGAR"
+    },
+    {
+      "source": " — СОБРАТЬ",
+      "text": " — COLETAR"
+    },
+    {
+      "source": " — выпустить босса",
+      "text": " — soltar o chefe"
+    },
+    {
+      "source": " — выстрелить предметом",
+      "text": " — disparar um objeto"
+    },
+    {
+      "source": " — собрать предмет",
+      "text": " — coletar um objeto"
+    },
+    {
+      "source": " — эвакуация",
+      "text": " — extração"
+    },
+    {
+      "source": "). История другого аккаунта сохранена отдельно.",
+      "text": "). O histórico da outra conta foi preservado separadamente."
+    },
+    {
+      "source": "). Одиночная игра доступна.",
+      "text": "). O modo solo está disponível."
+    },
+    {
+      "source": "+1 СЛОТ  /  ${0}",
+      "text": "+1 ESPAÇO / ${0}"
+    },
+    {
+      "source": ". Выберите другую.",
+      "text": ". Escolha outra tecla."
+    },
+    {
+      "source": "<line-height=66px>МОЩНОСТЬ  {0}\nПРИЁМНИК  {1} м",
+      "text": "<line-height=66px>POTÊNCIA {0}\nENTRADA {1} m"
+    },
+    {
+      "source": "Esc и управление меню не меняются. Выберите действие, затем клавишу. Нажмите Esc для отмены назначения.",
+      "text": "Esc e os controles do menu não mudam. Escolha uma ação e pressione uma tecla. Esc cancela a atribuição."
+    },
+    {
+      "source": "How to Suck\nЗапустите игру через How to Suck → Играть в меню Unity.\nСтартовая сцена: Production/Scenes/ProductBootstrap.",
+      "text": "How to Suck\nInicie em How to Suck → Play no Unity.\nCena inicial: Production/Scenes/ProductBootstrap."
+    },
+    {
+      "source": "Steam временно недоступен.",
+      "text": "Steam temporariamente indisponível."
+    },
+    {
+      "source": "Steam запущен с другим AppID. Проверьте выбранную конфигурацию разработки.",
+      "text": "AppID do Steam incorreto. Confira a configuração da versão."
+    },
+    {
+      "source": "Steam не завершил запрос вовремя. Одиночная игра остаётся доступной.",
+      "text": "A solicitação ao Steam expirou. O modo solo está disponível."
+    },
+    {
+      "source": "Steam не настроен для этой сборки. Одиночная игра доступна.",
+      "text": "Steam não configurado nesta versão. O modo solo está disponível."
+    },
+    {
+      "source": "Steam не отправил приглашение. Обновите список и попробуйте ещё раз.",
+      "text": "O Steam não enviou o convite. Atualize e tente novamente."
+    },
+    {
+      "source": "Steam не подтвердил хозяина лобби.",
+      "text": "O Steam não verificou o dono da sala."
+    },
+    {
+      "source": "Steam не подтвердил членство в лобби.",
+      "text": "O Steam não verificou a participação na sala."
+    },
+    {
+      "source": "Steam не принял вход в лобби.",
+      "text": "O Steam recusou a entrada na sala."
+    },
+    {
+      "source": "Steam не принял создание лобби.",
+      "text": "O Steam recusou a criação da sala."
+    },
+    {
+      "source": "Steam не создал лобби.",
+      "text": "O Steam não criou a sala."
+    },
+    {
+      "source": "Steam не сообщил текущего пользователя.",
+      "text": "O Steam não identificou o usuário atual."
+    },
+    {
+      "source": "Steam не сохранил конфигурацию лобби.",
+      "text": "O Steam não salvou a configuração da sala."
+    },
+    {
+      "source": "Steam не удалось инициализировать. Одиночная игра доступна.",
+      "text": "Falha ao iniciar o Steam. O modo solo está disponível."
+    },
+    {
+      "source": "Steam уже обслуживается другим владельцем сессии.",
+      "text": "Outra sessão já está usando o Steam."
+    },
+    {
+      "source": "{0} / {1} СЛОТОВ",
+      "text": "{0} / {1} ESPAÇOS"
+    },
+    {
+      "source": "БОСС ДОСТАВЛЕН",
+      "text": "CHEFE ENTREGUE"
+    },
+    {
+      "source": "БОСС ПОВЕРЖЕН",
+      "text": "CHEFE DERROTADO"
+    },
+    {
+      "source": "БОСС СКРЫВАЕТСЯ",
+      "text": "CHEFE ESCONDIDO"
+    },
+    {
+      "source": "Баланс: ${0}",
+      "text": "Saldo: ${0}"
+    },
+    {
+      "source": "Бег",
+      "text": "Correr"
+    },
+    {
+      "source": "Без рамки",
+      "text": "Sem bordas"
+    },
+    {
+      "source": "Бонус сохранён. Следующая модель покупается отдельно.",
+      "text": "Bônus salvo. Compre o próximo modelo separadamente."
+    },
+    {
+      "source": "Бонусные слоты сохраняются при смене модели.",
+      "text": "Os espaços extras continuam ao trocar de modelo."
+    },
+    {
+      "source": "Босс доставлен",
+      "text": "Chefe entregue"
+    },
+    {
+      "source": "Босс доставлен\n",
+      "text": "CHEFE ENTREGUE\n"
+    },
+    {
+      "source": "Босс не доставлен\n",
+      "text": "Chefe não entregue\n"
+    },
+    {
+      "source": "Босс повержен — доставьте тело в грузовик",
+      "text": "Chefe derrotado — leve o corpo ao caminhão"
+    },
+    {
+      "source": "Босс: победите и доставьте в грузовик",
+      "text": "Chefe: derrote e entregue ao caminhão"
+    },
+    {
+      "source": "В ЛОББИ",
+      "text": "NA SALA"
+    },
+    {
+      "source": "В СЕТИ",
+      "text": "ON-LINE"
+    },
+    {
+      "source": "В кампании есть оборудование, которого нет в этой версии игры. Проверьте версию игры. Сохранение не изменено.",
+      "text": "Esta campanha contém equipamento ausente nesta versão. Verifique a versão do jogo. O arquivo salvo não mudou."
+    },
+    {
+      "source": "В лобби",
+      "text": "Voltar à sala"
+    },
+    {
+      "source": "В меню",
+      "text": "Menu principal"
+    },
+    {
+      "source": "В списке Steam пока нет друзей.",
+      "text": "Nenhum amigo encontrado no Steam ainda."
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 25% костюма",
+      "text": "REANIMAÇÃO EM ANDAMENTO\nTraje com 25% ao levantar"
+    },
+    {
+      "source": "ВМЕСТИМОСТЬ",
+      "text": "CAPACIDADE"
+    },
+    {
+      "source": "ВРЕМЯ",
+      "text": "TEMPO"
+    },
+    {
+      "source": "ВЫ · ",
+      "text": "VOCÊ · "
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ",
+      "text": "VOCÊ CAIU"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища",
+      "text": "VOCÊ CAIU\nEspere a ajuda de um colega"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "VOCÊ CAIU\nSegure {0} por 3 segundos para levantar\n25% de traje · −15 segundos"
+    },
+    {
+      "source": "Ваша кампания · общее оборудование",
+      "text": "Sua campanha · equipamento compartilhado"
+    },
+    {
+      "source": "Вернуть",
+      "text": "Reverter"
+    },
+    {
+      "source": "Версии Steamworks.NET и native Steam API не совпадают.",
+      "text": "As versões de Steamworks.NET e da API nativa do Steam não correspondem."
+    },
+    {
+      "source": "Вертикальная синхронизация",
+      "text": "Sincronização vertical"
+    },
+    {
+      "source": "Взаимодействие",
+      "text": "Interagir"
+    },
+    {
+      "source": "Вибрация камеры",
+      "text": "Tremor da câmera"
+    },
+    {
+      "source": "Видео",
+      "text": "Vídeo"
+    },
+    {
+      "source": "Видеорежим ещё не применён или время подтверждения истекло.",
+      "text": "O modo de vídeo não foi aplicado ou o prazo de confirmação acabou."
+    },
+    {
+      "source": "Видеорежим применён.",
+      "text": "Modo de vídeo aplicado."
+    },
+    {
+      "source": "Видеорежим сохранён.",
+      "text": "Modo de vídeo salvo."
+    },
+    {
+      "source": "Влево",
+      "text": "Esquerda"
+    },
+    {
+      "source": "Вместимость",
+      "text": "CAPACIDADE"
+    },
+    {
+      "source": "Вместимость не куплена. Проверьте цену, баланс и максимум модели.",
+      "text": "Compra de capacidade indisponível. Verifique o preço, o saldo e o limite do modelo."
+    },
+    {
+      "source": "Вместимость: ожидаем данные кампании",
+      "text": "Capacidade: aguardando dados da campanha"
+    },
+    {
+      "source": "Возвращаемся в главное меню…",
+      "text": "Voltando ao menu principal…"
+    },
+    {
+      "source": "Возвращается предыдущий видеорежим…",
+      "text": "Restaurando o modo de vídeo anterior…"
+    },
+    {
+      "source": "Возвращён предыдущий видеорежим.",
+      "text": "Modo de vídeo anterior restaurado."
+    },
+    {
+      "source": "Восстановить настройки",
+      "text": "Restaurar configurações"
+    },
+    {
+      "source": "Вперёд",
+      "text": "Avançar"
+    },
+    {
+      "source": "Вправо",
+      "text": "Direita"
+    },
+    {
+      "source": "Время истекло",
+      "text": "Tempo esgotado"
+    },
+    {
+      "source": "Все готовы",
+      "text": "Todos prontos"
+    },
+    {
+      "source": "Все игроки должны вернуться к грузовику",
+      "text": "Todos os jogadores devem voltar ao caminhão"
+    },
+    {
+      "source": "Вчетвером пройти контракт от начала до успеха, сдав квоту и побеждённого босса.",
+      "text": "Conclua um contrato em quatro jogadores do início ao fim, entregando a cota e o chefe derrotado."
+    },
+    {
+      "source": "Вы",
+      "text": "Você"
+    },
+    {
+      "source": "Вы выведены из строя — требуется подъём",
+      "text": "Você caiu — precisa de reanimação"
+    },
+    {
+      "source": "Вы готовы. Контракт выбирает хозяин",
+      "text": "Você está pronto. O anfitrião escolhe o contrato"
+    },
+    {
+      "source": "Вы начнёте с MK1 и нулевым балансом. Исходные повреждённые файлы останутся в папке сохранений.",
+      "text": "Você começará com MK1 e $0. Os arquivos danificados originais ficarão na pasta de salvamento."
+    },
+    {
+      "source": "Вы покинули сессию.",
+      "text": "Você saiu da sessão."
+    },
+    {
+      "source": "Выберите главу и начните контракт.",
+      "text": "Escolha um capítulo e inicie um contrato."
+    },
+    {
+      "source": "Выберите друга",
+      "text": "Escolher amigo"
+    },
+    {
+      "source": "Выберите игру друга или создайте свою.",
+      "text": "Escolha a partida de um amigo ou crie a sua."
+    },
+    {
+      "source": "Выбор карты",
+      "text": "Seleção de mapa"
+    },
+    {
+      "source": "Выбор хозяина · ожидаем начала контракта",
+      "text": "Escolha do anfitrião · aguardando o início do contrato"
+    },
+    {
+      "source": "Выйти",
+      "text": "Sair"
+    },
+    {
+      "source": "Выйти из игры",
+      "text": "Sair do jogo"
+    },
+    {
+      "source": "Выключена",
+      "text": "Desligada"
+    },
+    {
+      "source": "Выплата ещё не сохранена. Повторите сохранение, чтобы продолжить.",
+      "text": "O pagamento ainda não foi salvo. Tente salvar novamente para continuar."
+    },
+    {
+      "source": "Выстрел / выпуск",
+      "text": "Disparar / soltar"
+    },
+    {
+      "source": "Выстрелите телом в приёмник грузовика",
+      "text": "Dispare o corpo na entrada do caminhão"
+    },
+    {
+      "source": "ГОТОВ",
+      "text": "PRONTO"
+    },
+    {
+      "source": "Генеральная уборка",
+      "text": "Faxina geral"
+    },
+    {
+      "source": "Готов",
+      "text": "PRONTO"
+    },
+    {
+      "source": "Грузовик",
+      "text": "Caminhão"
+    },
+    {
+      "source": "ДО ОТЪЕЗДА",
+      "text": "ATÉ A PARTIDA"
+    },
+    {
+      "source": "ДОБАВИТЬ СЛОТ",
+      "text": "ADICIONAR ESPAÇO"
+    },
+    {
+      "source": "ДОСТАВЬТЕ БОССА",
+      "text": "ENTREGUE O CHEFE"
+    },
+    {
+      "source": "Диван",
+      "text": "Sofá"
+    },
+    {
+      "source": "Для повтора синхронизации\nперезапустите игру.",
+      "text": "Reinicie o jogo\npara tentar sincronizar novamente."
+    },
+    {
+      "source": "Для слота не хватает ${0}.",
+      "text": "Faltam ${0} para um espaço."
+    },
+    {
+      "source": "Для совместной игры нужен Steam.",
+      "text": "O cooperativo precisa do Steam."
+    },
+    {
+      "source": "Дождитесь завершения смены видеорежима.",
+      "text": "Espere a mudança do modo de vídeo terminar."
+    },
+    {
+      "source": "Дом вверх дном",
+      "text": "Casa de pernas pro ar"
+    },
+    {
+      "source": "Дополнительный слот сохранён. Бонус сохраняется при смене модели.",
+      "text": "Espaço extra salvo. O bônus permanece ao trocar de modelo."
+    },
+    {
+      "source": "Доставьте груз в грузовик и выполните квоту",
+      "text": "Entregue carga ao caminhão e cumpra a cota"
+    },
+    {
+      "source": "Доставьте груз и побеждённого босса в грузовик",
+      "text": "Entregue a carga e o chefe derrotado ao caminhão"
+    },
+    {
+      "source": "Доставьте побеждённого босса в грузовик",
+      "text": "Entregue o chefe derrotado ao caminhão"
+    },
+    {
+      "source": "Доставьте предмет к соплу грузовика",
+      "text": "Leve o objeto ao bocal do caminhão"
+    },
+    {
+      "source": "Достижения ",
+      "text": "Conquistas "
+    },
+    {
+      "source": "Достижения аккаунта ",
+      "text": "Conquistas da conta "
+    },
+    {
+      "source": "Достижения восстановлены из резервной копии; повреждённый файл сохранён.",
+      "text": "Conquistas restauradas do backup. O arquivo danificado foi preservado."
+    },
+    {
+      "source": "Достижения пока не сохранены: ",
+      "text": "Conquistas ainda não salvas: "
+    },
+    {
+      "source": "Достижения —/8",
+      "text": "Conquistas —/8"
+    },
+    {
+      "source": "Доступная карта не найдена.",
+      "text": "Nenhum mapa disponível."
+    },
+    {
+      "source": "Друг Steam",
+      "text": "Amigo do Steam"
+    },
+    {
+      "source": "Ещё раз",
+      "text": "Tentar novamente"
+    },
+    {
+      "source": "Жадность окупилась",
+      "text": "A ganância compensou"
+    },
+    {
+      "source": "ЗАГРУЖАЕТСЯ: {0}",
+      "text": "CARREGANDO: {0}"
+    },
+    {
+      "source": "ЗАДАЧА",
+      "text": "OBJETIVO"
+    },
+    {
+      "source": "ЗАКРЫТЬ",
+      "text": "FECHAR"
+    },
+    {
+      "source": "ЗАРЯД {0}% · УРОН ×{1}",
+      "text": "CARGA {0}% · DANO ×{1}"
+    },
+    {
+      "source": "ЗАЩИТА",
+      "text": "PROTEÇÃO"
+    },
+    {
+      "source": "Завершение Steam API прервалось; повторная сетевая сессия требует перезапуска приложения.",
+      "text": "Falha ao encerrar a API do Steam. Reinicie o jogo antes de outra sessão on-line."
+    },
+    {
+      "source": "Завершите назначение клавиши.",
+      "text": "Termine primeiro a atribuição da tecla."
+    },
+    {
+      "source": "Загружаем историю…",
+      "text": "Carregando histórico…"
+    },
+    {
+      "source": "Загрузка…",
+      "text": "Carregando…"
+    },
+    {
+      "source": "Засасывание",
+      "text": "Sucção"
+    },
+    {
+      "source": "Звук",
+      "text": "Áudio"
+    },
+    {
+      "source": "Значения настроек недопустимы.",
+      "text": "Valores de configuração inválidos."
+    },
+    {
+      "source": "Игра друга",
+      "text": "Partida de amigo"
+    },
+    {
+      "source": "Играть",
+      "text": "Jogar"
+    },
+    {
+      "source": "Игрок {0}",
+      "text": "Jogador {0}"
+    },
+    {
+      "source": "Изменения ещё не сохранены.",
+      "text": "As alterações ainda não foram salvas."
+    },
+    {
+      "source": "Изображение",
+      "text": "Imagem"
+    },
+    {
+      "source": "Инверсия Y",
+      "text": "Inverter Y"
+    },
+    {
+      "source": "Интерфейс",
+      "text": "Interface"
+    },
+    {
+      "source": "История пока недоступна",
+      "text": "Histórico indisponível"
+    },
+    {
+      "source": "История связана со Steam",
+      "text": "Histórico vinculado ao Steam"
+    },
+    {
+      "source": "Исходный режим не применился. Применено безопасное окно.",
+      "text": "O modo original não foi restaurado. Aplicado o modo de janela seguro."
+    },
+    {
+      "source": "Ищем доступные игры друзей…",
+      "text": "Buscando partidas de amigos…"
+    },
+    {
+      "source": "КВОТА",
+      "text": "COTA"
+    },
+    {
+      "source": "КОМАНДА",
+      "text": "EQUIPE"
+    },
+    {
+      "source": "КОМАНДА  {0} / 4",
+      "text": "EQUIPE {0} / 4"
+    },
+    {
+      "source": "КОНТРАКТЫ",
+      "text": "CONTRATOS"
+    },
+    {
+      "source": "КООПЕРАТИВ",
+      "text": "COOPERATIVO"
+    },
+    {
+      "source": "КОСТЮМ",
+      "text": "TRAJE"
+    },
+    {
+      "source": "КОСТЮМ ВОССТАНОВЛЕН",
+      "text": "TRAJE RESTAURADO"
+    },
+    {
+      "source": "КОСТЮМ ЦЕЛ · зарядов: {0}",
+      "text": "TRAJE INTACTO · cargas: {0}"
+    },
+    {
+      "source": "КУПИТЬ МОДЕЛЬ",
+      "text": "COMPRAR MODELO"
+    },
+    {
+      "source": "Каждый второй кадр",
+      "text": "A cada dois quadros"
+    },
+    {
+      "source": "Каждый кадр",
+      "text": "A cada quadro"
+    },
+    {
+      "source": "Кампания восстановлена из резервной копии. Исходный повреждённый файл сохранён.",
+      "text": "Campanha restaurada do backup. O arquivo danificado foi preservado."
+    },
+    {
+      "source": "Кампания недоступна",
+      "text": "Campanha indisponível"
+    },
+    {
+      "source": "Кампания хоста · общее оборудование",
+      "text": "Campanha do anfitrião · equipamento compartilhado"
+    },
+    {
+      "source": "Карту и начало контракта выбирает хозяин.",
+      "text": "O anfitrião escolhe o mapa e inicia o contrato."
+    },
+    {
+      "source": "Кастрюля",
+      "text": "Panela"
+    },
+    {
+      "source": "Качество",
+      "text": "Qualidade"
+    },
+    {
+      "source": "Квота: ${0}    Время: {1}:{2}\nПри неудаче: {3}% сданной стоимости\nЦель: квота и доставка побеждённого босса",
+      "text": "Cota: ${0}    Tempo: {1}:{2}\nEm caso de falha: {3}% do valor entregue\nMeta: cota e entrega do chefe derrotado"
+    },
+    {
+      "source": "Клавиши",
+      "text": "Teclas"
+    },
+    {
+      "source": "Книга",
+      "text": "Livro"
+    },
+    {
+      "source": "Кнопки не были отпущены. Повторите назначение.",
+      "text": "Os botões não foram soltos. Tente atribuir novamente."
+    },
+    {
+      "source": "Команда: ",
+      "text": "Equipe: "
+    },
+    {
+      "source": "Контракт прерван",
+      "text": "Contrato interrompido"
+    },
+    {
+      "source": "Контракты",
+      "text": "CONTRATOS"
+    },
+    {
+      "source": "Кооператив",
+      "text": "COOPERATIVO"
+    },
+    {
+      "source": "Костюм: {0}%",
+      "text": "Traje: {0}%"
+    },
+    {
+      "source": "Костюм: —",
+      "text": "Traje: —"
+    },
+    {
+      "source": "Коэффициент выплаты: {0}%\nВыплата: ${1}\n\nБаланс: ${2}",
+      "text": "Taxa de pagamento: {0}%\nPagamento: ${1}\n\nSaldo: ${2}"
+    },
+    {
+      "source": "Лобби изменилось во время подключения.",
+      "text": "A sala mudou durante a conexão."
+    },
+    {
+      "source": "Лобби относится к другой игре/сборке либо контракт уже начался.",
+      "text": "A sala pertence a outro jogo/versão ou o contrato já começou."
+    },
+    {
+      "source": "Локальная история достижений привязана к ",
+      "text": "O histórico local de conquistas está vinculado a "
+    },
+    {
+      "source": "МАКСИМУМ",
+      "text": "MÁXIMO"
+    },
+    {
+      "source": "МАКСИМУМ: {0} СЛОТОВ",
+      "text": "MÁXIMO: {0} ESPAÇOS"
+    },
+    {
+      "source": "Магазин доступен между контрактами после сохранения кампании.",
+      "text": "A loja fica disponível entre contratos após salvar a campanha."
+    },
+    {
+      "source": "Меню не останавливает контракт",
+      "text": "O menu não pausa o contrato"
+    },
+    {
+      "source": "Место для друга",
+      "text": "Lugar para um amigo"
+    },
+    {
+      "source": "Микроволновка",
+      "text": "Micro-ondas"
+    },
+    {
+      "source": "Модель",
+      "text": "Modelo"
+    },
+    {
+      "source": "Модель: ${0}",
+      "text": "Modelo: ${0}"
+    },
+    {
+      "source": "Монитор",
+      "text": "Monitor"
+    },
+    {
+      "source": "Музыкальная пауза",
+      "text": "Pausa musical"
+    },
+    {
+      "source": "Мусорный катун",
+      "text": "Lixo rolante"
+    },
+    {
+      "source": "НАЗАД",
+      "text": "VOLTAR"
+    },
+    {
+      "source": "НАСТРОЙКИ",
+      "text": "CONFIGURAÇÕES"
+    },
+    {
+      "source": "НАЧАТЬ ЗАНОВО?",
+      "text": "RECOMEÇAR?"
+    },
+    {
+      "source": "НАЧАТЬ КОНТРАКТ",
+      "text": "INICIAR CONTRATO"
+    },
+    {
+      "source": "НЕ В СЕТИ",
+      "text": "OFF-LINE"
+    },
+    {
+      "source": "НЕ ГОТОВ",
+      "text": "NÃO PRONTO"
+    },
+    {
+      "source": "НОВАЯ ИГРА",
+      "text": "NOVO JOGO"
+    },
+    {
+      "source": "Нажмите новую клавишу или кнопку мыши. Esc — отмена.",
+      "text": "Pressione uma nova tecla ou botão do mouse. Esc cancela."
+    },
+    {
+      "source": "Назад",
+      "text": "VOLTAR"
+    },
+    {
+      "source": "Назначение отменено.",
+      "text": "Atribuição cancelada."
+    },
+    {
+      "source": "Найти друзей",
+      "text": "Encontrar amigos"
+    },
+    {
+      "source": "Настольная лампа",
+      "text": "Luminária de mesa"
+    },
+    {
+      "source": "Настройки",
+      "text": "CONFIGURAÇÕES"
+    },
+    {
+      "source": "Настройки восстановлены из резервной копии. Повреждённый файл сохранён.",
+      "text": "Configurações restauradas do backup. O arquivo danificado foi preservado."
+    },
+    {
+      "source": "Настройки изменены другим экземпляром игры. Повторите загрузку перед сохранением.",
+      "text": "Outra instância do jogo mudou as configurações. Recarregue antes de salvar."
+    },
+    {
+      "source": "Настройки личные. Кампания и таймер контракта не изменяются.",
+      "text": "As configurações pessoais não afetam a campanha nem o tempo do contrato."
+    },
+    {
+      "source": "Настройки созданы в новой версии игры. Можно играть со стандартными значениями или явно сбросить только настройки.",
+      "text": "Configurações de uma versão mais nova. Use os padrões ou redefina apenas as configurações."
+    },
+    {
+      "source": "Настройки сохранены.",
+      "text": "Configurações salvas."
+    },
+    {
+      "source": "Настройки экрана доступны в обычном окне игры.",
+      "text": "As configurações de tela estão disponíveis na janela do jogo independente."
+    },
+    {
+      "source": "Начать новую кампанию?",
+      "text": "Iniciar uma nova campanha?"
+    },
+    {
+      "source": "Начать с нуля",
+      "text": "Começar do zero"
+    },
+    {
+      "source": "Не готов",
+      "text": "NÃO PRONTO"
+    },
+    {
+      "source": "Не найдена библиотека Steam для Windows x64. Одиночная игра доступна.",
+      "text": "Biblioteca Steam para Windows x64 ausente. O modo solo está disponível."
+    },
+    {
+      "source": "Не удалось войти в лобби Steam.",
+      "text": "Não foi possível entrar na sala Steam."
+    },
+    {
+      "source": "Не удалось восстановить главное меню. Перезапустите игру.",
+      "text": "Não foi possível restaurar o menu. Reinicie o jogo."
+    },
+    {
+      "source": "Не удалось восстановить кампанию из основного или резервного файла. Можно повторить загрузку или начать новую кампанию. Исходные файлы будут сохранены.",
+      "text": "Não foi possível carregar a campanha nem o backup. Tente novamente ou comece outra campanha. Os arquivos originais serão preservados."
+    },
+    {
+      "source": "Не удалось завершить запуск одиночной игры.",
+      "text": "Não foi possível concluir o início solo."
+    },
+    {
+      "source": "Не удалось завершить подключение. Возвращаемся в главное меню.",
+      "text": "A conexão não foi concluída. Voltando ao menu principal."
+    },
+    {
+      "source": "Не удалось завершить соединение. Перезапустите игру.",
+      "text": "Não foi possível encerrar a conexão. Reinicie o jogo."
+    },
+    {
+      "source": "Не удалось закрыть лобби перед контрактом.",
+      "text": "Não foi possível fechar a sala antes do contrato."
+    },
+    {
+      "source": "Не удалось запросить данные лобби.",
+      "text": "Não foi possível solicitar os dados da sala."
+    },
+    {
+      "source": "Не удалось запустить Steam-хост.",
+      "text": "Não foi possível iniciar o anfitrião Steam."
+    },
+    {
+      "source": "Не удалось запустить сетевой транспорт Steam.",
+      "text": "Não foi possível iniciar o transporte de rede Steam."
+    },
+    {
+      "source": "Не удалось найти игры друзей. Вернитесь в главное меню.",
+      "text": "Partidas de amigos não encontradas. Volte ao menu principal."
+    },
+    {
+      "source": "Не удалось найти игры друзей. Проверьте Steam.",
+      "text": "Partidas de amigos não encontradas. Verifique o Steam."
+    },
+    {
+      "source": "Не удалось начать назначение. Закройте управление и повторите.",
+      "text": "Não foi possível iniciar a atribuição. Feche os controles e tente novamente."
+    },
+    {
+      "source": "Не удалось начать новую игру. Текущая кампания сохранена.\n\n",
+      "text": "Não foi possível iniciar um novo jogo. A campanha atual foi preservada.\n\n"
+    },
+    {
+      "source": "Не удалось начать новую игру: ",
+      "text": "Não foi possível iniciar um novo jogo: "
+    },
+    {
+      "source": "Не удалось начать одиночную игру.",
+      "text": "Não foi possível iniciar o modo solo."
+    },
+    {
+      "source": "Не удалось обновить состояние лобби.",
+      "text": "Não foi possível atualizar a sala."
+    },
+    {
+      "source": "Не удалось открыть главное меню.",
+      "text": "Não foi possível abrir o menu principal."
+    },
+    {
+      "source": "Не удалось открыть кампанию.",
+      "text": "Não foi possível abrir a campanha."
+    },
+    {
+      "source": "Не удалось открыть кампанию: ",
+      "text": "Não foi possível abrir a campanha: "
+    },
+    {
+      "source": "Не удалось открыть лобби.",
+      "text": "Não foi possível abrir a sala."
+    },
+    {
+      "source": "Не удалось открыть одиночную сессию.",
+      "text": "Não foi possível abrir uma sessão solo."
+    },
+    {
+      "source": "Не удалось открыть одиночную сетевую сессию.",
+      "text": "Não foi possível abrir uma sessão de rede solo."
+    },
+    {
+      "source": "Не удалось открыть совместную игру.",
+      "text": "Não foi possível abrir o cooperativo."
+    },
+    {
+      "source": "Не удалось открыть сохранение кампании. Проверьте доступ к папке сохранений, закройте другие экземпляры игры и повторите загрузку.",
+      "text": "Não foi possível abrir a campanha salva. Verifique o acesso à pasta, feche outras instâncias do jogo e recarregue."
+    },
+    {
+      "source": "Не удалось подготовить совместную игру. Вернитесь в главное меню.",
+      "text": "Não foi possível preparar o cooperativo. Volte ao menu principal."
+    },
+    {
+      "source": "Не удалось подключиться к Steam (",
+      "text": "Não foi possível conectar ao Steam ("
+    },
+    {
+      "source": "Не удалось подключиться к Steam-хосту.",
+      "text": "Não foi possível conectar ao anfitrião Steam."
+    },
+    {
+      "source": "Не удалось подключиться к совместной игре.",
+      "text": "Não foi possível conectar ao cooperativo."
+    },
+    {
+      "source": "Не удалось применить громкость: группа микшера недоступна.",
+      "text": "Volume não aplicado: grupo do mixer indisponível."
+    },
+    {
+      "source": "Не удалось применить громкость: микшер недоступен.",
+      "text": "Volume não aplicado: mixer indisponível."
+    },
+    {
+      "source": "Не удалось проверить настройки совместной игры. Одиночная игра доступна.",
+      "text": "Não foi possível validar o cooperativo. O modo solo está disponível."
+    },
+    {
+      "source": "Не удалось прочитать личные настройки. Кампания не изменена.",
+      "text": "Não foi possível ler as configurações pessoais. A campanha não mudou."
+    },
+    {
+      "source": "Не удалось сохранить выплату. Результат остаётся в памяти: ",
+      "text": "Não foi possível salvar o pagamento. O resultado continua na memória: "
+    },
+    {
+      "source": "Не удалось сохранить кампанию: ",
+      "text": "Não foi possível salvar a campanha: "
+    },
+    {
+      "source": "Не удалось сохранить личные настройки. Проверьте доступ к папке и свободное место, затем повторите.",
+      "text": "Não foi possível salvar as configurações. Verifique o acesso à pasta e o espaço livre e tente novamente."
+    },
+    {
+      "source": "Не хватает ${0}. Завершайте контракты, чтобы заработать.",
+      "text": "Faltam ${0}. Conclua contratos para ganhar dinheiro."
+    },
+    {
+      "source": "Невозможно начать вход в это лобби сейчас.",
+      "text": "Não é possível entrar nessa sala agora."
+    },
+    {
+      "source": "Недопустимые привязки управления.",
+      "text": "Atribuições de controles inválidas."
+    },
+    {
+      "source": "Недопустимый видеорежим.",
+      "text": "Modo de vídeo inválido."
+    },
+    {
+      "source": "Нет доступных режимов",
+      "text": "Nenhum modo disponível"
+    },
+    {
+      "source": "Нет места перед соплом — отойдите",
+      "text": "Sem espaço à frente do bocal — recue"
+    },
+    {
+      "source": "Нет связи со Steam.\nПовторим отправку автоматически.",
+      "text": "Steam desconectado.\nO envio será repetido automaticamente."
+    },
+    {
+      "source": "Новая кампания",
+      "text": "Nova campanha"
+    },
+    {
+      "source": "ОБНОВИТЬ СПИСОК",
+      "text": "ATUALIZAR LISTA"
+    },
+    {
+      "source": "ОБОРУДОВАНИЕ",
+      "text": "EQUIPAMENTO"
+    },
+    {
+      "source": "ОСТАВИТЬ ПРОГРЕСС",
+      "text": "MANTER PROGRESSO"
+    },
+    {
+      "source": "ОТПРАВЛЕНО",
+      "text": "ENVIADO"
+    },
+    {
+      "source": "Обнаружен незавершённый файл сохранения. Игра сохранила его и остановила загрузку кампании. Обратитесь в поддержку, чтобы восстановить прогресс.",
+      "text": "Um arquivo de salvamento incompleto foi encontrado e preservado. A campanha não foi carregada. Contate o suporte para recuperar o progresso."
+    },
+    {
+      "source": "Оборудование и вместимость",
+      "text": "Equipamento e capacidade"
+    },
+    {
+      "source": "Обработка событий Steam прервалась; сетевую сессию необходимо завершить.",
+      "text": "O processamento de eventos Steam parou. Encerre a sessão on-line."
+    },
+    {
+      "source": "Общая громкость",
+      "text": "Volume geral"
+    },
+    {
+      "source": "Общий бонус сохраняется при смене модели. Покупает хост.",
+      "text": "O bônus compartilhado permanece entre modelos. O anfitrião compra."
+    },
+    {
+      "source": "Оверлей Steam недоступен. Выберите друга — он получит приглашение в Steam.",
+      "text": "Sobreposição Steam indisponível. Escolha um amigo para enviar um convite Steam."
+    },
+    {
+      "source": "Одиночная сессия завершена. Возврат в главное меню.",
+      "text": "Sessão solo encerrada. Voltando ao menu principal."
+    },
+    {
+      "source": "Ожидаем выбор хозяина…",
+      "text": "Esperando a escolha do anfitrião…"
+    },
+    {
+      "source": "Ожидаем готовность игроков",
+      "text": "Esperando os jogadores ficarem prontos"
+    },
+    {
+      "source": "Ожидаем оборудование…",
+      "text": "Esperando equipamento…"
+    },
+    {
+      "source": "Ожидаем хозяина",
+      "text": "Esperando o anfitrião"
+    },
+    {
+      "source": "Окно",
+      "text": "Janela"
+    },
+    {
+      "source": "Оставить",
+      "text": "Manter"
+    },
+    {
+      "source": "Оставить прежние",
+      "text": "Manter atuais"
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через ",
+      "text": "Manter este modo de vídeo?\nRevertendo em "
+    },
+    {
+      "source": "Откройте меню управления перед изменением клавиш.",
+      "text": "Abra os controles antes de alterar as teclas."
+    },
+    {
+      "source": "Открываем вашу кампанию…",
+      "text": "Abrindo sua campanha…"
+    },
+    {
+      "source": "Открываем главное меню…",
+      "text": "Abrindo o menu principal…"
+    },
+    {
+      "source": "Открываем кампанию…",
+      "text": "Abrindo a campanha…"
+    },
+    {
+      "source": "Открываем окно Steam…",
+      "text": "Abrindo o Steam…"
+    },
+    {
+      "source": "Отмена",
+      "text": "Cancelar"
+    },
+    {
+      "source": "Отмена / назад",
+      "text": "Cancelar / voltar"
+    },
+    {
+      "source": "Отменить ожидание",
+      "text": "Cancelar espera"
+    },
+    {
+      "source": "Отпустите нажатые кнопки, затем нажмите новую клавишу. Esc — отмена.",
+      "text": "Solte os botões e pressione uma nova tecla. Esc cancela."
+    },
+    {
+      "source": "Офисное кресло",
+      "text": "Cadeira de escritório"
+    },
+    {
+      "source": "ПРЕДМЕТ СОБРАН  +1",
+      "text": "OBJETO COLETADO +1"
+    },
+    {
+      "source": "ПРЕДМЕТ УДЕРЖИВАЕТСЯ",
+      "text": "OBJETO SEGURADO"
+    },
+    {
+      "source": "ПРИГЛАСИТЬ",
+      "text": "CONVIDAR"
+    },
+    {
+      "source": "ПРИГЛАСИТЬ ДРУГА",
+      "text": "CONVIDAR AMIGO"
+    },
+    {
+      "source": "ПЫЛЕСОС ЗАБИТ\nВыстрелите предметом, чтобы освободить слот",
+      "text": "ASPIRADOR CHEIO\nDispare um objeto para liberar espaço"
+    },
+    {
+      "source": "Пауза",
+      "text": "Pausa"
+    },
+    {
+      "source": "Первый глоток",
+      "text": "Primeiro gole"
+    },
+    {
+      "source": "Перезапустите игру,\nчтобы повторить загрузку.",
+      "text": "Reinicie o jogo\npara tentar carregar novamente."
+    },
+    {
+      "source": "Пианино",
+      "text": "Piano"
+    },
+    {
+      "source": "По умолчанию",
+      "text": "Padrões"
+    },
+    {
+      "source": "Победите босса и доставьте его в грузовик",
+      "text": "Derrote o chefe e entregue-o ao caminhão"
+    },
+    {
+      "source": "Победите босса и доставьте тело в грузовик",
+      "text": "Derrote o chefe e leve o corpo ao caminhão"
+    },
+    {
+      "source": "Повреждённые настройки сохранены отдельно. Пока применены стандартные значения.",
+      "text": "Configurações danificadas preservadas separadamente. Os padrões foram aplicados temporariamente."
+    },
+    {
+      "source": "Повторить загрузку",
+      "text": "Tentar carregar novamente"
+    },
+    {
+      "source": "Повторить чтение",
+      "text": "Tentar ler novamente"
+    },
+    {
+      "source": "Подключаемся к игре…",
+      "text": "Conectando à partida…"
+    },
+    {
+      "source": "Подключаемся…",
+      "text": "Conectando…"
+    },
+    {
+      "source": "Подтвердите готовность",
+      "text": "Confirme que está pronto"
+    },
+    {
+      "source": "Подтверждение сброса кампании",
+      "text": "Confirmar reinício da campanha"
+    },
+    {
+      "source": "Показана подтверждённая вместимость. Сначала завершите сохранение.",
+      "text": "Mostrando a capacidade confirmada. Termine de salvar primeiro."
+    },
+    {
+      "source": "Покинуть сессию? Остальные игроки смогут продолжить контракт. Ваша локальная кампания не изменится.",
+      "text": "Sair da sessão? Os outros poderão continuar o contrato. Sua campanha local não mudará."
+    },
+    {
+      "source": "Покупка вместимости недоступна. Проверьте цену, баланс и максимум модели.",
+      "text": "Compra de capacidade indisponível. Verifique o preço, o saldo e o limite do modelo."
+    },
+    {
+      "source": "Покупка вместимости пока не подтверждена. Повторите сохранение в магазине.",
+      "text": "Compra de capacidade não confirmada. Tente salvar novamente na loja."
+    },
+    {
+      "source": "Покупка недоступна. Проверьте баланс и текущий уровень в магазине.",
+      "text": "Compra indisponível. Verifique o saldo e o nível na loja."
+    },
+    {
+      "source": "Покупка недоступна. Проверьте баланс и текущий уровень.",
+      "text": "Compra indisponível. Verifique o saldo e o nível."
+    },
+    {
+      "source": "Покупка пока не подтверждена. Повторите сохранение в магазине.",
+      "text": "Compra não confirmada. Tente salvar novamente na loja."
+    },
+    {
+      "source": "Покупка пока не подтверждена. Показаны последние подтверждённые баланс и оборудование. Проверьте свободное место и доступ к папке сохранений, затем нажмите «Сохранить снова».",
+      "text": "Compra não confirmada. Mostrando o último saldo e equipamento salvos. Verifique o espaço livre e o acesso à pasta, e selecione “Salvar novamente”."
+    },
+    {
+      "source": "Покупка сохранена. Новое оборудование выбрано для следующего контракта.",
+      "text": "Compra salva. O novo equipamento está selecionado para o próximo contrato."
+    },
+    {
+      "source": "Покупка списывает деньги один раз и сохраняется для всей кампании.",
+      "text": "A compra cobra uma vez e é salva para toda a campanha."
+    },
+    {
+      "source": "Покупки совершает хозяин кампании.",
+      "text": "O anfitrião da campanha faz as compras."
+    },
+    {
+      "source": "Поле зрения",
+      "text": "Campo de visão"
+    },
+    {
+      "source": "Полноэкранный",
+      "text": "Tela cheia"
+    },
+    {
+      "source": "Последняя модель",
+      "text": "Último modelo"
+    },
+    {
+      "source": "Последняя модель уже приобретена",
+      "text": "Você já tem o último modelo"
+    },
+    {
+      "source": "Последняя модель уже приобретена. Вместимость улучшается отдельно.",
+      "text": "Último modelo adquirido. A capacidade é melhorada separadamente."
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты",
+      "text": "Aparece após entregar mais de 50% da cota"
+    },
+    {
+      "source": "Предыдущая выплата ещё не сохранена. Сначала повторите сохранение.",
+      "text": "O pagamento anterior não foi salvo. Tente salvar primeiro."
+    },
+    {
+      "source": "Предыдущее лобби или запрос ещё не завершены.",
+      "text": "A sala ou solicitação anterior ainda está pendente."
+    },
+    {
+      "source": "Прервать без выплаты",
+      "text": "Interromper sem pagamento"
+    },
+    {
+      "source": "Прервать контракт для всех? Выплата при ручном выходе — $0.",
+      "text": "Interromper o contrato para todos? Sair manualmente paga $0."
+    },
+    {
+      "source": "Прервать контракт?",
+      "text": "Interromper contrato?"
+    },
+    {
+      "source": "При неудаче: {0}% сданной стоимости",
+      "text": "Em caso de falha: {0}% do valor entregue"
+    },
+    {
+      "source": "Привязка изменена. Нажмите «Сохранить управление».",
+      "text": "Atribuição alterada. Selecione “Salvar controles”."
+    },
+    {
+      "source": "Привязки созданы для другого набора действий. Сбросьте управление; Esc остаётся доступен.",
+      "text": "Atribuições de outro conjunto de ações. Redefina os controles; Esc continua disponível."
+    },
+    {
+      "source": "Приглашение отправлено. Ждём друга в лобби.",
+      "text": "Convite enviado. Esperando seu amigo na sala."
+    },
+    {
+      "source": "Приглашения отправляются через Steam",
+      "text": "Os convites são enviados pelo Steam"
+    },
+    {
+      "source": "Применить",
+      "text": "Aplicar"
+    },
+    {
+      "source": "Применяется подтверждённый видеорежим…",
+      "text": "Aplicando o modo de vídeo confirmado…"
+    },
+    {
+      "source": "Принять приглашение",
+      "text": "Aceitar convite"
+    },
+    {
+      "source": "Пришло приглашение в игру. Подключиться можно после подтверждения.",
+      "text": "Convite recebido. Confirme antes de entrar."
+    },
+    {
+      "source": "Проверьте AppID и зарегистрированные API names.",
+      "text": "Verifique o AppID e os nomes de API registrados."
+    },
+    {
+      "source": "Проверьте место на диске.\nСохранение повторится само.",
+      "text": "Verifique o espaço livre.\nO salvamento será repetido automaticamente."
+    },
+    {
+      "source": "Прогресс на этом устройстве",
+      "text": "Progresso neste dispositivo"
+    },
+    {
+      "source": "Продолжить",
+      "text": "Continuar"
+    },
+    {
+      "source": "Продолжить контракт",
+      "text": "Retomar contrato"
+    },
+    {
+      "source": "Пройти контракт с MK4 от начала до успеха, сдав квоту и побеждённого босса.",
+      "text": "Conclua um contrato com MK4 do início ao fim, entregando a cota e o chefe derrotado."
+    },
+    {
+      "source": "Прыжок",
+      "text": "Pular"
+    },
+    {
+      "source": "Пылевой бегунок",
+      "text": "Corredor de poeira"
+    },
+    {
+      "source": "Пылевой плевун",
+      "text": "Cuspidor de poeira"
+    },
+    {
+      "source": "Пылесос",
+      "text": "Aspirador"
+    },
+    {
+      "source": "Пыльный староста",
+      "text": "Ancião empoeirado"
+    },
+    {
+      "source": "Пыльный староста â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Ancião empoeirado — derrotado"
+    },
+    {
+      "source": "РЕМОНТ ИСЧЕРПАН · следующий заряд за 25% квоты",
+      "text": "SEM REPAROS · próxima carga com 25% da cota"
+    },
+    {
+      "source": "Радио",
+      "text": "Rádio"
+    },
+    {
+      "source": "Разрешение",
+      "text": "Resolução"
+    },
+    {
+      "source": "Разрядность библиотеки Steam не совпадает со сборкой.",
+      "text": "A arquitetura da biblioteca Steam não corresponde à versão do jogo."
+    },
+    {
+      "source": "Режим не подтвердился. Возвращаем безопасное окно…",
+      "text": "Modo não confirmado. Restaurando uma janela segura…"
+    },
+    {
+      "source": "Режим экрана",
+      "text": "Modo de tela"
+    },
+    {
+      "source": "СБРОСИТЬ И НАЧАТЬ",
+      "text": "REDEFINIR E COMEÇAR"
+    },
+    {
+      "source": "СВОБОДНО",
+      "text": "LIVRE"
+    },
+    {
+      "source": "СДАНО",
+      "text": "ENTREGUE"
+    },
+    {
+      "source": "СЛЕДУЮЩАЯ МОДЕЛЬ",
+      "text": "PRÓXIMO MODELO"
+    },
+    {
+      "source": "СЛЕДУЮЩИЙ",
+      "text": "PRÓXIMO"
+    },
+    {
+      "source": "СЛОТЫ  {0} / {1}",
+      "text": "ESPAÇOS {0} / {1}"
+    },
+    {
+      "source": "СНАРЯЖЕНИЕ",
+      "text": "EQUIPAMENTO"
+    },
+    {
+      "source": "СОХРАНИТЬ СНОВА",
+      "text": "SALVAR NOVAMENTE"
+    },
+    {
+      "source": "Сбросить настройки",
+      "text": "Redefinir configurações"
+    },
+    {
+      "source": "Сбросить только личные настройки?\nИсходный файл будет сохранён отдельно.\nДеньги, оборудование и кампания останутся прежними.",
+      "text": "Redefinir apenas as configurações pessoais?\nO arquivo original será preservado separadamente.\nDinheiro, equipamento e campanha não mudarão."
+    },
+    {
+      "source": "Сброшены только личные настройки. Кампания сохранена.",
+      "text": "Somente as configurações pessoais foram redefinidas. A campanha foi preservada."
+    },
+    {
+      "source": "Связка приборов",
+      "text": "Conjunto de talheres"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.",
+      "text": "Entregue a cota e o corpo do chefe ao caminhão.\nO chefe aparece após entregar mais de 50% da cota."
+    },
+    {
+      "source": "Сдано $0 / $0",
+      "text": "Entregue $0 / $0"
+    },
+    {
+      "source": "Сдано ${0} / ${1}",
+      "text": "Entregue ${0} / ${1}"
+    },
+    {
+      "source": "Сдано в грузовик: ${0}\nКвота: ${1}\n",
+      "text": "Entregue ao caminhão: ${0}\nCota: ${1}\n"
+    },
+    {
+      "source": "Сдать грузовику вещь, которую вы предварительно хранили в своём пылесосе.",
+      "text": "Entregue ao caminhão um objeto que você tenha guardado no aspirador."
+    },
+    {
+      "source": "Сдать обычное пианино, которое вы предварительно хранили с MK4.",
+      "text": "Entregue um piano comum que você tenha guardado com MK4."
+    },
+    {
+      "source": "Сетевая сессия завершена.",
+      "text": "Sessão on-line encerrada."
+    },
+    {
+      "source": "Сетевой менеджер не завершился вовремя. Новый запуск заблокирован.",
+      "text": "O gerenciador de rede não encerrou a tempo. Um novo início está bloqueado."
+    },
+    {
+      "source": "Система не применила безопасный видеорежим. Перезапустите игру; неподтверждённый режим не сохранён.",
+      "text": "O modo de vídeo seguro não foi aplicado. Reinicie o jogo. O modo não confirmado não foi salvo."
+    },
+    {
+      "source": "Склад I",
+      "text": "Armazém I"
+    },
+    {
+      "source": "Склад II",
+      "text": "Armazém II"
+    },
+    {
+      "source": "Сковорода",
+      "text": "Frigideira"
+    },
+    {
+      "source": "Снаряжение",
+      "text": "EQUIPAMENTO"
+    },
+    {
+      "source": "Сначала завершите предыдущий контракт маршрута.",
+      "text": "Conclua primeiro o contrato anterior da rota."
+    },
+    {
+      "source": "Сначала повторите загрузку настроек или подтвердите сброс только настроек.",
+      "text": "Recarregue as configurações ou confirme redefinir apenas as configurações."
+    },
+    {
+      "source": "Сначала подтвердите или отмените текущий видеорежим.",
+      "text": "Confirme ou cancele o modo de vídeo atual primeiro."
+    },
+    {
+      "source": "Совместная игра ещё не настроена для этой сборки. Одиночная игра доступна.",
+      "text": "Cooperativo não configurado nesta versão. O modo solo está disponível."
+    },
+    {
+      "source": "Совместная игра настроена для проверки. Для подключения нужен Steam.",
+      "text": "Cooperativo configurado para testes. Precisa do Steam para conectar."
+    },
+    {
+      "source": "Совместная игра не настроена для этой сборки. Одиночная игра доступна.",
+      "text": "Cooperativo não configurado nesta versão. O modo solo está disponível."
+    },
+    {
+      "source": "Совместная игра пока недоступна в этой сборке.",
+      "text": "O cooperativo ainda não está disponível nesta versão."
+    },
+    {
+      "source": "Соединение с хозяином завершено.",
+      "text": "A conexão com o anfitrião terminou."
+    },
+    {
+      "source": "Создайте игру или выберите друга.",
+      "text": "Crie uma partida ou escolha um amigo."
+    },
+    {
+      "source": "Создайте игру или выберите игру друга.",
+      "text": "Crie uma partida ou escolha a de um amigo."
+    },
+    {
+      "source": "Создать игру",
+      "text": "Criar partida"
+    },
+    {
+      "source": "Сорный валун",
+      "text": "Pedregulho de lixo"
+    },
+    {
+      "source": "Сорный валун â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Pedregulho de lixo — derrotado"
+    },
+    {
+      "source": "Сохранение завершено. Можно продолжать.",
+      "text": "Salvamento concluído. Você pode continuar."
+    },
+    {
+      "source": "Сохранение покупки…",
+      "text": "Salvando compra…"
+    },
+    {
+      "source": "Сохранить снова",
+      "text": "SALVAR NOVAMENTE"
+    },
+    {
+      "source": "Сохранить управление",
+      "text": "Salvar controles"
+    },
+    {
+      "source": "Сохраняем достижения…",
+      "text": "Salvando conquistas…"
+    },
+    {
+      "source": "Сохранённый видеорежим недоступен. Применено безопасное окно.",
+      "text": "Modo salvo indisponível. Uma janela segura foi aplicada."
+    },
+    {
+      "source": "Сохранённый режим недоступен. Применено безопасное окно.",
+      "text": "Modo salvo indisponível. Uma janela segura foi aplicada."
+    },
+    {
+      "source": "Сохранённый режим недоступен. Применяется безопасное окно…",
+      "text": "Modo salvo indisponível. Aplicando uma janela segura…"
+    },
+    {
+      "source": "Стандартные клавиши выбраны. Сохраните или отмените изменения.",
+      "text": "Teclas padrão selecionadas. Salve ou cancele as alterações."
+    },
+    {
+      "source": "Старый дом I",
+      "text": "Casa velha I"
+    },
+    {
+      "source": "Старый дом II",
+      "text": "Casa velha II"
+    },
+    {
+      "source": "Стиральная машина",
+      "text": "Máquina de lavar"
+    },
+    {
+      "source": "Столкновения",
+      "text": "Impactos"
+    },
+    {
+      "source": "Супермаркет I",
+      "text": "Supermercado I"
+    },
+    {
+      "source": "Супермаркет II",
+      "text": "Supermercado II"
+    },
+    {
+      "source": "ТЕКУЩАЯ МОДЕЛЬ",
+      "text": "MODELO ATUAL"
+    },
+    {
+      "source": "ТЯЖЕЛО — НУЖНА ПОМОЩЬ",
+      "text": "PESADO DEMAIS — PRECISA DE AJUDA"
+    },
+    {
+      "source": "Табурет",
+      "text": "Banqueta"
+    },
+    {
+      "source": "Текущая кампания будет заменена новой. Деньги, купленное снаряжение, дополнительные слоты и прохождение контрактов будут сброшены.\n\nВы начнёте с MK1 и балансом $0. Настройки сохранятся. Друзья останутся в лобби и смогут снова подтвердить готовность.",
+      "text": "A campanha atual será substituída. Dinheiro, equipamento comprado, espaços extras e progresso dos contratos serão reiniciados.\n\nVocê começará com MK1 e $0. As configurações serão mantidas. Seus amigos ficarão na sala e poderão ficar prontos novamente."
+    },
+    {
+      "source": "Текущий контракт завершится без выплаты.\nСобранные в нём деньги не попадут на баланс.",
+      "text": "O contrato atual terminará sem pagamento.\nO dinheiro coletado não será somado ao saldo."
+    },
+    {
+      "source": "Телевизор",
+      "text": "Televisão"
+    },
+    {
+      "source": "Тумба",
+      "text": "Armário pequeno"
+    },
+    {
+      "source": "УЖЕ В КОМАНДЕ",
+      "text": "JÁ ESTÁ NA EQUIPE"
+    },
+    {
+      "source": "Удерживайте ",
+      "text": "Segure "
+    },
+    {
+      "source": "Удерживайте {0} 2 секунды, чтобы уехать",
+      "text": "Segure {0} por 2 segundos para sair"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 25% HP",
+      "text": "Segure {0} por 3 segundos para reanimar um colega · 25% de vida"
+    },
+    {
+      "source": "Удерживайте {0} — ремонт +45 HP · зарядов: {1}",
+      "text": "Segure {0} para reparar +45 de vida · cargas: {1}"
+    },
+    {
+      "source": "Удерживайте {0} — эвакуация",
+      "text": "Segure {0} — extração"
+    },
+    {
+      "source": "Улучшения покупает хозяин кампании. Вся команда получает их в следующем контракте.",
+      "text": "O anfitrião compra as melhorias. Toda a equipe as recebe no próximo contrato."
+    },
+    {
+      "source": "Управление",
+      "text": "Controles"
+    },
+    {
+      "source": "Управление сохранено.",
+      "text": "Controles salvos."
+    },
+    {
+      "source": "Успешно завершить контракт дома: сдать квоту и побеждённого босса.",
+      "text": "Conclua um contrato da casa: entregue a cota e o chefe derrotado."
+    },
+    {
+      "source": "Успешно завершить контракт магазина: сдать квоту и побеждённого босса.",
+      "text": "Conclua um contrato do supermercado: entregue a cota e o chefe derrotado."
+    },
+    {
+      "source": "Успешно завершить контракт склада: сдать квоту и побеждённого босса.",
+      "text": "Conclua um contrato do armazém: entregue a cota e o chefe derrotado."
+    },
+    {
+      "source": "Успешно завершить контракт, сдав не меньше двойной квоты и побеждённого босса.",
+      "text": "Conclua um contrato entregando pelo menos o dobro da cota e o chefe derrotado."
+    },
+    {
+      "source": "ХОЗЯИН · ",
+      "text": "ANFITRIÃO · "
+    },
+    {
+      "source": "ХРАНИЛИЩЕ {0} / {1}",
+      "text": "ARMAZENAMENTO {0} / {1}"
+    },
+    {
+      "source": "ХРАНИЛИЩЕ ПОЛНО\nМожно переносить предметы · выстрелите, чтобы освободить слот",
+      "text": "ARMAZENAMENTO CHEIO\nVocê pode arrastar objetos · dispare para liberar espaço"
+    },
+    {
+      "source": "ХРАНИЛИЩЕ —",
+      "text": "ARMAZENAMENTO —"
+    },
+    {
+      "source": "Хозяин не подтвердил соединение вовремя.",
+      "text": "O anfitrião não confirmou a conexão a tempo."
+    },
+    {
+      "source": "Хозяин покинул сессию. Возврат в меню.",
+      "text": "O anfitrião saiu. Voltando ao menu."
+    },
+    {
+      "source": "Хозяин покинул сессию. Переноса игрового мира к другому игроку нет.",
+      "text": "O anfitrião saiu. Não há migração de anfitrião."
+    },
+    {
+      "source": "Хост сохраняет изменения. Пока показаны подтверждённые баланс и оборудование.",
+      "text": "O anfitrião está salvando. Mostrando saldo e equipamento confirmados."
+    },
+    {
+      "source": "Хранилище полно · несите предмет к грузовику",
+      "text": "Armazenamento cheio · arraste o objeto ao caminhão"
+    },
+    {
+      "source": "Хранилище: {0} / {1}",
+      "text": "Armazenamento: {0} / {1}"
+    },
+    {
+      "source": "Хранилище: —",
+      "text": "Armazenamento: —"
+    },
+    {
+      "source": "Цель выполнена",
+      "text": "Objetivo concluído"
+    },
+    {
+      "source": "Цеховой клубок",
+      "text": "Emaranhado da oficina"
+    },
+    {
+      "source": "Цеховой клубок â€” Ð¿Ð¾Ð²ÐµÑ€Ð¶ÐµÐ½",
+      "text": "Emaranhado da oficina — derrotado"
+    },
+    {
+      "source": "Четыре хобота",
+      "text": "Quatro trombas"
+    },
+    {
+      "source": "Чистые полки",
+      "text": "Prateleiras limpas"
+    },
+    {
+      "source": "Чтобы открыть, завершите «",
+      "text": "Para desbloquear, conclua “"
+    },
+    {
+      "source": "Чувствительность мыши",
+      "text": "Sensibilidade do mouse"
+    },
+    {
+      "source": "Эвакуация завершена",
+      "text": "Extração concluída"
+    },
+    {
+      "source": "Эта кампания создана в более новой версии игры. Обновите игру, чтобы продолжить. Сохранение не изменено.",
+      "text": "Esta campanha é de uma versão mais nova. Atualize para continuar. O arquivo salvo não mudou."
+    },
+    {
+      "source": "Эта клавиша не поддерживается. Выберите другую или сбросьте управление.",
+      "text": "Tecla incompatível. Escolha outra ou redefina os controles."
+    },
+    {
+      "source": "Эта клавиша уже используется: ",
+      "text": "Esta tecla já está sendo usada: "
+    },
+    {
+      "source": "Это вообще законно?",
+      "text": "Isso é legal mesmo?"
+    },
+    {
+      "source": "Этот видеорежим сейчас недоступен.",
+      "text": "Este modo de vídeo está indisponível agora."
+    },
+    {
+      "source": "← Назад",
+      "text": "← Voltar"
+    },
+    {
+      "source": "Язык",
+      "text": "Idioma"
+    },
+    {
+      "source": "Язык Steam (автоматически)",
+      "text": "Idioma do Steam (automático)"
+    },
+    {
+      "source": "Язык Steam выбирается автоматически. Без Steam используется язык системы. Нажмите «Применить», чтобы сохранить выбор.",
+      "text": "O idioma do Steam é usado automaticamente. Sem Steam, usamos o idioma do sistema. Selecione “Aplicar” para salvar sua escolha."
+    },
+    {
+      "source": "Barrel",
+      "text": "Barril"
+    },
+    {
+      "source": "BenchGrinder",
+      "text": "Esmeril de bancada"
+    },
+    {
+      "source": "Bottle",
+      "text": "Garrafa"
+    },
+    {
+      "source": "BoxSmall",
+      "text": "Caixa pequena"
+    },
+    {
+      "source": "CabinetMetal",
+      "text": "Armário de metal"
+    },
+    {
+      "source": "Can",
+      "text": "Lata"
+    },
+    {
+      "source": "CashRegister",
+      "text": "Caixa registradora"
+    },
+    {
+      "source": "ChairDining",
+      "text": "Cadeira de jantar"
+    },
+    {
+      "source": "Compressor",
+      "text": "Compressor"
+    },
+    {
+      "source": "ContainerMetal",
+      "text": "Contêiner de metal"
+    },
+    {
+      "source": "CrateWooden",
+      "text": "Caixote de madeira"
+    },
+    {
+      "source": "FoodCarton",
+      "text": "Embalagem de comida"
+    },
+    {
+      "source": "Forklift",
+      "text": "Empilhadeira"
+    },
+    {
+      "source": "FreezerChest",
+      "text": "Freezer horizontal"
+    },
+    {
+      "source": "FreezerDisplay",
+      "text": "Expositor congelado"
+    },
+    {
+      "source": "Generator",
+      "text": "Gerador"
+    },
+    {
+      "source": "IndustrialMachine",
+      "text": "Máquina industrial"
+    },
+    {
+      "source": "Pallet",
+      "text": "Palete"
+    },
+    {
+      "source": "ProductCrate",
+      "text": "Caixote de produtos"
+    },
+    {
+      "source": "Refrigerator",
+      "text": "Geladeira"
+    },
+    {
+      "source": "SafeLarge",
+      "text": "Cofre grande"
+    },
+    {
+      "source": "ShelfSmall",
+      "text": "Prateleira pequena"
+    },
+    {
+      "source": "ShoppingBasket",
+      "text": "Cesta de compras"
+    },
+    {
+      "source": "ShoppingCart",
+      "text": "Carrinho de compras"
+    },
+    {
+      "source": "VendingMachine",
+      "text": "Máquina de vendas"
+    },
+    {
+      "source": "Old House",
+      "text": "Casa antiga"
+    },
+    {
+      "source": "Supermarket",
+      "text": "Supermercado"
+    },
+    {
+      "source": "Training Room",
+      "text": "Sala de treinamento"
+    },
+    {
+      "source": "Warehouse",
+      "text": "Armazém"
+    },
+    {
+      "source": "Mobile",
+      "text": "Celular"
+    },
+    {
+      "source": "PC",
+      "text": "PC"
+    }
+  ]
+}

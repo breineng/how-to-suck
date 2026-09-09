@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 namespace HowToSuck
 {
@@ -13,6 +14,18 @@ namespace HowToSuck
 
         public static string Key(string label) => string.IsNullOrEmpty(label) || label == InputBindingLabels.Unbound ? InputBindingLabels.Unbound :
             "<nobr><space=0.32em><link=\"" + LinkId + "\">" + label + "</link><space=0.32em></nobr>";
+        public static string FormatEscapeKeys(string value) => string.IsNullOrEmpty(value)?value:
+            Regex.Replace(value,@"(?<![A-Za-z])(?:Esc|Échap)(?![A-Za-z])",_=>Key("ESC"),RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
+        public static void SetEscapeHint(TMP_Text label,string source)
+        {
+            if(label==null)return;
+            label.richText=true;
+            if(label.GetComponent<InlineKeycaps>()==null)label.gameObject.AddComponent<InlineKeycaps>();
+            var binding=label.GetComponent<LocalizedText>();
+            if(binding==null)binding=label.gameObject.AddComponent<LocalizedText>();
+            binding.EscapeKeycaps=true;
+            LocalizedText.Set(label,source);
+        }
         public static void Set(TMP_Text label, string value)
         {
             if (label == null) return;
@@ -21,7 +34,7 @@ namespace HowToSuck
                 label.richText = true;
                 if (label.GetComponent<InlineKeycaps>() == null) label.gameObject.AddComponent<InlineKeycaps>();
             }
-            if (label.text != value) label.text = value;
+            if (label.text != value) HowToSuck.LocalizedText.Set(label, value);
         }
         private void OnEnable()
         {

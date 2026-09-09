@@ -50,10 +50,10 @@ namespace HowToSuck
    if(controller==null)return;bool active=controller.TrialActive;if((wasTrial&&!active)||(wasRestore&&!controller.RestorePending))rebuildFrame=Time.frameCount+2;wasTrial=active;wasRestore=controller.RestorePending;Confirmation.SetActive(active);
    for(int i=0;i<4;i++)Previous[i].interactable=Next[i].interactable=!active&&!controller.RestorePending&&controller.DisplayAvailable;
    PreviewButton.interactable=!active&&!controller.RestorePending&&controller.DisplayAvailable&&modes!=null&&modes.Length>0;ConfirmButton.interactable=active&&controller.CanConfirm;
-   Values[0].text=ModeNames[modeIndex];var selected=modes!=null&&modes.Length>0?modes[resolutionIndex]:null;
-   Values[1].text=selected==null?"Нет доступных режимов":selected.Width+" × "+selected.Height+(selected.Mode==0?" · "+((double)selected.RefreshNumerator/selected.RefreshDenominator).ToString("0.##")+" Гц":"");
-   Values[2].text=QualitySettings.names.Length>0?QualitySettings.names[qualityIndex]:"—";Values[3].text=vsyncIndex==0?"Выключена":vsyncIndex==1?"Каждый кадр":"Каждый второй кадр";
-   Message.text=controller.LastError;if(active)Countdown.text="Оставить этот видеорежим?\nВозврат через "+System.Math.Ceiling(controller.SecondsRemaining)+" с.\nEsc или «Вернуть» отменяют изменение.";
+   HowToSuck.LocalizedText.Set(Values[0], ModeNames[modeIndex]);var selected=modes!=null&&modes.Length>0?modes[resolutionIndex]:null;
+   HowToSuck.LocalizedText.Set(Values[1], selected==null?"Нет доступных режимов":selected.Width+" × "+selected.Height+(selected.Mode==0?" · "+((double)selected.RefreshNumerator/selected.RefreshDenominator).ToString("0.##")+" Гц":""));
+   HowToSuck.LocalizedText.Set(Values[2], QualitySettings.names.Length>0?QualitySettings.names[qualityIndex]:"—");HowToSuck.LocalizedText.Set(Values[3], vsyncIndex==0?"Выключена":vsyncIndex==1?"Каждый кадр":"Каждый второй кадр");
+   HowToSuck.LocalizedText.Set(Message, controller.LastError);if(active)HowToSuck.LocalizedText.Set(Countdown, "Оставить этот видеорежим?\nВозврат через "+System.Math.Ceiling(controller.SecondsRemaining)+" с.\nEsc или «Вернуть» отменяют изменение.");
   }
   void Update(){if(controller==null)return;if(rebuildFrame>=0&&Time.frameCount>=rebuildFrame){rebuildFrame=-1;RebuildCurrent();Refresh();}if(controller.TrialActive)Refresh();}
   void OnEnable(){if(controller!=null){RebuildCurrent();Refresh();}}

@@ -44,30 +44,30 @@ namespace HowToSuck
                 displayed = result;
                 string reason = result.Phase == ContractPhase.Succeeded ? "Эвакуация завершена" :
                     result.Phase == ContractPhase.Failed ? "Время истекло" : "Контракт прерван";
-                if (TitleText != null) TitleText.text = reason;
+                if (TitleText != null) HowToSuck.LocalizedText.Set(TitleText, reason);
                 if (SummaryText != null)
-                    SummaryText.text = $"Сдано в грузовик: ${result.DeliveredValue:N0}\nКвота: ${result.Quota:N0}\n" +
+                    HowToSuck.LocalizedText.Set(SummaryText, $"Сдано в грузовик: ${result.DeliveredValue:N0}\nКвота: ${result.Quota:N0}\n" +
                         (result.Boss.IsDelivered?"Босс доставлен\n":"Босс не доставлен\n") +
-                        $"Коэффициент выплаты: {result.PayoutPercent}%\nВыплата: ${result.Payout:N0}\n\nБаланс: ${session.DisplayedBalance:N0}";
+                        $"Коэффициент выплаты: {result.PayoutPercent}%\nВыплата: ${result.Payout:N0}\n\nБаланс: ${session.DisplayedBalance:N0}");
             }
             bool retrySave = session.HasAuthority && session.HasPendingSave;
             var events = EventSystem.current;
             // UGUI clears selection as soon as a selected Selectable is disabled.
             bool ownedRetrySelection = events != null && RetryButton != null && events.currentSelectedGameObject == RetryButton.gameObject;
-            if (ErrorText != null) ErrorText.text = retrySave
+            if (ErrorText != null) HowToSuck.LocalizedText.Set(ErrorText, retrySave
                 ? "Выплата ещё не сохранена. Повторите сохранение, чтобы продолжить."
-                : session.LastError;
+                : session.LastError);
             if (RetryButton != null)
             {
                 RetryButton.interactable = retrySave || session.CanRetry;
                 var caption = RetryButton.GetComponentInChildren<TMP_Text>(true);
-                if (caption != null) caption.text = retrySave ? "Сохранить снова" : "Ещё раз";
+                if (caption != null) HowToSuck.LocalizedText.Set(caption, retrySave ? "Сохранить снова" : "Ещё раз");
             }
             if (MenuButton != null)
             {
                 MenuButton.interactable = session.CanReturnToLobby;
                 var caption = MenuButton.GetComponentInChildren<TMP_Text>(true);
-                if(caption!=null)caption.text=session.HasAuthority?"В лобби":"Ожидаем хозяина";
+                if(caption!=null)HowToSuck.LocalizedText.Set(caption, session.HasAuthority?"В лобби":"Ожидаем хозяина");
             }
             if (events != null && (opening || ownedRetrySelection && RetryButton != null && !RetryButton.interactable))
                 events.SetSelectedGameObject((retrySave || session.CanRetry) && RetryButton != null ? RetryButton.gameObject :

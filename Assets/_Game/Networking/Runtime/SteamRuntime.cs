@@ -7,6 +7,13 @@ namespace HowToSuck.Networking
     public sealed class SteamRuntime : IDisposable
     {
         private static SteamRuntime owner;
+        public static bool HasOwner=>owner!=null;
+        public static bool TryReadOwnedLanguage(out string language)
+        {
+            language=null;
+            if(owner==null||!owner.Initialized||owner.disposed||owner.callbackFaulted)return false;
+            language=SteamApps.GetCurrentGameLanguage();return true;
+        }
         public bool Initialized { get; private set; }
         public uint ActualAppId { get; private set; }
         public ulong LocalSteamId { get; private set; }
@@ -47,6 +54,7 @@ namespace HowToSuck.Networking
                     if (OverlayActive) OverlayActivationCount++;
                 });
                 SteamNetworkingUtils.InitRelayNetworkAccess();
+                GameLocalization.SetSteamLanguage(SteamApps.GetCurrentGameLanguage());
                 LastError = null;
                 return true;
             }
@@ -58,7 +66,7 @@ namespace HowToSuck.Networking
         public void Pump()
         {
             if (!Initialized || disposed || callbackFaulted) return;
-            try { SteamAPI.RunCallbacks(); }
+            try { SteamAPI.RunCallbacks(); GameLocalization.SetSteamLanguage(SteamApps.GetCurrentGameLanguage()); }
             catch (Exception) { callbackFaulted = true; Fail("Обработка событий Steam прервалась; сетевую сессию необходимо завершить."); }
         }
         private bool Fail(string error) { LastError = error; Failed?.Invoke(error); return false; }
