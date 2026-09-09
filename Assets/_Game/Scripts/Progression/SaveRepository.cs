@@ -45,6 +45,7 @@ namespace HowToSuck
         private SaveReadResult openingExpected;
         private string openingBackup;
         private SaveOpenKind openingKind;
+        private bool openingNewCampaign;
         private string P(string name)=>Path.Combine(DirectoryPath,name);
         public bool IsAuthority=>!disposed&&authority();
         public SaveRepository(string rootDirectory,CampaignTierCatalog tiers,Func<bool> hasAuthority,ISaveFaults failureInjection=null)
@@ -115,6 +116,33 @@ namespace HowToSuck
             }catch(Exception e) when(IsIo(e)){return SetOpen(new SaveOpenResult(SaveOpenKind.IoError,error:e.Message));}
             finally{busy=false;}
         }
+        // Explicit healthy-campaign reset. Normal commits cannot switch campaign identity.
+        public SaveOpenResult StartNewCampaign(CampaignState observed)
+        {
+            if(!Own())return new SaveOpenResult(SaveOpenKind.NotAuthority,error:"Only own campaign may be reset.");
+            if(busy)return new SaveOpenResult(SaveOpenKind.Busy,error:"Campaign operation pending.");
+            if(observed==null||!ReferenceEquals(observed,Confirmed))
+                return new SaveOpenResult(SaveOpenKind.IoError,error:"The exact confirmed campaign is required.");
+            busy=true;
+            try {
+                Lock();
+                var main=ReadWithFingerprint(MainName,out var priorMain);
+                if(main.Kind!=SaveReadKind.Valid||!observed.SameValues(main.State))
+                    return new SaveOpenResult(SaveOpenKind.IoError,error:"Campaign changed on disk; nothing was reset.");
+                if(Bytes(TemporaryName)!=null)return new SaveOpenResult(SaveOpenKind.OrphanTemporary,error:"Resolve the pending save before resetting.");
+                var backup=ReadWithFingerprint(BackupName,out var priorBackup);
+                if(Blocked(backup))return OpenFailure(backup);
+                if(!Own()||!Equal(priorMain,Fingerprint(MainName))||!Equal(priorBackup,Fingerprint(BackupName)))
+                    return new SaveOpenResult(SaveOpenKind.IoError,error:"Campaign files changed before reset.");
+                // Retire the old backup: automatic recovery must never resurrect the previous campaign.
+                // The main remains intact until Install atomically replaces it with the new campaign.
+                if(priorBackup!=null)File.Move(P(BackupName),P(ArchiveName("previous-campaign-backup")));
+                Confirmed=null;
+                return BeginOpening(new CampaignState(Guid.NewGuid().ToString("N")),main,
+                    ArchiveName("previous-campaign-main"),priorMain,SaveOpenKind.Created,true);
+            }catch(Exception e) when(IsIo(e)){return new SaveOpenResult(SaveOpenKind.IoError,error:e.Message);}
+            finally{busy=false;}
+        }
         // The exact expected and candidate snapshots survive errors unchanged. Never recalculate their delta here.
         public SaveCommitResult Commit(CampaignState expected,CampaignState candidate)
         {
@@ -139,7 +167,7 @@ namespace HowToSuck
             }catch(Exception e) when(IsIo(e)){return new SaveCommitResult(SaveCommitKind.Retryable,e.Message);}
             finally{busy=false;}
         }
-        private SaveCommitResult Install(CampaignState candidate,SaveReadResult expected,string backupName,byte[] expectedBytes,byte[] expectedBackupBytes=null)
+        private SaveCommitResult Install(CampaignState candidate,SaveReadResult expected,string backupName,byte[] expectedBytes,byte[] expectedBackupBytes=null,bool requireNoBackup=false)
         {
             bool replacing=false;
             try {
@@ -183,6 +211,8 @@ namespace HowToSuck
                 // A different compatible backup is also a conflict; never adopt it at replacement time.
                 if(backupName==BackupName&&!Equal(expectedBackupBytes,Fingerprint(BackupName)))
                     return new SaveCommitResult(SaveCommitKind.Conflict,"Backup changed after its compatibility check; no replacement.");
+                if(requireNoBackup&&Bytes(BackupName)!=null)
+                    return new SaveCommitResult(SaveCommitKind.Conflict,"A backup appeared during campaign reset; retained without overwrite.");
                 replacing=true;
                 if(current.Kind==SaveReadKind.Missing)File.Move(P(TemporaryName),P(MainName));
                 else File.Replace(P(TemporaryName),P(MainName),backupName==null?null:P(backupName),false);
@@ -197,18 +227,21 @@ namespace HowToSuck
             }catch(Exception e) when(IsIo(e))
             {return new SaveCommitResult(replacing?SaveCommitKind.Ambiguous:SaveCommitKind.Retryable,e.Message);}
         }
-        private SaveOpenResult BeginOpening(CampaignState candidate,SaveReadResult expected,string backup,byte[] expectedBytes,SaveOpenKind kind)
+        private SaveOpenResult BeginOpening(CampaignState candidate,SaveReadResult expected,string backup,byte[] expectedBytes,SaveOpenKind kind,bool newCampaign=false)
         {
             openingCandidate=candidate;openingExpected=expected;openingBackup=backup;openingExpectedBytes=expectedBytes;openingKind=kind;
+            openingNewCampaign=newCampaign;
             return RetryOpening();
         }
         private SaveOpenResult RetryOpening()
         {
+            if(openingNewCampaign&&Bytes(BackupName)!=null)
+                return SetOpen(new SaveOpenResult(SaveOpenKind.IoError,error:"A backup appeared during campaign reset; no files were overwritten."));
             // Same-lifetime retry keeps its original candidate/GUID, including ambiguous post-replace completion.
             var main=Read(MainName);
             if(main.Kind==SaveReadKind.Valid&&openingCandidate.SameValues(main.State))
             {Confirmed=openingCandidate;return SetOpen(OpeningSuccess());}
-            var saved=Install(openingCandidate,openingExpected,openingBackup,openingExpectedBytes);
+            var saved=Install(openingCandidate,openingExpected,openingBackup,openingExpectedBytes,requireNoBackup:openingNewCampaign);
             return SetOpen(saved.Success?OpeningSuccess():
                 new SaveOpenResult(SaveOpenKind.IoError,error:"Opening candidate remains pending; retry Open on this repository lifetime: "+saved.Error));
         }

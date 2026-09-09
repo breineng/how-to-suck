@@ -130,6 +130,13 @@ namespace HowToSuck.Networking
             game.Control?.Publish();
         }
         public void LeaveGuest()=>game.LeaveGuest();
+        public void ResetLobbyReadiness()
+        {
+            if(!HasAuthority||session.Phase!=SessionPhase.Lobby)return;
+            Revision=checked(Revision+1); // Reject ready RPCs sent before the campaign reset.
+            game.Connection.ResetLobbyReadiness();
+            game.Control?.Publish();
+        }
         public void Stop()
         {
             if(HasAuthority){session.World.Clear();ClearPlayers();}

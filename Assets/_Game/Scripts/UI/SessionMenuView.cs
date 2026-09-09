@@ -9,8 +9,10 @@ namespace HowToSuck
         public Button StartButton;
         public Button BackButton;
         public Text Status;
+        public GameObject[] ExtraModalPanels;
         public bool ModalBlocksLobby {
             get {
+                if(ExtraModalPanels!=null)foreach(var panel in ExtraModalPanels)if(panel!=null&&panel.activeInHierarchy)return true;
                 foreach(var localMenu in GetComponentsInChildren<LocalMenuView>(true))if(localMenu.IsOpen)return true;
                 foreach(var shop in GetComponentsInChildren<ShopView>(true))if(shop.IsOpen)return true;
                 foreach(var recovery in GetComponentsInChildren<CampaignRecoveryView>(true))if(recovery.Panel!=null&&recovery.Panel.activeInHierarchy)return true;

@@ -86,10 +86,23 @@ namespace HowToSuck.Networking
                 if (!SteamMatchmaking.RequestLobbyData(game.m_steamIDLobby)) discovery.Remove(lobby);
             }
         }
-        public void InviteFriendsOverlay()
+        public bool InviteFriendsOverlay()
         {
             RequireSteam();
-            if (LobbyId != 0) SteamFriends.ActivateGameOverlayInviteDialog(new CSteamID(LobbyId));
+            if (!CanInvite() || !runtime.OverlayAvailable) return false;
+            SteamFriends.ActivateGameOverlayInviteDialog(new CSteamID(LobbyId));
+            return true; // Request submitted; only GameOverlayActivated_t confirms an actual window.
+        }
+        private bool CanInvite() => LobbyId != 0 && ContainsMember(runtime.LocalSteamId) &&
+            SteamMatchmaking.GetNumLobbyMembers(new CSteamID(LobbyId)) < NetworkConfiguration.MaxPlayers &&
+            SteamMatchmaking.GetLobbyData(new CSteamID(LobbyId), LobbyMetadata.Phase) == ConnectionPhase.Lobby.ToString();
+        public bool InviteFriend(ulong steamId)
+        {
+            RequireSteam();
+            var friend = new CSteamID(steamId);
+            if (!CanInvite() || !friend.IsValid() || ContainsMember(steamId) ||
+                SteamFriends.GetFriendRelationship(friend) != EFriendRelationship.k_EFriendRelationshipFriend) return false;
+            return SteamMatchmaking.InviteUserToLobby(new CSteamID(LobbyId), friend);
         }
         public bool SetHostPhase(ConnectionPhase phase, string contractId)
         {

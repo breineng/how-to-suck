@@ -50,7 +50,7 @@ namespace HowToSuck
             owner.FireFeedbackChanged+=OnFireFeedback;
             if(storage!=null)storage.Changed+=Refresh;if(suit!=null)suit.Changed+=Refresh;
         }
-        private static void Text(TMP_Text label,string value){if(label!=null&&label.text!=value)label.text=value;}
+        private static void Text(TMP_Text label,string value)=>InlineKeycaps.Set(label,value);
         private void OnFireFeedback()
         {blockedUntil=owner!=null&&owner.FireWasBlocked?Time.unscaledTimeAsDouble+2.5:0;Refresh();}
         private void LateUpdate()
@@ -86,8 +86,8 @@ namespace HowToSuck
             if(stored.IsKnown&&stored.RunId==state.RunId&&owner!=null&&stored.OwnerId==owner.PlayerId)
             {
                 inventory=$"Хранилище: {stored.Count} / {stored.Capacity}"+(stored.Reserved>0?$" · загружается: {stored.Reserved}":"");
-                inventory+="\n"+(blocked?"Нет места перед соплом — отойдите":stored.Count>0?(stored.NextCargoRole==CargoRole.BossBody?"ЛКМ — выпустить босса":"ЛКМ — выстрелить предметом"):
-                    "ПКМ — собрать предмет");
+                inventory+="\n"+(blocked?"Нет места перед соплом — отойдите":stored.Count>0?InlineKeycaps.Key(fireKey)+(stored.NextCargoRole==CargoRole.BossBody?" — выпустить босса":" — выстрелить предметом"):
+                    InlineKeycaps.Key(collectKey)+" — собрать предмет");
             }
             Text(StorageText,inventory);
             if(StorageText!=null)StorageText.color=blocked?Warning:Paper;
@@ -102,7 +102,7 @@ namespace HowToSuck
             string prompt=!state.QuotaReached?"Доставьте груз в грузовик и выполните квоту":!state.Boss.IsDelivered?
                 (state.Boss.Status==BossObjectiveStatus.Defeated?"Доставьте побеждённого босса в грузовик":"Победите босса и доставьте его в грузовик"):
                 !session.World.AllPlayersInExtraction?"Все игроки должны вернуться к грузовику":
-                state.ExtractHoldProgress>0?"Удерживайте E — эвакуация":"Удерживайте E 2 секунды, чтобы уехать";
+                state.ExtractHoldProgress>0?$"Удерживайте {InlineKeycaps.Key(interactKey)} — эвакуация":$"Удерживайте {InlineKeycaps.Key(interactKey)} 2 секунды, чтобы уехать";
             Text(ExtractionText,prompt);
             if(HoldFill!=null){HoldFill.transform.parent.gameObject.SetActive(state.ObjectivesComplete&&session.World.AllPlayersInExtraction);HoldFill.fillAmount=(float)state.ExtractHoldProgress;}
         }
@@ -110,20 +110,9 @@ namespace HowToSuck
         private void ReadBindings()
         {
             inputInitialized=input!=null&&input.IsInitialized;
-            collectKey=input!=null?BindingLabel(input.GameplayBindingDisplay("Vacuum")):"—";
-            fireKey=input!=null?BindingLabel(input.GameplayBindingDisplay("Fire")):"—";
-            interactKey=input!=null?BindingLabel(input.GameplayBindingDisplay("Interact")):"—";
-        }
-        private static string BindingLabel(string value)
-        {
-            // Translate known mouse display names; every remapped key still comes from the live action.
-            switch(value)
-            {
-                case "LMB":case "Left Button":case "Left Mouse Button":return "ЛКМ";
-                case "RMB":case "Right Button":case "Right Mouse Button":return "ПКМ";
-                case "MMB":case "Middle Button":case "Middle Mouse Button":return "СКМ";
-                default:return value;
-            }
+            collectKey=input!=null?input.GameplayBindingDisplay("Vacuum"):"—";
+            fireKey=input!=null?input.GameplayBindingDisplay("Fire"):"—";
+            interactKey=input!=null?input.GameplayBindingDisplay("Interact"):"—";
         }
         private void RefreshBindings(){ReadBindings();Refresh();}
         private void DetachOwner()

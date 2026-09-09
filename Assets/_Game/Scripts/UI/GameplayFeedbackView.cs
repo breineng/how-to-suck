@@ -23,6 +23,9 @@ namespace HowToSuck
         ParticleSystem suction;
         float damage,hit,pickup,recoil,fullSoundAt,particleAt;
         bool grounded,knownGround;
+        float airborneTime,airbornePeak,groundHeight;
+        PlayerMotor movementPlayer;
+        uint movementRevision;
         string run;
         double scanAt;
         EnemyActor boss;
@@ -50,7 +53,7 @@ namespace HowToSuck
             view=player.GetComponent<PlayerView>();
             if(run!=session.RunId){run=session.RunId;storage=default;boss=null;scanAt=0;damage=hit=recoil=pickup=0;knownGround=false;StartAmbient();}
             if(ambient!=null){ambient.volume=audioRoot.SourceBusGain(AudioBus.Impacts)*.18f;if(!ambient.isPlaying)ambient.Play();}
-            if(!visible)return;
+            if(!visible){knownGround=false;return;}
             float dt=Time.unscaledDeltaTime;
             damage=Mathf.MoveTowards(damage,0,dt*1.2f);hit=Mathf.MoveTowards(hit,0,dt*4);pickup=Mathf.MoveTowards(pickup,0,dt*.9f);recoil=Mathf.MoveTowards(recoil,0,dt*6);
             Tint(DamageVignette,new Color(.85f,0,.015f,damage*.82f));Tint(HitMarker,new Color(1,.94f,.8f,hit));
@@ -70,8 +73,14 @@ namespace HowToSuck
             storage=current;
             if(PickupText!=null)PickupText.color=new Color(.76f,1,.78f,pickup);
             bool full=current.IsKnown&&current.Count+current.Reserved>=current.Capacity&&player.LastIntent.VacuumHeld;
-            if(FullPanel!=null)FullPanel.SetActive(full);
-            if(full&&Time.unscaledTime>=fullSoundAt){fullSoundAt=Time.unscaledTime+1.1f;audioRoot.Action(SfxId.VacuumBlocked,player.transform.position);}
+            var vacuum=player.GetComponent<VacuumEmitter>();
+            var pull=vacuum!=null&&player.LastIntent.VacuumHeld?vacuum.PullMode:SuctionMode.Idle;
+            bool hauling=pull==SuctionMode.Holding||pull==SuctionMode.NeedHelp;
+            if(FullPanel!=null)FullPanel.SetActive(full||hauling);
+            if(FullText!=null)FullText.text=hauling?
+                (pull==SuctionMode.NeedHelp?"ТЯЖЕЛО — НУЖНА ПОМОЩЬ":"ПРЕДМЕТ УДЕРЖИВАЕТСЯ")+$" · ТЯНУТ: {vacuum.PullingPlayers}\n"+(full?"Хранилище полно · несите предмет к грузовику":"Доставьте предмет к соплу грузовика"):
+                "ХРАНИЛИЩЕ ПОЛНО\nМожно переносить предметы · выстрелите, чтобы освободить слот";
+            if(full&&!hauling&&Time.unscaledTime>=fullSoundAt){fullSoundAt=Time.unscaledTime+1.1f;audioRoot.Action(SfxId.VacuumBlocked,player.transform.position);}
             var suit=player.GetComponent<PlayerSuitView>()?.Value??default;
             if(Time.unscaledTime>=crewScan){crewScan=Time.unscaledTime+.25f;crew=FindObjectsByType<PlayerMotor>(FindObjectsSortMode.None);}
             PlayerMotor fallen=null;float nearest=EnemySimulationService.ReviveDistance*EnemySimulationService.ReviveDistance;
@@ -82,11 +91,11 @@ namespace HowToSuck
                 if(distance>nearest||Physics.Linecast(player.transform.position+Vector3.up*.9f,member.transform.position+Vector3.up*.45f,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))continue;
                 nearest=distance;fallen=member;
             }
-            string interactKey=input!=null?input.GameplayBindingDisplay("Interact"):"E";
+            string interactKey=InlineKeycaps.Key(input!=null?input.GameplayBindingDisplay("Interact"):"E");
             bool down=player.IsDowned,solo=crew.Length<=1;
             if(DownedPanel!=null)DownedPanel.SetActive(down);
-            if(DownedText!=null)DownedText.text=solo?$"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {interactKey} 3 секунды — подняться\n25% костюма · −15 секунд":suit.State.RepairProgress>0?"ВАС ПОДНИМАЮТ\nПосле подъёма — 25% костюма":"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища";
-            if(ReviveHint!=null){ReviveHint.gameObject.SetActive(!down&&fallen!=null);ReviveHint.text=$"Удерживайте {interactKey} 3 секунды — поднять товарища · 25% HP";}
+            InlineKeycaps.Set(DownedText,solo?$"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {interactKey} 3 секунды — подняться\n25% костюма · −15 секунд":suit.State.RepairProgress>0?"ВАС ПОДНИМАЮТ\nПосле подъёма — 25% костюма":"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища");
+            if(ReviveHint!=null){ReviveHint.gameObject.SetActive(!down&&fallen!=null);InlineKeycaps.Set(ReviveHint,$"Удерживайте {interactKey} 3 секунды — поднять товарища · 25% HP");}
             float revive=down?suit.State.RepairProgress:fallen!=null?(fallen.GetComponent<PlayerSuitView>()?.Value.State.RepairProgress??0):0;
             if(ReviveFill!=null){ReviveFill.transform.parent.gameObject.SetActive(down||fallen!=null);ReviveFill.fillAmount=revive;}
             float charge=player.FireCharge;
@@ -97,8 +106,7 @@ namespace HowToSuck
             if(RepairText!=null)
             {
                 RepairText.gameObject.SetActive(atTruck&&!down&&fallen==null);
-                string key=input!=null?input.GameplayBindingDisplay("Interact"):"E";
-                RepairText.text=suit.State.RepairCharges<=0?"РЕМОНТ ИСЧЕРПАН · следующий заряд за 25% квоты":suit.State.Health>=100?$"КОСТЮМ ЦЕЛ · зарядов: {suit.State.RepairCharges}":$"Удерживайте {key} — ремонт +45 HP · зарядов: {suit.State.RepairCharges}";
+                InlineKeycaps.Set(RepairText,suit.State.RepairCharges<=0?"РЕМОНТ ИСЧЕРПАН · следующий заряд за 25% квоты":suit.State.Health>=100?$"КОСТЮМ ЦЕЛ · зарядов: {suit.State.RepairCharges}":$"Удерживайте {interactKey} — ремонт +45 HP · зарядов: {suit.State.RepairCharges}");
             }
             if(RepairFill!=null){RepairFill.transform.parent.gameObject.SetActive(atTruck&&!down&&fallen==null&&suit.State.RepairProgress>0);RepairFill.fillAmount=suit.State.RepairProgress;}
             if(Time.unscaledTimeAsDouble>=scanAt)
@@ -109,7 +117,7 @@ namespace HowToSuck
             bool showBoss=boss!=null&&boss.Health>0;
             if(BossPanel!=null)BossPanel.SetActive(showBoss);
             if(showBoss){BossName.text=boss.Definition.DisplayName+(boss.Health<=boss.MaximumHealth/2?" · ЯРОСТЬ":"");BossHealth.text=$"{boss.Health} / {boss.MaximumHealth}";BossFill.fillAmount=Mathf.MoveTowards(BossFill.fillAmount,(float)boss.Health/boss.MaximumHealth,dt*2);}
-            if(!down){Steps(dt);SuctionParticles();}else knownGround=false;
+            if(!down){Steps(Time.deltaTime);SuctionParticles();}else knownGround=false;
         }
         void OnFact(CommittedAudioFact fact)
         {
@@ -127,14 +135,41 @@ namespace HowToSuck
         }
         void Steps(float dt)
         {
+            if(movementPlayer!=player||movementRevision!=player.PresentationResetRevision)
+            {movementPlayer=player;movementRevision=player.PresentationResetRevision;knownGround=false;}
             bool onGround=player.IsGrounded;
             if(knownGround&&grounded&&!onGround&&player.VerticalVelocity>1)audioRoot.Action(SfxId.Jump,player.transform.position);
-            if(knownGround&&!grounded&&onGround)audioRoot.Action(SfxId.Land,player.transform.position,false,.8f);
-            grounded=onGround;knownGround=true;
+            float gain=SampleLanding(onGround,player.transform.position.y,dt);
+            if(gain>0)audioRoot.Action(SfxId.Land,player.transform.position,false,gain);
+        }
+        float SampleLanding(bool onGround,float height,float dt)
+        {
+            if(!knownGround)
+            {
+                grounded=onGround;knownGround=true;groundHeight=height;
+                airbornePeak=height;airborneTime=-1;return 0;
+            }
+            float gain=0;
+            if(!onGround)
+            {
+                if(grounded){airbornePeak=Mathf.Max(groundHeight,height);airborneTime=0;}
+                if(airborneTime>=0){airbornePeak=Mathf.Max(airbornePeak,height);airborneTime+=dt;}
+            }
+            else
+            {
+                // Ground contact can flicker on thresholds and stairs. Measure the
+                // actual descent from the apex; the motor already reset impact speed.
+                float drop=airbornePeak-height;
+                if(!grounded&&airborneTime>=.12f&&drop>=.45f)
+                    gain=Mathf.Lerp(.35f,.8f,Mathf.InverseLerp(.45f,2f,drop));
+                groundHeight=height;airborneTime=-1;
+            }
+            grounded=onGround;
+            return gain;
         }
         void SuctionParticles()
         {
-            if(!player.LastIntent.VacuumHeld||storage.IsKnown&&storage.Count+storage.Reserved>=storage.Capacity||Time.unscaledTime<particleAt)return;
+            if(!player.LastIntent.VacuumHeld||Time.unscaledTime<particleAt)return;
             particleAt=Time.unscaledTime+.035f;
             if(suction==null)suction=CombatParticles.Create("Suction dust",player.transform.position,.25f);
             var receiver=player.GetComponent<IntakeReceiver>();var anchor=receiver!=null&&receiver.PresentationTarget!=null?receiver.PresentationTarget:player.NozzleAnchor;if(anchor==null)return;
@@ -149,7 +184,7 @@ namespace HowToSuck
         }
         void RestoreCamera(){if(kicked&&kickedCamera!=null)kickedCamera.transform.localRotation=cameraRotation;kicked=false;}
         static void Tint(Graphic image,Color color){if(image!=null)image.color=color;}
-        void OnDisable(){RestoreCamera();if(audioRoot!=null)audioRoot.Presented-=OnFact;audioRoot=null;if(ambient!=null)ambient.Stop();}
+        void OnDisable(){RestoreCamera();knownGround=false;if(audioRoot!=null)audioRoot.Presented-=OnFact;audioRoot=null;if(ambient!=null)ambient.Stop();}
         void OnDestroy(){if(suction!=null)Destroy(suction.gameObject);}
     }
 }

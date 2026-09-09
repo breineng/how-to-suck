@@ -111,6 +111,7 @@ namespace HowToSuck.Networking
             var suit=new PlayerSuitPresentation(game.Session.World.Combat.SuitSnapshot(Motor.PlayerId),game.Driver.Now,!game.Session.World.IsRunning);
             if(suit.State.RunId!=run||suit.State.OwnerId!=Motor.PlayerId)throw new InvalidOperationException("Publish the actual registered owner's current-run suit.");
             suitView.RequireAcceptable(suit);storageView.Apply(stored);suitView.Apply(suit);
+            var vacuum=GetComponent<VacuumEmitter>();
             return new PlayerWire{Run=new FixedString64Bytes(run),Tier=new FixedString64Bytes(tier),Revision=revision,PlayerId=Motor.PlayerId,
                 Sequence=i.Sequence,Jump=i.JumpPressSequence,Move=i.Move,Yaw=i.Yaw,Pitch=i.Pitch,Vertical=Motor.VerticalVelocity,
                 PlanarSpeed=game.Session.World.IsRunning?Motor.PlanarSpeed:0f,Grounded=Motor.IsGrounded,Sprint=i.SprintHeld,Vacuum=i.VacuumHeld,Interact=i.InteractHeld,Frozen=!game.Session.World.IsRunning,
@@ -118,6 +119,7 @@ namespace HowToSuck.Networking
                 StorageNextType=new FixedString64Bytes(stored.NextTypeId),StorageNextRole=(byte)stored.NextCargoRole,
                 StorageTypes=new FixedString4096Bytes(stored.SlotTypes),RepairCharges=suit.State.RepairCharges,RepairProgress=suit.State.RepairProgress,
                 SuitSegments=suit.State.Segments,SuitRecoveryPending=suit.State.RecoveryPending,FireCharge=Motor.FireCharge,
+                PullMode=(byte)vacuum.PullMode,PullingPlayers=vacuum.PullingPlayers,CollectingItemId=vacuum.CollectingItemId,
                 SuitInvulnerableUntil=suit.State.InvulnerableUntil,SuitObservedAt=suit.ObservedAt,
                 FireFeedbackSequence=Motor.FireFeedbackSequence,FireWasBlocked=Motor.FireWasBlocked};
         }
@@ -132,6 +134,7 @@ namespace HowToSuck.Networking
             if(Motor.IsDowned!=s.SuitRecoveryPending)Motor.SetDowned(s.SuitRecoveryPending);
             Motor.PresentFireCharge(s.FireCharge);
             GetComponent<VacuumEmitter>().Active=s.Vacuum&&!s.Frozen;
+            GetComponent<VacuumEmitter>().PresentPull((SuctionMode)s.PullMode,s.PullingPlayers,s.CollectingItemId);
             Motor.ApplyReplicaPresentation(new PlayerIntent{RunId=run,Sequence=s.Sequence,JumpPressSequence=s.Jump,Move=s.Move,
                 Yaw=s.Yaw,Pitch=s.Pitch,SprintHeld=s.Sprint,VacuumHeld=s.Vacuum,InteractHeld=s.Interact},s.Grounded,s.Vertical,s.PlanarSpeed);
             if(!IsSpawned||game.IsStopping)return;

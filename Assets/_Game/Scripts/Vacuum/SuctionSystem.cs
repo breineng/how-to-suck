@@ -25,8 +25,17 @@ namespace HowToSuck
             public readonly VacuumEmitter Source;public readonly VacuumDefinition Definition;public readonly SuckableObject Item;
             public readonly Vector3 Force,Point;public readonly float Distance;public readonly double Stiffness;
             public readonly int SourceId,EmitterId;
+            public readonly bool Handheld,Swallow;
+            public readonly Vector3 HoldTarget;
             public PendingForce(VacuumEmitter source,SuckableObject item,Vector3 force,Vector3 point,float distance,double stiffness)
-            {Source=source;Definition=source.Definition;Item=item;Force=force;Point=point;Distance=distance;Stiffness=stiffness;SourceId=source.GetInstanceID();EmitterId=source.EmitterId;}
+            {
+                Source=source;Definition=source.Definition;Item=item;Force=force;Point=point;Distance=distance;Stiffness=stiffness;SourceId=source.GetInstanceID();EmitterId=source.EmitterId;
+                var receiver=source.GetComponent<IntakeReceiver>();
+                Handheld=receiver!=null&&!receiver.IsTruck;
+                Swallow=Handheld&&receiver.CanAdmit&&receiver.Accepts(item);
+                var aim=source.GetComponent<PlayerMotor>()?.AimRay ?? new Ray(source.OriginGuard!=null?source.OriginGuard.position:source.Position,source.OriginGuard!=null?source.OriginGuard.forward:source.Forward);
+                HoldTarget=Swallow?receiver.Position:aim.GetPoint(Mathf.Max(2.2f,item.RequiredIntakeSize*.5f+1f));
+            }
         }
         private sealed class BodyBatch
         {public Rigidbody Body;public readonly List<PendingForce> Forces=new List<PendingForce>(5);}
@@ -58,6 +67,8 @@ namespace HowToSuck
             if(!pending.TryGetValue(body,out var batch)){
                 batch=pool.Count>0?pool.Pop():new BodyBatch();batch.Body=body;pending.Add(body,batch);bodies.Add(batch);
             }
+            // One player contributes once, even if a caller probes/applies twice in a step.
+            for(int i=0;i<batch.Forces.Count;i++)if(batch.Forces[i].Source==source)return;
             batch.Forces.Add(new PendingForce(source,contact.Item,force,contact.Point,contact.Distance,stiffness));
         }
         private void ApplyActual(PendingForce hit,Rigidbody body,Vector3 force,Vector3 point)
@@ -84,6 +95,8 @@ namespace HowToSuck
                     if(batch.Forces.Count==0)continue;
                     foreach(var hit in batch.Forces)if(hit.Source.FocusedItem==hit.Item){body.angularVelocity*=Mathf.Exp(-5f*step);break;}
                     batch.Forces.Sort((a,b)=>{int c=a.EmitterId.CompareTo(b.EmitterId);return c!=0?c:a.SourceId.CompareTo(b.SourceId);});
+                    body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
+                    if(ApplyHandheld(batch))continue;
                     float nearest=float.PositiveInfinity;double stiffness=0;var total=new SuctionStepVector(0,0,0);
                     foreach(var hit in batch.Forces){nearest=Mathf.Min(nearest,hit.Distance);stiffness+=hit.Stiffness;total+=D(hit.Force);}
                     body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
@@ -104,6 +117,37 @@ namespace HowToSuck
                 }
             }finally{CancelStep();}
         }
+        private bool ApplyHandheld(BodyBatch batch)
+        {
+            var body=batch.Body;int collector=-1;byte players=0;float nearest=float.PositiveInfinity,totalPower=0;Vector3 target=Vector3.zero;
+            for(int i=0;i<batch.Forces.Count;i++)
+            {
+                var hit=batch.Forces[i];if(!hit.Handheld)continue;
+                players++;
+                if(hit.Swallow&&hit.Distance<nearest){collector=i;nearest=hit.Distance;}
+                float power=hit.Definition.Power;totalPower+=power;target+=hit.HoldTarget*power;
+                hit.Item.MarkHeldForHauling();
+            }
+            if(totalPower<=0)return false;
+            // A fitting item goes to one intake promptly. Hauling uses a shared target
+            // and a real force budget: two/three players can support twice/three times the mass.
+            bool swallow=collector>=0;target=swallow?batch.Forces[collector].HoldTarget:target/totalPower;
+            var mode=swallow?SuctionMode.Collecting:totalPower<body.mass*Physics.gravity.magnitude*1.08f?SuctionMode.NeedHelp:SuctionMode.Holding;
+            foreach(var hit in batch.Forces)if(hit.Handheld)
+                hit.Source.PresentPull(mode,players,swallow&&hit.Source==batch.Forces[collector].Source?hit.Item.InstanceId:0);
+            Vector3 velocity=Vector3.ClampMagnitude((target-body.worldCenterOfMass)*(swallow?12f:5f),swallow?12f:7f);
+            Vector3 acceleration=(velocity-body.linearVelocity)*((1f-Mathf.Exp(-12f*step))/step);
+            if(body.useGravity)acceleration-=Physics.gravity;
+            Vector3 force=acceleration*body.mass;
+            if(swallow)ApplyActual(batch.Forces[collector],body,force,body.worldCenterOfMass);
+            else
+            {
+                force=Vector3.ClampMagnitude(force,totalPower);
+                foreach(var hit in batch.Forces)if(hit.Handheld)
+                    ApplyActual(hit,body,force*(hit.Definition.Power/totalPower),body.worldCenterOfMass);
+            }
+            return true;
+        }
         private static SuctionStepVector D(Vector3 value)=>new SuctionStepVector(value.x,value.y,value.z);
         private static Vector3 U(SuctionStepVector value)=>new Vector3((float)value.X,(float)value.Y,(float)value.Z);
         private Collider[] overlap=new Collider[128];
@@ -119,7 +163,6 @@ namespace HowToSuck
             var receiver=source.GetComponent<IntakeReceiver>();
             if(receiver!=null&&!receiver.IsTruck)
             {
-                if(receiver.Storage==null||!receiver.Storage.HasSpace){source.FocusedItem=null;return contacts;}
                 // Pick with the eye ray, then keep that one physical item while the held pull brings it to the nozzle.
                 var aim=source.OriginGuard!=null?source.OriginGuard:source.Source;
                 Vector3 eye=aim!=null?aim.position:source.Position,forward=aim!=null?aim.forward:source.Forward;
@@ -160,7 +203,7 @@ namespace HowToSuck
                 var collider=overlap[i];var body=collider.attachedRigidbody;
                 if(body==null || !seen.Add(body))continue;
                 var item=body.GetComponent<SuckableObject>();
-                if(receiver!=null&&receiver.IsTruck&&(item==null||item.State!=SuckableState.InFlight||item.DirectedIntakeId!=receiver.IntakeId))continue;
+                if(receiver!=null&&receiver.IsTruck&&!receiver.CanAutomaticallyReceive(item))continue;
                 if(item==null || item.InstanceId==0 || item.RunId!=registry.RunId || !registry.Items.TryGetValue(item.InstanceId,out var registered) || registered!=item || (item.State!=SuckableState.Available && item.State!=SuckableState.InFlight) || item.WorldFrozen)continue;
                 if(TryFindSurface(source,item,out Vector3 point))
                     contacts.Add(new SuctionContact(item,point,Vector3.Distance(source.Position,point)));
@@ -172,6 +215,7 @@ namespace HowToSuck
         {
             if(!collecting)throw new InvalidOperationException("Begin the shared suction step before applying sources.");
             if(source==null)return;
+            source.PresentPull(SuctionMode.Idle,0);
             var found=Collect(source);source.LastAffectedCount=found.Count;source.LastLoad=0;
             foreach(var hit in found)
             {
@@ -190,6 +234,8 @@ namespace HowToSuck
         }
         public bool TryFindIntakeSurface(VacuumEmitter source,SuckableObject item,Vector3 centre,float radius,out Vector3 point)
         {
+            var truck=source.GetComponent<TruckIntake>();
+            if(truck!=null)return TruckDeliveryGeometry.TryNearbySurface(truck,item,out point);
             Vector3 chosen=default;bool found=false;float best=float.PositiveInfinity;
             var right=Vector3.Cross(Vector3.up,source.Forward).normalized;if(right.sqrMagnitude<.1f)right=Vector3.right;
             var up=Vector3.Cross(source.Forward,right).normalized;

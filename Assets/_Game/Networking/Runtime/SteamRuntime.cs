@@ -12,6 +12,10 @@ namespace HowToSuck.Networking
         public ulong LocalSteamId { get; private set; }
         public string LastError { get; private set; }
         public event Action<string> Failed;
+        public bool OverlayAvailable => Initialized && !disposed && !callbackFaulted && SteamUtils.IsOverlayEnabled();
+        public bool OverlayActive { get; private set; }
+        public uint OverlayActivationCount { get; private set; }
+        private Callback<GameOverlayActivated_t> overlayChanged;
         private bool disposed, callbackFaulted;
 
         public bool TryInitialize(NetworkConfiguration configuration)
@@ -37,6 +41,11 @@ namespace HowToSuck.Networking
                 }
                 LocalSteamId = SteamUser.GetSteamID().m_SteamID;
                 if (LocalSteamId == 0) { Shutdown(); return Fail("Steam не сообщил текущего пользователя."); }
+                overlayChanged = Callback<GameOverlayActivated_t>.Create(value =>
+                {
+                    OverlayActive = value.m_bActive != 0;
+                    if (OverlayActive) OverlayActivationCount++;
+                });
                 SteamNetworkingUtils.InitRelayNetworkAccess();
                 LastError = null;
                 return true;
@@ -56,6 +65,7 @@ namespace HowToSuck.Networking
         private void Shutdown()
         {
             bool wasInitialized = Initialized;
+            overlayChanged?.Dispose(); overlayChanged = null; OverlayActive = false;
             Initialized = false;
             try { if (wasInitialized) SteamAPI.Shutdown(); }
             catch (Exception) { LastError = "Завершение Steam API прервалось; повторная сетевая сессия требует перезапуска приложения."; }

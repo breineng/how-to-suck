@@ -4,6 +4,9 @@ namespace HowToSuck
     [DisallowMultipleComponent]
     public sealed class IntakeReceiver : MonoBehaviour
     {
+        internal static readonly System.Collections.Generic.List<IntakeReceiver> ActiveReceivers=new System.Collections.Generic.List<IntakeReceiver>();
+        private void OnEnable(){if(!ActiveReceivers.Contains(this))ActiveReceivers.Add(this);}
+        private void OnDisable()=>ActiveReceivers.Remove(this);
         public int IntakeId=1;
         public int PlayerId=1;
         public bool IsTruck;
@@ -29,7 +32,7 @@ namespace HowToSuck
         internal bool CanReceive => isActiveAndEnabled && Emitter!=null && Emitter.isActiveAndEnabled &&
             Emitter.Definition!=null && ValidTiming && Emitter.HasClearSourcePath() && (IsTruck || !Busy) &&
             (IsTruck || Storage != null && Storage.OwnerId == PlayerId && Storage.HasSpace);
-        public bool CanAdmit => CanReceive && Emitter.Active;
+        public bool CanAdmit => CanReceive && (IsTruck || Emitter.Active);
         internal bool Owns(IngestionSnapshot snapshot)=>ingestions.Contains(snapshot);
         internal void Attach(IngestionSnapshot snapshot)
         {
@@ -45,8 +48,11 @@ namespace HowToSuck
         private bool ValidTiming => !float.IsNaN(Duration) && !float.IsInfinity(Duration) && Duration>0 &&
             !float.IsNaN(AdmissionRadius) && !float.IsInfinity(AdmissionRadius) && AdmissionRadius>0;
         public bool Accepts(SuckableObject item) => item!=null &&
-            (IsTruck ? item.CanBeSwallowedByTruck && item.State==SuckableState.InFlight && item.DirectedIntakeId==IntakeId :
+            (IsTruck ? item.CanBeSwallowedByTruck && CanAutomaticallyReceive(item) :
                 item.CanBeSwallowedByPlayer && Emitter!=null && Emitter.FocusedItem==item) && Emitter!=null && Emitter.Definition!=null &&
             Emitter.Definition.IntakeSize>=item.RequiredIntakeSize;
+        public bool CanAutomaticallyReceive(SuckableObject item) => item != null &&
+            (item.State == SuckableState.Available && !item.AutomaticTruckAdmissionBlocked ||
+             item.State == SuckableState.InFlight && item.DirectedIntakeId == IntakeId);
     }
 }

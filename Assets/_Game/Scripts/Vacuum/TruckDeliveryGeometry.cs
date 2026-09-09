@@ -6,6 +6,20 @@ namespace HowToSuck
     // sphere's front half catches the leading part before it can pass the gate.
     internal static class TruckDeliveryGeometry
     {
+        internal static bool TryNearbySurface(TruckIntake truck,SuckableObject item,out Vector3 point)
+        {
+            point=default;
+            if(truck==null||truck.Receiver==null||!truck.Receiver.Accepts(item))return false;
+            float nearest=float.PositiveInfinity;var receiver=truck.Receiver;
+            foreach(var collider in item.GameplayColliders)
+            {
+                if(collider==null||!collider.enabled||collider.isTrigger)continue;
+                var candidate=collider.ClosestPoint(receiver.Position);float distance=Vector3.Distance(candidate,receiver.Position);
+                if(distance>receiver.AdmissionRadius||distance>=nearest||!Clear(truck,item,receiver.Position,candidate))continue;
+                nearest=distance;point=candidate;
+            }
+            return !float.IsPositiveInfinity(nearest);
+        }
         internal static bool CrossesOpening(TruckIntake truck,SuckableObject item,Vector3 from,Vector3 to)
         {
             var receiver=truck.Receiver;

@@ -240,12 +240,17 @@ namespace HowToSuck.Networking
                 Game.Control==null||!Game.Control.IsSpawned||!Game.Control.HasAcceptedCurrentSnapshot)return false;
             Game.SetLocalReady(ready);return true; // Request accepted for sending; LocalReady updates only after the authority accepts it.
         }
+        public bool CanInviteToLobby=>attempt.Phase==SoloEntryPhase.Connected&&!Game.IsStopping&&
+            (Game.Connection.Mode==ConnectionMode.SteamHost||Game.Connection.Mode==ConnectionMode.SteamClient)&&
+            Game.Session.Phase==SessionPhase.Lobby&&Game.Connection.Phase==ConnectionPhase.Lobby&&
+            Game.Connection.ActiveSteamRuntime?.Initialized==true&&Game.Connection.Lobby!=null&&Game.Connection.Lobby.LobbyId!=0&&
+            Game.Control!=null&&Game.Control.IsSpawned&&Game.Control.HasAcceptedCurrentSnapshot&&Game.Control.Roster.Count<4;
         public bool OpenInviteOverlay()
         {
-            if(attempt.Phase!=SoloEntryPhase.Connected||Game.IsStopping||Game.Connection.Mode!=ConnectionMode.SteamHost||
-                Game.Session.Phase!=SessionPhase.Lobby||Game.Connection.Phase!=ConnectionPhase.Lobby||Game.Connection.Lobby==null)return false;
-            Game.Connection.Lobby.InviteFriendsOverlay();return true;
+            if(!CanInviteToLobby)return false;
+            return Game.Connection.Lobby.InviteFriendsOverlay();
         }
+        public bool InviteFriend(ulong steamId)=>CanInviteToLobby&&Game.Connection.Lobby.InviteFriend(steamId);
         public bool CancelEntry()
         {
             if(!CanCancelEntry)return false;

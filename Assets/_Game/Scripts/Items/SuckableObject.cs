@@ -35,8 +35,16 @@ namespace HowToSuck
         public string LastStorageTierId { get; private set; }
         public ulong ActiveShotId { get; private set; }
         public int ShotOwner { get; private set; }
-        // Authority-only delivery intent, scoped to the current shot. Loose cargo is never passively accepted.
+        // Authority-only explicit truck intent, scoped to the current shot.
         public int DirectedIntakeId { get; internal set; }
+        // Combat ammunition must not be stolen by nearby automatic intake, even
+        // after its damage window expires. Grabbing it again restores haul intent.
+        public bool AutomaticTruckAdmissionBlocked { get; private set; }
+        internal void MarkHeldForHauling()
+        {
+            if (HasPhysicsAuthority && State == SuckableState.Available && !WorldFrozen)
+                AutomaticTruckAdmissionBlocked = false;
+        }
         private Transform capturedVisual;
         private Vector3 visualPosition, visualScale;
         private Quaternion visualRotation;
@@ -156,7 +164,8 @@ namespace HowToSuck
         internal bool TryReleaseStored(int owner, Vector3 position, Quaternion rotation, ulong shotId)
         {
             if (shotId == 0 || WorldFrozen || !PrepareStoredPose(owner, position, rotation)) return false;
-            StoredOwner = 0; State = SuckableState.InFlight; ActiveShotId = shotId; ShotOwner = owner; ApplyBodyMode(); return true;
+            StoredOwner = 0; State = SuckableState.InFlight; ActiveShotId = shotId; ShotOwner = owner;
+            AutomaticTruckAdmissionBlocked = true; ApplyBodyMode(); return true;
         }
         internal bool TryReturnStored(int owner, Vector3 position, Quaternion rotation)
         {
@@ -194,6 +203,9 @@ namespace HowToSuck
             if (capturedVisual == null) return;
             capturedVisual.localPosition = visualPosition; capturedVisual.localRotation = visualRotation; capturedVisual.localScale = visualScale;
         }
+        // Local nozzle alignment must never enter an authoritative ingestion snapshot.
+        internal Vector3 UnshiftedVisualPosition => capturedVisual!=null
+            ? capturedVisual.parent.TransformPoint(visualPosition) : VisualRoot.position;
 
         // Every freeze/state transition enters this one owner of Rigidbody and collider mode.
         private void ApplyBodyMode()

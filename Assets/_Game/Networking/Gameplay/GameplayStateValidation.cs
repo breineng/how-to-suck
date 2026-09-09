@@ -33,7 +33,8 @@ namespace HowToSuck.Networking
             if(s.Run.ToString()!=run||s.Revision!=revision||revision==0||s.PlayerId!=player||s.Tier.ToString()!=tier||
                 !GameplayReplicaPolicy.Player(player)||!CampaignCapacityRules.TryModel(tier,out _,out _)||!Finite(s.Yaw)||!Finite(s.Pitch)||
                 !Finite(s.Move.x)||!Finite(s.Move.y)||!Finite(s.Vertical)||!Finite(s.PlanarSpeed)||s.PlanarSpeed<0||
-                !Finite(s.FireCharge)||s.FireCharge<0||s.FireCharge>1)
+                !Finite(s.FireCharge)||s.FireCharge<0||s.FireCharge>1||s.PullMode>(byte)SuctionMode.NeedHelp||s.PullingPlayers>4||
+                s.CollectingItemId!=0&&s.PullMode!=(byte)SuctionMode.Collecting)
                 throw new InvalidOperationException("Player identity or presentation changed inconsistently.");
             Storage(s); // Includes owner/run, count+reserved, capacity and coherent FIFO validation.
             Suit(s); // Same owner/run envelope; invalid suit data cannot satisfy prepared-snapshot readiness.

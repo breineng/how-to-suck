@@ -12,7 +12,7 @@ namespace HowToSuck.Networking
         // ProjectSettings.productGUID is public project identity, not a credential or an authentication secret.
         public const string ProductKey = "hts.79bd2fdafe42bb445986bf55af7bf135";
         public const int MaxPlayers = 4;
-        public const uint ProtocolVersion = 10; // Held fire, authoritative charge, downed players and revival progress.
+        public const uint ProtocolVersion = 12; // Replicated collector identity aligns item flight with each peer's visible nozzle.
         public const ushort SoloPort = 7777;
         public readonly SteamApplicationMode ApplicationMode;
         public readonly uint AppId;

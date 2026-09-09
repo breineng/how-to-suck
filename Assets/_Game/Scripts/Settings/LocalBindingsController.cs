@@ -44,8 +44,8 @@ namespace HowToSuck
   }
   void ApplyReader(){if(reader!=null)reader.ApplyLocalBindings(confirmed);}
   public string Label(int slot)
-  {var spec=slots[slot];return owned.FindAction("Gameplay/"+spec.Action,true).GetBindingDisplayString(LocalBindingAdapter.Index(owned,slots[slot]));}
-  public string ActionLabel(string name)=>owned!=null?owned.FindAction("Gameplay/"+name)?.GetBindingDisplayString()??"—":"—";
+  {var spec=slots[slot];return InputBindingLabels.Binding(owned.FindAction("Gameplay/"+spec.Action,true),LocalBindingAdapter.Index(owned,slots[slot]));}
+  public string ActionLabel(string name)=>InputBindingLabels.Action(owned!=null?owned.FindAction("Gameplay/"+name):null);
   public bool BeginCapture(int slot)
   {
    if(!isActiveAndEnabled||owned==null||Capturing||slot<0||slot>=slots.Length)return false;

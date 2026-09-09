@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace HowToSuck
 {
+    public enum SuctionMode : byte { Idle, Collecting, Holding, NeedHelp }
     public sealed class VacuumEmitter : MonoBehaviour
     {
         public VacuumDefinition Definition;
@@ -16,6 +17,11 @@ namespace HowToSuck
         public int LastAffectedCount { get; internal set; }
         public float LastLoad { get; internal set; }
         public SuckableObject FocusedItem { get; internal set; }
+        public SuctionMode PullMode { get; private set; }
+        public byte PullingPlayers { get; private set; }
+        public ulong CollectingItemId { get; private set; }
+        public void PresentPull(SuctionMode mode,byte players,ulong collectingItemId=0)
+        {PullMode=mode;PullingPlayers=players;CollectingItemId=mode==SuctionMode.Collecting?collectingItemId:0;}
         public bool HasClearSourcePath()
         {
             if(Physics.CheckSphere(Position,.015f,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))return false;

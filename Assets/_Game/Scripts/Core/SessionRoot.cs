@@ -50,6 +50,10 @@ namespace HowToSuck
         public bool DisplayedSavePending => HasAuthority ? HasPendingSave : replica?.PendingPayout ?? false;
         public bool CanReturnToMenu => !HasAuthority || Progression != null && !Progression.HasPending;
         public bool CanStartContract => HasAuthority && Phase == SessionPhase.Lobby && Progression != null && Progression.CanStartRun && (networkDriver == null || networkDriver.CanBeginContract);
+        public bool CanStartNewCampaign => IsInitialized && HasAuthority && Phase == SessionPhase.Lobby &&
+            campaignRepository != null && Progression != null && Progression.CanStartRun;
+        public bool CanReturnToLobby => HasAuthority && Phase == SessionPhase.Results && CanReturnToMenu;
+        public bool ReturnToLobby() => CanReturnToLobby && ReturnToMenu();
         public ContractState ContractState => HasAuthority ? (Controller != null ? Controller.State : default) : (replica?.State ?? default);
         public ContractResult Result { get; private set; }
         public string RunId => ContractState.RunId;
@@ -91,16 +95,36 @@ namespace HowToSuck
             else StartCoroutine(LoadScene(MenuSceneName, false));
         }
 
-        private bool BindOpenedCampaign(SaveOpenResult opened)
+        private bool BindOpenedCampaign(SaveOpenResult opened, bool resetLobby = false)
         {
             CampaignOpenStatus = opened;
-            if (!opened.Ready) return Reject("Не удалось открыть кампанию: " + opened.Error);
-            Progression = new ProgressionService(opened.State, campaignRepository, () => Phase);
-            Controller = new ContractController(Progression);
-            Controller.Finished += OnContractFinished;
-            LastError = opened.Kind == SaveOpenKind.RecoveredBackup ? "Кампания восстановлена из резервной копии. Исходный повреждённый файл сохранён." : "";
+            if (opened.Ready)
+            {
+                Progression = new ProgressionService(opened.State, campaignRepository, () => Phase);
+                Controller = new ContractController(Progression);
+                Controller.Finished += OnContractFinished;
+                LastError = opened.Kind == SaveOpenKind.RecoveredBackup ? "Кампания восстановлена из резервной копии. Исходный повреждённый файл сохранён." : "";
+            }
+            else LastError = "Не удалось открыть кампанию: " + opened.Error;
+            // Publish the new campaign and roster revision together, after discarding the old run/result.
+            if (resetLobby) networkDriver?.ResetLobbyReadiness();
             Changed?.Invoke();
-            return true;
+            return opened.Ready;
+        }
+        public bool StartNewCampaign(CampaignState observed)
+        {
+            if (!CanStartNewCampaign || observed == null || !ReferenceEquals(observed, Campaign)) return false;
+            var opened = campaignRepository.StartNewCampaign(observed);
+            // Validation/storage failure before the reset began leaves the old session usable.
+            if (ReferenceEquals(campaignRepository.Confirmed, observed))
+                return Reject("Не удалось начать новую игру: " + opened.Error);
+            Controller.Finished -= OnContractFinished;
+            Progression.CloseForShutdown();
+            Progression = null; Controller = null; Result = null;
+            CurrentContract = null; CurrentLevel = null; LocalPlayer = null;
+            selectedLobbyContractId = Catalog.Contracts[0].ContractId;
+            // An interrupted write uses the existing save-recovery dialog and retries the same campaign ID.
+            return BindOpenedCampaign(opened, true);
         }
         public bool RetryCampaignOpen()
         {
@@ -390,6 +414,7 @@ namespace HowToSuck
             foreach (var selector in FindObjectsByType<ContractSelectionView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) selector.Bind(this);
             foreach (var view in FindObjectsByType<ShopView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
             foreach (var view in FindObjectsByType<CampaignRecoveryView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
+            foreach (var view in FindObjectsByType<NewCampaignView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
             foreach (var hud in FindObjectsByType<ContractHud>(FindObjectsInactive.Include, FindObjectsSortMode.None)) hud.Bind(this);
             foreach (var view in FindObjectsByType<ResultsView>(FindObjectsInactive.Include, FindObjectsSortMode.None)) view.Bind(this);
         }

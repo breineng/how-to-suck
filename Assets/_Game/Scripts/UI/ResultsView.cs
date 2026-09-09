@@ -30,7 +30,7 @@ namespace HowToSuck
             if (session.HasAuthority && session.HasPendingSave) session.RetryCampaignSave();
             else session.RetryContract();
         }
-        private void Menu() => session?.ReturnToMenu();
+        private void Menu() => session?.ReturnToLobby();
         private void Refresh()
         {
             bool visible = session != null && session.Phase == SessionPhase.Results && session.Result != null;
@@ -63,7 +63,12 @@ namespace HowToSuck
                 var caption = RetryButton.GetComponentInChildren<TMP_Text>(true);
                 if (caption != null) caption.text = retrySave ? "Сохранить снова" : "Ещё раз";
             }
-            if (MenuButton != null) MenuButton.interactable = session.CanReturnToMenu;
+            if (MenuButton != null)
+            {
+                MenuButton.interactable = session.CanReturnToLobby;
+                var caption = MenuButton.GetComponentInChildren<TMP_Text>(true);
+                if(caption!=null)caption.text=session.HasAuthority?"В лобби":"Ожидаем хозяина";
+            }
             if (events != null && (opening || ownedRetrySelection && RetryButton != null && !RetryButton.interactable))
                 events.SetSelectedGameObject((retrySave || session.CanRetry) && RetryButton != null ? RetryButton.gameObject :
                     MenuButton != null && MenuButton.interactable ? MenuButton.gameObject : null);

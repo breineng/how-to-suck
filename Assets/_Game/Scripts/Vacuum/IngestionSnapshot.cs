@@ -42,7 +42,7 @@ namespace HowToSuck
             Item=item;Receiver=receiver;RunId=item.RunId;InstanceId=item.InstanceId;TypeId=item.TypeId;
             Value=item.Value;RequiredSize=item.RequiredIntakeSize;IntakeId=receiver.IntakeId;
             PlayerId=receiver.PlayerId;IsTruck=receiver.IsTruck;StartedAt=now;Duration=Mathf.Clamp(receiver.Duration,.35f,1.2f);
-            StartPosition=item.VisualRoot.position;StartRotation=item.VisualRoot.rotation;StartScale=item.VisualRoot.localScale;
+            StartPosition=item.UnshiftedVisualPosition;StartRotation=item.VisualRoot.rotation;StartScale=item.VisualRoot.localScale;
             TargetPosition=receiver.Position;TargetRotation=receiver.Rotation;EndPosition=receiver.EndPosition;
             CargoRole=item.CargoRole; BossKey=item.BossKey; LastStorageOwner=item.LastStorageOwner; LastStorageTierId=item.LastStorageTierId;
             TierId=receiver.Emitter.Definition.TierId; Storage=receiver.IsTruck ? null : receiver.Storage;

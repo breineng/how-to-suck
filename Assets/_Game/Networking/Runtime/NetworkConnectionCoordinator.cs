@@ -24,6 +24,13 @@ namespace HowToSuck.Networking
             get { int count = 0; foreach (var player in approved.Values) if (player.Connected) count++; return count; }
         }
         public event Action Changed;
+        public void CopyConnectedRoster(List<LobbyMemberWire> destination)
+        {
+            destination.Clear();
+            foreach(var pair in approved)if(pair.Value.Connected)
+                destination.Add(new LobbyMemberWire{ClientId=pair.Key,SteamId=pair.Value.SteamId,Ready=pair.Value.Ready,Host=pair.Key==NetworkManager.ServerClientId});
+            destination.Sort((a,b)=>a.Host!=b.Host?(a.Host?-1:1):a.ClientId.CompareTo(b.ClientId));
+        }
         public event Action SessionLost;
         public event Action<SteamLobbyCandidate> FriendLobbyFound;
         public event Action<ulong> InviteAvailable;
@@ -257,6 +264,12 @@ namespace HowToSuck.Networking
                 return true;
             }
         }
+        public void ResetLobbyReadiness()
+        {
+            if(!IsHost||Phase!=ConnectionPhase.Lobby)return;
+            foreach(var pair in approved)pair.Value.Ready=pair.Key==NetworkManager.ServerClientId;
+            Changed?.Invoke();
+        }
         public bool EnterPreparing(string contractId)
         {
             if (!CanBeginContract) return false;
@@ -271,9 +284,9 @@ namespace HowToSuck.Networking
             bool valid = phase == ConnectionPhase.Running ? Phase == ConnectionPhase.Preparing :
                 phase == ConnectionPhase.Results ? Phase == ConnectionPhase.Running : Phase == ConnectionPhase.Results || Phase == ConnectionPhase.Preparing;
             if (!valid) return false;
-            SetPhase(phase);
             if (phase == ConnectionPhase.Lobby)
                 foreach (var pair in approved) pair.Value.Ready = pair.Key == NetworkManager.ServerClientId;
+            SetPhase(phase);
             if (Mode == ConnectionMode.SteamHost && !lobby.SetHostPhase(phase, contractId))
             { StartFailed("Не удалось обновить состояние лобби."); return false; }
             return true;

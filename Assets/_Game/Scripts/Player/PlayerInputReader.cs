@@ -28,7 +28,7 @@ namespace HowToSuck
         private UnityEngine.Object localModalOwner;
         private int modalReleasedFrame=-1;
         public bool LocalModalOpen=>localModalOwner!=null;
-        public string GameplayBindingDisplay(string actionName)=>(localActions!=null?localActions:Actions)?.FindAction("Gameplay/"+actionName)?.GetBindingDisplayString()??"—";
+        public string GameplayBindingDisplay(string actionName)=>InputBindingLabels.Action((localActions!=null?localActions:Actions)?.FindAction("Gameplay/"+actionName));
         public void SetLocalModal(UnityEngine.Object owner,bool open)
         {
             if(owner==null)throw new ArgumentNullException(nameof(owner));

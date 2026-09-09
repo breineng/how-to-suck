@@ -14,6 +14,7 @@ namespace HowToSuck
         IEnumerator PrepareGameplay(LevelContext level, VacuumDefinition vacuum);
         void ClearPlayers();
         void PhaseChanged(SessionPhase phase);
+        void ResetLobbyReadiness();
         void LeaveGuest();
     }
     // Presentation data only. Creating this copy never prepares a controller or applies campaign money.

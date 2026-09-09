@@ -227,7 +227,7 @@ namespace HowToSuck
                 }
         }
 
-        static string Key(string key) => string.IsNullOrEmpty(key) ? "—" : key;
+        static string Key(string key) => InlineKeycaps.Key(key);
         void LateUpdate()
         {
             if(!hasState)return;
@@ -242,7 +242,7 @@ namespace HowToSuck
             }
         }
         static void Active(GameObject target, bool value) { if (target != null && target.activeSelf != value) target.SetActive(value); }
-        static void Text(TMP_Text label, string value) { if (label != null && label.text != value) label.text = value; }
+        static void Text(TMP_Text label, string value) => InlineKeycaps.Set(label, value);
         static void Tint(Graphic graphic, Color value) { if (graphic != null && graphic.color != value) graphic.color = value; }
         static void Fill(Image image, float value) { value = Mathf.Clamp01(value); if (image != null && image.fillAmount != value) image.fillAmount = value; }
         void OnEnable() { hasState = false; }

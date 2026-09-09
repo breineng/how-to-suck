@@ -64,6 +64,8 @@ namespace HowToSuck.Networking
         public float Vertical;
         public float PlanarSpeed;
         public float FireCharge;
+        public byte PullMode, PullingPlayers;
+        public ulong CollectingItemId;
         public bool Grounded;
         public bool Sprint;
         public bool Vacuum;
@@ -97,6 +99,8 @@ namespace HowToSuck.Networking
             s.SerializeValue(ref Vertical);
             s.SerializeValue(ref PlanarSpeed);
             s.SerializeValue(ref FireCharge);
+            s.SerializeValue(ref PullMode);s.SerializeValue(ref PullingPlayers);
+            s.SerializeValue(ref CollectingItemId);
             s.SerializeValue(ref Grounded);
             s.SerializeValue(ref Sprint);
             s.SerializeValue(ref Vacuum);
@@ -128,6 +132,8 @@ namespace HowToSuck.Networking
             Vertical.Equals(x.Vertical) &&
             PlanarSpeed.Equals(x.PlanarSpeed) &&
             FireCharge.Equals(x.FireCharge) &&
+            PullMode==x.PullMode && PullingPlayers==x.PullingPlayers &&
+            CollectingItemId==x.CollectingItemId &&
             Grounded.Equals(x.Grounded) &&
             Sprint.Equals(x.Sprint) &&
             Vacuum.Equals(x.Vacuum) &&

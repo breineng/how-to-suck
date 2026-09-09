@@ -9,6 +9,9 @@ namespace HowToSuck.Networking
     {
         public readonly NetworkVariable<SessionWire> Snapshot=new NetworkVariable<SessionWire>(default,
             NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Server);
+        public NetworkList<LobbyMemberWire> Roster;
+        private readonly System.Collections.Generic.List<LobbyMemberWire> rosterBuffer=new System.Collections.Generic.List<LobbyMemberWire>(4);
+        private void Awake()=>Roster=new NetworkList<LobbyMemberWire>();
         private NgoGameSession game;
         private uint acknowledgedRevision;
         private string acknowledgedRun;
@@ -24,18 +27,30 @@ namespace HowToSuck.Networking
             state=IsServer?Snapshot.Value:acceptedState;return true;
         }
         private string observedBossRun;private BossObjectiveSnapshot observedBoss;
-        public bool LocalReady {get;private set;}
+        public bool LocalReady
+        {
+            get
+            {
+                if(!IsSpawned||Roster==null)return false;
+                for(int i=0;i<Roster.Count;i++)if(Roster[i].ClientId==NetworkManager.LocalClientId)return Roster[i].Ready;
+                return false;
+            }
+        }
         public override void OnNetworkSpawn()
         {
             game=NgoGameSession.RequireCurrent();DontDestroyOnLoad(gameObject);game.BindControl(this);
             Snapshot.OnValueChanged+=OnSnapshot;
-            LocalReady=IsServer;
             if(IsServer){game.Session.Changed+=Publish;game.Connection.Changed+=Publish;Publish();}
             else Apply(Snapshot.Value);
         }
         public void Publish()
         {
             if(!IsServer||!IsSpawned||game==null)return;
+            game.Connection.CopyConnectedRoster(rosterBuffer);
+            for(int i=0;i<rosterBuffer.Count;i++)
+                if(i>=Roster.Count)Roster.Add(rosterBuffer[i]);
+                else if(!Roster[i].Equals(rosterBuffer[i]))Roster[i]=rosterBuffer[i];
+            while(Roster.Count>rosterBuffer.Count)Roster.RemoveAt(Roster.Count-1);
             var session=game.Session;var state=session.ContractState;var result=session.Result;var boss=state.Boss;
             byte mask=0;
             foreach(var pair in session.World.Players)if(pair.Key>=1&&pair.Key<=4&&session.World.IsPlayerInExtraction(pair.Key))mask|=(byte)(1<<(pair.Key-1));
@@ -83,23 +98,18 @@ namespace HowToSuck.Networking
         {
             if(!TryGetCurrentState(out var state)||state.Phase!=(byte)SessionPhase.Lobby)return;
             if(IsServer)
-            {if(game.Connection.SetReadyFromServerRpc(NetworkManager.LocalClientId,ready))LocalReady=ready;}
+            {game.Connection.SetReadyFromServerRpc(NetworkManager.LocalClientId,ready);}
             else ReadyRpc(ready,state.Revision);
         }
         [Rpc(SendTo.Server,InvokePermission=RpcInvokePermission.Everyone)]
         private void ReadyRpc(bool ready,uint revision,RpcParams rpc=default)
         {
             if(!IsServer||revision!=game.Driver.Revision)return;
-            if(game.Connection.SetReadyFromServerRpc(rpc.Receive.SenderClientId,ready))
-                ReadyAcceptedRpc(ready,revision,RpcTarget.Single(rpc.Receive.SenderClientId,RpcTargetUse.Temp));
+            game.Connection.SetReadyFromServerRpc(rpc.Receive.SenderClientId,ready);
         }
-        [Rpc(SendTo.SpecifiedInParams,InvokePermission=RpcInvokePermission.Server)]
-        private void ReadyAcceptedRpc(bool ready,uint revision,RpcParams rpc=default)
-        {if(!IsServer&&TryGetCurrentState(out var state)&&revision==state.Revision&&state.Phase==(byte)SessionPhase.Lobby)LocalReady=ready;}
         private void OnSnapshot(SessionWire old,SessionWire state)
         {
             if(IsServer)return;
-            if(state.Phase==(byte)SessionPhase.Lobby&&old.Phase!=(byte)SessionPhase.Lobby)LocalReady=false;
             Apply(state);
         }
         private void Apply(SessionWire value)
