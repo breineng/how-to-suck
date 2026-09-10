@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: lamp_table
   DisplayName: "\u041D\u0430\u0441\u0442\u043E\u043B\u044C\u043D\u0430\u044F \u043B\u0430\u043C\u043F\u0430"
-  Value: 70
+  Value: 40
+  CargoRole: 0
   RequiredIntakeSize: 0.7
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

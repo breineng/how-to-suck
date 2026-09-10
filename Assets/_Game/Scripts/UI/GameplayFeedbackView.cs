@@ -92,16 +92,17 @@ namespace HowToSuck
                 nearest=distance;fallen=member;
             }
             string interactKey=InlineKeycaps.Key(input!=null?input.GameplayBindingDisplay("Interact"):"E");
-            bool down=player.IsDowned,solo=crew.Length<=1;
+            bool down=player.IsDowned,selfRescue=down;
+            foreach(var member in crew)if(member!=null&&member.isActiveAndEnabled&&!member.IsDowned){selfRescue=false;break;}
             if(DownedPanel!=null)DownedPanel.SetActive(down);
-            InlineKeycaps.Set(DownedText,solo?$"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {interactKey} 3 секунды — подняться\n25% костюма · −15 секунд":suit.State.RepairProgress>0?"ВАС ПОДНИМАЮТ\nПосле подъёма — 25% костюма":"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища");
-            if(ReviveHint!=null){ReviveHint.gameObject.SetActive(!down&&fallen!=null);InlineKeycaps.Set(ReviveHint,$"Удерживайте {interactKey} 3 секунды — поднять товарища · 25% HP");}
+            InlineKeycaps.Set(DownedText,selfRescue?$"Вся команда выведена из строя\nУдерживайте {interactKey} 3 секунды — подняться\n50% костюма · −15 секунд":suit.State.RepairProgress>0?"ВАС ПОДНИМАЮТ\nПосле подъёма — 50% костюма":"ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nДождитесь помощи товарища");
+            if(ReviveHint!=null){ReviveHint.gameObject.SetActive(!down&&fallen!=null);InlineKeycaps.Set(ReviveHint,$"Удерживайте {interactKey} 3 секунды — поднять товарища · 50% HP");}
             float revive=down?suit.State.RepairProgress:fallen!=null?(fallen.GetComponent<PlayerSuitView>()?.Value.State.RepairProgress??0):0;
             if(ReviveFill!=null){ReviveFill.transform.parent.gameObject.SetActive(down||fallen!=null);ReviveFill.fillAmount=revive;}
             float charge=player.FireCharge;
             if(ChargePanel!=null)ChargePanel.SetActive(!down&&charge>0);
             if(ChargeFill!=null)ChargeFill.fillAmount=charge;
-            if(ChargeText!=null)HowToSuck.LocalizedText.Set(ChargeText, $"ЗАРЯД {Mathf.RoundToInt(charge*100)}% · УРОН ×{1+1.5f*charge:0.0}");
+            if(ChargeText!=null)HowToSuck.LocalizedText.Set(ChargeText, $"ЗАРЯД {Mathf.RoundToInt(charge*100)}% · УРОН ×{1+ItemFireRules.ChargeDamageBonus*charge:0.0}");
             bool atTruck=session.World!=null&&session.World.IsPlayerInExtraction(player.PlayerId)&&!session.ContractState.ObjectivesComplete;
             if(RepairText!=null)
             {
@@ -116,7 +117,7 @@ namespace HowToSuck
             }
             bool showBoss=boss!=null&&boss.Health>0;
             if(BossPanel!=null)BossPanel.SetActive(showBoss);
-            if(showBoss){HowToSuck.LocalizedText.Set(BossName, boss.Definition.DisplayName+(boss.Health<=boss.MaximumHealth/2?" · ЯРОСТЬ":""));HowToSuck.LocalizedText.Set(BossHealth, $"{boss.Health} / {boss.MaximumHealth}");BossFill.fillAmount=Mathf.MoveTowards(BossFill.fillAmount,(float)boss.Health/boss.MaximumHealth,dt*2);}
+            if(showBoss){HowToSuck.LocalizedText.Set(BossName, boss.Definition.DisplayName+(boss.Health<=boss.MaximumHealth/2?" · ЯРОСТЬ":"")+(boss.Phase==EnemyPhase.Recover?" · УЯЗВИМ":" · БРОНЯ"));HowToSuck.LocalizedText.Set(BossHealth, $"{boss.Health} / {boss.MaximumHealth}");BossFill.fillAmount=Mathf.MoveTowards(BossFill.fillAmount,(float)boss.Health/boss.MaximumHealth,dt*2);}
             if(!down){Steps(Time.deltaTime);SuctionParticles();}else knownGround=false;
         }
         void OnFact(CommittedAudioFact fact)

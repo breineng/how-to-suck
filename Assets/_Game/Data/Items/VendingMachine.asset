@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: vending_machine
   DisplayName: VendingMachine
-  Value: 1100
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 2.7
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: television
   DisplayName: "\u0422\u0435\u043B\u0435\u0432\u0438\u0437\u043E\u0440"
-  Value: 220
+  Value: 120
+  CargoRole: 0
   RequiredIntakeSize: 1.05
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

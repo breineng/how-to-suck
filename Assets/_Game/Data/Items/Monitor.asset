@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: monitor
   DisplayName: "\u041C\u043E\u043D\u0438\u0442\u043E\u0440"
-  Value: 120
+  Value: 65
+  CargoRole: 0
   RequiredIntakeSize: 0.8
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

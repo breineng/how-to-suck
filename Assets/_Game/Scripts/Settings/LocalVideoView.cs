@@ -53,7 +53,7 @@ namespace HowToSuck
    HowToSuck.LocalizedText.Set(Values[0], ModeNames[modeIndex]);var selected=modes!=null&&modes.Length>0?modes[resolutionIndex]:null;
    HowToSuck.LocalizedText.Set(Values[1], selected==null?"Нет доступных режимов":selected.Width+" × "+selected.Height+(selected.Mode==0?" · "+((double)selected.RefreshNumerator/selected.RefreshDenominator).ToString("0.##")+" Гц":""));
    HowToSuck.LocalizedText.Set(Values[2], QualitySettings.names.Length>0?QualitySettings.names[qualityIndex]:"—");HowToSuck.LocalizedText.Set(Values[3], vsyncIndex==0?"Выключена":vsyncIndex==1?"Каждый кадр":"Каждый второй кадр");
-   HowToSuck.LocalizedText.Set(Message, controller.LastError);if(active)HowToSuck.LocalizedText.Set(Countdown, "Оставить этот видеорежим?\nВозврат через "+System.Math.Ceiling(controller.SecondsRemaining)+" с.\nEsc или «Вернуть» отменяют изменение.");
+   HowToSuck.LocalizedText.Set(Message, controller.LastError);if(active)HowToSuck.LocalizedText.Set(Countdown, $"Оставить этот видеорежим?\nВозврат через {System.Math.Ceiling(controller.SecondsRemaining)} с.\nEsc или «Вернуть» отменяют изменение.");
   }
   void Update(){if(controller==null)return;if(rebuildFrame>=0&&Time.frameCount>=rebuildFrame){rebuildFrame=-1;RebuildCurrent();Refresh();}if(controller.TrialActive)Refresh();}
   void OnEnable(){if(controller!=null){RebuildCurrent();Refresh();}}

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: crate_wooden
   DisplayName: CrateWooden
-  Value: 250
+  Value: 140
+  CargoRole: 0
   RequiredIntakeSize: 1.5
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

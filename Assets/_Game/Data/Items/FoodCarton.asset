@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: food_carton
   DisplayName: FoodCarton
-  Value: 20
+  Value: 10
+  CargoRole: 0
   RequiredIntakeSize: 0.2
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

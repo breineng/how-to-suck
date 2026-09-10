@@ -91,7 +91,7 @@ namespace HowToSuck
             if(next==null||next.Id!=requestedTier)return Reject("Only the next authored tier may be purchased.");
             if(Campaign.Balance<next.Price)return Reject("Insufficient confirmed balance.");
             var candidate=new CampaignState(Campaign.CampaignId,next.Id,Campaign.Balance-next.Price,Campaign.LastSettledRunId,
-                Campaign.PurchasedExtraSlots,Campaign.ClearedContractIds,Campaign.LegacyContractAccess);
+                0,Campaign.ClearedContractIds,Campaign.LegacyContractAccess);
             PendingChange=new PendingCampaignChange(CampaignChangeKind.Purchase,Campaign,candidate,tier:next.Id,price:next.Price);
             return RetryPending(PendingChange);
         }

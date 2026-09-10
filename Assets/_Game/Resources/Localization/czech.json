@@ -1967,6 +1967,230 @@
     {
       "source": "PC",
       "text": "PC"
+    },
+    {
+      "source": "Код комнаты",
+      "text": "Kód místnosti"
+    },
+    {
+      "source": "Вставьте код друга",
+      "text": "Vlož kód kamaráda"
+    },
+    {
+      "source": "Подключиться по коду",
+      "text": "Připojit pomocí kódu"
+    },
+    {
+      "source": "Скопировать код",
+      "text": "Kopírovat kód"
+    },
+    {
+      "source": "Код скопирован. Отправьте его другу.",
+      "text": "Kód zkopírován. Pošli ho kamarádovi."
+    },
+    {
+      "source": "Отправьте этот код другу для входа в комнату.",
+      "text": "Pošli tento kód kamarádovi, aby se připojil do tvé místnosti."
+    },
+    {
+      "source": "Создайте комнату или введите код друга.",
+      "text": "Vytvoř místnost nebo zadej kód kamaráda."
+    },
+    {
+      "source": "Введите полный код комнаты, полученный от хозяина.",
+      "text": "Zadej celý kód místnosti od hostitele."
+    },
+    {
+      "source": "Epic Online Services ещё не настроен. Одиночная игра доступна.",
+      "text": "Epic Online Services zatím není nastaveno. Hra pro jednoho je dostupná."
+    },
+    {
+      "source": "Проверьте настройки Epic Online Services. Одиночная игра доступна.",
+      "text": "Zkontroluj nastavení Epic Online Services. Hra pro jednoho je dostupná."
+    },
+    {
+      "source": "Совместная игра через Epic Online Services. Подключение по коду комнаты.",
+      "text": "Kooperace přes Epic Online Services. Připojení pomocí kódu místnosti."
+    },
+    {
+      "source": "Не удалось проверить версию игры.",
+      "text": "Nepodařilo se ověřit verzi hry."
+    },
+    {
+      "source": "Сеанс Epic завершён. Подключитесь заново.",
+      "text": "Relace Epic skončila. Připoj se znovu."
+    },
+    {
+      "source": "Epic: не удалось подготовить вход ({0}).",
+      "text": "Epic nemohl připravit přihlášení ({0})."
+    },
+    {
+      "source": "Не удалось войти в Epic ({0}).",
+      "text": "Nepodařilo se přihlásit do Epic ({0})."
+    },
+    {
+      "source": "Учётная запись Epic изменилась. Подключитесь заново.",
+      "text": "Tvůj účet Epic se změnil. Připoj se znovu."
+    },
+    {
+      "source": "Epic не ответил вовремя. Проверьте соединение и настройки сервиса.",
+      "text": "Epic neodpověděl včas. Zkontroluj připojení a nastavení služby."
+    },
+    {
+      "source": "Не удалось создать комнату Epic",
+      "text": "Nepodařilo se vytvořit místnost Epic"
+    },
+    {
+      "source": "Не удалось найти комнату Epic",
+      "text": "Nepodařilo se najít místnost Epic"
+    },
+    {
+      "source": "Комната не найдена, заполнена или уже начала контракт",
+      "text": "Místnost nebyla nalezena, je plná nebo již zahájila kontrakt"
+    },
+    {
+      "source": "Комната недоступна или использует другую версию игры",
+      "text": "Místnost je nedostupná nebo používá jinou verzi hry"
+    },
+    {
+      "source": "Не удалось войти в комнату Epic",
+      "text": "Nepodařilo se připojit do místnosti Epic"
+    },
+    {
+      "source": "Состояние комнаты изменилось. Подключитесь заново",
+      "text": "Místnost se změnila. Připoj se znovu"
+    },
+    {
+      "source": "Не удалось проверить участников комнаты Epic",
+      "text": "Nepodařilo se ověřit členy místnosti Epic"
+    },
+    {
+      "source": "Не удалось обновить комнату Epic",
+      "text": "Nepodařilo se aktualizovat místnost Epic"
+    },
+    {
+      "source": "Не удалось записать параметры комнаты Epic",
+      "text": "Nepodařilo se uložit nastavení místnosti Epic"
+    },
+    {
+      "source": "Не удалось закрыть вход в комнату Epic",
+      "text": "Nepodařilo se uzavřít místnost Epic pro nové hráče"
+    },
+    {
+      "source": "Epic не подтвердил созданную комнату",
+      "text": "Epic nepotvrdil novou místnost"
+    },
+    {
+      "source": "Epic не ответил на запрос комнаты вовремя",
+      "text": "Epic neodpověděl včas na požadavek místnosti"
+    },
+    {
+      "source": "Не удалось запустить Epic Online Services. Проверьте настройки сервиса.",
+      "text": "Nepodařilo se spustit Epic Online Services. Zkontroluj nastavení služby."
+    },
+    {
+      "source": "Не удалось открыть комнату Epic.",
+      "text": "Nepodařilo se otevřít místnost Epic."
+    },
+    {
+      "source": "Не удалось запустить хозяина комнаты Epic.",
+      "text": "Nepodařilo se spustit hostitele místnosti Epic."
+    },
+    {
+      "source": "Не удалось подключиться к хозяину комнаты Epic.",
+      "text": "Nepodařilo se připojit k hostiteli místnosti Epic."
+    },
+    {
+      "source": "Не удалось запустить соединение Epic.",
+      "text": "Nepodařilo se navázat spojení Epic."
+    },
+    {
+      "source": "Не удалось закрыть комнату Epic перед контрактом.",
+      "text": "Nepodařilo se uzavřít místnost Epic před kontraktem."
+    },
+    {
+      "source": "Не удалось обновить состояние комнаты Epic.",
+      "text": "Nepodařilo se aktualizovat stav místnosti Epic."
+    },
+    {
+      "source": "Обновить",
+      "text": "Obnovit"
+    },
+    {
+      "source": "Слоты улучшаются для текущей модели. Покупает хост.",
+      "text": "Sloty se vylepšují pro aktuální model. Kupuje je hostitel."
+    },
+    {
+      "source": "Все слоты этой модели открыты.",
+      "text": "Všechny sloty tohoto modelu jsou odemčené."
+    },
+    {
+      "source": "Новая модель начинает с базовых слотов. Улучшения слотов не переносятся.",
+      "text": "Nový model začíná se základními sloty. Vylepšení slotů se nepřenášejí."
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через {0} с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": "Ponechat tento režim obrazu?\nVrácení za {0} s.\nEsc nebo „Vrátit“ zruší změnu."
+    },
+    {
+      "source": "Вся команда выведена из строя",
+      "text": "Celá posádka je vyřazená"
+    },
+    {
+      "source": "Ковёр",
+      "text": "Koberec"
+    },
+    {
+      "source": "Кровать",
+      "text": "Postel"
+    },
+    {
+      "source": "Шкаф",
+      "text": "Skříň"
+    },
+    {
+      "source": "Стеллаж",
+      "text": "Regál"
+    },
+    {
+      "source": "Стол",
+      "text": "Stůl"
+    },
+    {
+      "source": " · УЯЗВИМ",
+      "text": " · ZRANITELNÝ"
+    },
+    {
+      "source": " · БРОНЯ",
+      "text": " · OBRNĚNÝ"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "Celá posádka je vyřazená\nDrž {0} 3 sekundy pro zvednutí\n25% obleku · −15 sekund"
+    },
+    {
+      "source": "Epic: не удалось подготовить вход (",
+      "text": "Epic nemohl připravit přihlášení ("
+    },
+    {
+      "source": "Не удалось войти в Epic (",
+      "text": "Nepodařilo se přihlásit do Epic ("
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 50% костюма",
+      "text": "OŽIVOVÁNÍ\nPo oživení 50% obleku"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "JSI VYŘAZEN\nDrž {0} 3 sekundy pro zvednutí\n50% obleku · −15 sekund"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 50% HP",
+      "text": "Drž {0} 3 sekundy pro oživení spoluhráče · 50% zdraví"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "Celá posádka je vyřazená\nDrž {0} 3 sekundy pro zvednutí\n50% obleku · −15 sekund"
     }
   ]
 }

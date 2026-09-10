@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 namespace HowToSuck
@@ -32,7 +33,10 @@ namespace HowToSuck
         private BoxCollider shape;
         private bool initialized,roleBound,sweep,projectileActive,projectileEmitted;
         private double phaseAt,observedAt,nextPathAt,projectileExpires;
-        private Vector3 attackDirection,projectilePosition,projectileDirection,navDestination;
+        private Vector3 attackDirection,projectilePosition,projectileDirection,navDestination,lockedAim;
+        private int lastAttacker;
+        private double aggroUntil;
+        private float simulationDelta=.02f;
         // One-frame checked facing also bounds the following kinematic translation.
         private Quaternion movementRotation;
         private Collider blockedCargo;
@@ -40,13 +44,25 @@ namespace HowToSuck
         private Vector3 blockedCargoNormal;
         private Rigidbody bypassCargo;
         private float bypassSign;
+        private EnemyActor trafficPeer,blockedEnemy;
+        private Vector3 trafficIntent,yieldDirection,yieldPocket;
+        private bool hasYieldPocket;
+        private double trafficAt,yieldUntil;
+        private double movementPlanAt=double.NegativeInfinity;
+        private Vector3 plannedPosition;
+        private Quaternion plannedRotation;
+        private void BeginMovementPlan(double time)
+        {
+            if(movementPlanAt==time)return;
+            movementPlanAt=time;plannedPosition=body.position;plannedRotation=body.rotation;
+        }
         private NavMeshPath path;
         private Vector3[] corners=Array.Empty<Vector3>();
         private int corner,targetId;
         private readonly HashSet<int> hitPlayers=new HashSet<int>();
         private EnemyDefinition rules;
         private readonly BossChapterAttackSequence chapterAttack = new BossChapterAttackSequence();
-        private bool jumping;
+        private bool jumping,steppingDown;
         private double jumpUntil;
         private int bossAttack;
         public bool Enraged=>BossKey.IsValid&&Health<=MaximumHealth/2;
@@ -78,6 +94,11 @@ namespace HowToSuck
                 throw new InvalidOperationException("Enemy home must be on the authored walkable navigation surface.");
             // Freeze the authored rules for this instance; live asset edits cannot change an ongoing attack.
             rules=Instantiate(Definition);rules.hideFlags=HideFlags.HideAndDontSave;
+            int stage=owner.Stage;
+            rules.BaseHealth=rules.IsBoss?CampaignBalance.BossHealth[stage]:Mathf.RoundToInt(rules.BaseHealth*(1+.18f*stage));
+            rules.MoveSpeed*=1+.045f*stage;
+            rules.ContactDamage=Mathf.Min(45,Mathf.RoundToInt(rules.ContactDamage*(1+.06f*stage)));
+            rules.RangedDamage=Mathf.Min(38,Mathf.RoundToInt(rules.RangedDamage*(1+.06f*stage)));
             simulation=owner;RunId=run;EnemyId=rules.EnemyId;InstanceId=id;BossKey=boss;Home=point.position;
             Health=MaximumHealth=rules.HealthForCrew(crewSize);body.position=Home;initialized=true;Phase=EnemyPhase.Idle;
             PhaseRevision=1;shape.enabled=true;Frozen=true;
@@ -97,7 +118,7 @@ namespace HowToSuck
             initialized=true;shape.enabled=Health>0;
         }
         public static bool ValidSnapshot(EnemySnapshot x)=>new LootKey(x.RunId,x.InstanceId).IsValid&&!string.IsNullOrWhiteSpace(x.EnemyId)&&
-            x.MaximumHealth>0&&x.MaximumHealth<=20000&&x.Health>=0&&x.Health<=x.MaximumHealth&&Enum.IsDefined(typeof(EnemyPhase),x.Phase)&&
+            x.MaximumHealth>0&&x.MaximumHealth<=100000&&x.Health>=0&&x.Health<=x.MaximumHealth&&Enum.IsDefined(typeof(EnemyPhase),x.Phase)&&
             x.PhaseRevision>0&&Finite(x.ObservedAt)&&Finite(x.PhaseStartedAt)&&x.PhaseStartedAt<=x.ObservedAt&&
             (x.Health==0)==(x.Phase==EnemyPhase.Defeated)&&(x.BossKey.IsValid?x.BossKey.RunId==x.RunId&&x.BossKey.InstanceId==x.InstanceId&&x.BossKey.ContractBossId==x.EnemyId:x.BossKey.InstanceId==0&&string.IsNullOrEmpty(x.BossKey.RunId)&&string.IsNullOrEmpty(x.BossKey.ContractBossId))&&
             Finite(x.ProjectilePosition);
@@ -115,7 +136,8 @@ namespace HowToSuck
             // Consume damage provenance once; preserve the exact physical item and its value for reuse.
             if(!hit.Item.TryTransition(SuckableState.InFlight,SuckableState.Available))return false;
             hit.Item.DirectedIntakeId=0;
-            Health=Math.Max(0,Health-hit.Damage);observedAt=hit.AuthorityTime;
+            int damage=BossKey.IsValid?CampaignBalance.BossHitDamage(hit.Damage,Phase==EnemyPhase.Recover):hit.Damage;
+            Health=Math.Max(0,Health-damage);observedAt=hit.AuthorityTime;lastAttacker=hit.OwnerId;aggroUntil=hit.AuthorityTime+5;
             if(Health==0)
             {
                 StopJump();
@@ -124,7 +146,7 @@ namespace HowToSuck
             }
             else if(!BossKey.IsValid&&(Phase==EnemyPhase.Idle||Phase==EnemyPhase.Move))SetPhase(EnemyPhase.Hit,hit.AuthorityTime);
             Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.EnemyHit,
-                hit.ShotId,hit.Key.InstanceId,InstanceId,hit.OwnerId,0,false,hit.AuthorityTime,0,hit.Damage,hit.Point));
+                hit.ShotId,hit.Key.InstanceId,InstanceId,hit.OwnerId,0,false,hit.AuthorityTime,0,damage,hit.Point));
             if(Health==0)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(RunId,Audio.CommittedAudioKind.EnemyDefeat,
                 hit.ShotId,hit.Key.InstanceId,InstanceId,hit.OwnerId,0,false,hit.AuthorityTime,0,0,hit.Point));
             return true;
@@ -132,13 +154,15 @@ namespace HowToSuck
         internal void Step(double now,float dt)
         {
             if(!HasAuthority||!initialized||Frozen||Retired||!isActiveAndEnabled||!simulation.CanApplyAt(now))return;
-            observedAt=now;movementRotation=body.rotation;
+            observedAt=now;movementRotation=body.rotation;simulationDelta=dt;BeginMovementPlan(now);
+            if(IsAlive)EnemyCargoPush.Push(shape,body,Phase==EnemyPhase.Tell||Phase==EnemyPhase.Attack?attackDirection:transform.forward,dt,RunId,BossKey.IsValid);
             if(Phase==EnemyPhase.Defeated)
             {if(now-phaseAt>=View.DefeatDuration&&simulation.CompleteDefeat(this))Retired=true;return;}
             StepProjectile(now,dt);
             if(!simulation.CanApplyAt(now))return;
             if(!simulation.InsideWorld(body.position))
             {ReturnHome(now);return;}
+            if(!jumping&&StepOffRaisedCargo(now))return;
             if(Phase==EnemyPhase.Tell)
             {
                 if(!Face(attackDirection,dt)){FinishAttack(now,true);return;}
@@ -190,7 +214,7 @@ namespace HowToSuck
             if(Phase==EnemyPhase.Recover||Phase==EnemyPhase.Hit)
             {
                 double wait=Phase==EnemyPhase.Hit?.3:chapterAttack.PendingFollowUp?
-                    BossChapterAttackSequence.RedirectPauseSeconds:Mathf.Min(rules.RecoverySeconds,Enraged?.45f:BossKey.IsValid?.8f:.6f);
+                    BossChapterAttackSequence.RedirectPauseSeconds:rules.RecoverySeconds*(Enraged?.72f:1f);
                 if(now-phaseAt<wait)return;
                 if(Phase==EnemyPhase.Recover&&chapterAttack.TryBeginFollowUp())
                 {
@@ -210,16 +234,32 @@ namespace HowToSuck
                 return;
             }
             float distance=Horizontal(body.position,target.transform.position);
-            float beginRange=BossKey.IsValid?16:rules.AttackKind==EnemyAttackKind.Spit?Mathf.Max(8,rules.AttackRange):5.5f;
             uint nextAttack=unchecked(AttackRevision+1);if(nextAttack==0)nextAttack=1;
             bool ranged=ProjectileAttack(nextAttack),wave=BossKey.IsValid&&nextAttack%3==0;
+            float beginRange=ranged?(BossKey.IsValid?16:12):wave?(Enraged?6:4.6f):BossKey.IsValid?7:6;
             Vector3 toTarget=target.transform.position-body.position;toTarget.y=0;
-            if(distance<=beginRange&&LineClear(target)&&(ranged?ProjectileLaneClear(target):wave||LeapLaneClear(toTarget.normalized,distance))&&
-                EnemyTurnClearance.CanTurn(shape,body,toTarget,RunId,480*dt))
+            bool visible=LineClear(target),lane=ranged?ProjectileLaneClear(target):wave||LeapLaneClear(toTarget.normalized,distance);
+            // A target against a wall may have no safe landing for the boss's
+            // next leap. Select its next ground pulse, keeping the published
+            // revision/pattern consistent with the full visible warning.
+            if(BossKey.IsValid&&!ranged&&!wave&&!lane&&visible&&distance<(Enraged?6:4.6f))
+            {nextAttack=unchecked(nextAttack+1);if(nextAttack==0)nextAttack=3;wave=true;lane=true;beginRange=Enraged?6:4.6f;}
+            bool roomToTurn=EnemyTurnClearance.CanTurn(shape,body,toTarget,RunId,480*dt);
+            if(distance<=beginRange&&visible&&lane&&roomToTurn)
             {
+                AttackRevision=nextAttack-1;
                 BeginAttack(target,now,false);
             }
-            else {SetPhase(EnemyPhase.Move,now);Follow(target.transform.position,now,dt);}
+            else if(visible&&distance<4&&!roomToTurn)
+            {
+                // Create room to turn instead of repeatedly pressing the same
+                // corner with a facing pose that can never fit there.
+                SetPhase(EnemyPhase.Move,now);var retreat=-toTarget.normalized;
+                if(!MoveChecked(retreat*rules.MoveSpeed*dt))
+                {var side=Vector3.Cross(Vector3.up,retreat);if(!MoveChecked(side*rules.MoveSpeed*dt))MoveChecked(-side*rules.MoveSpeed*dt);}
+                nextPathAt=0;
+            }
+            else {SetPhase(EnemyPhase.Move,now);Follow(PursuitPoint(target,distance),now,dt);}
         }
         private void BeginAttack(PlayerMotor target,double now,bool followUp)
         {
@@ -228,7 +268,8 @@ namespace HowToSuck
             bossAttack=BossKey.IsValid?(int)(AttackRevision%3):0;
             sweep=BossKey.IsValid&&bossAttack==0;hitPlayers.Clear();projectileEmitted=false;
             // Lock the new direction BEFORE the full existing Tell; no homing during either charge.
-            attackDirection=target.transform.position-body.position;attackDirection.y=0;
+            lockedAim=PredictTarget(target,ProjectileAttack(AttackRevision)?Mathf.Min(.7f,Horizontal(body.position,target.transform.position)/rules.ProjectileSpeed):.30f)+Vector3.up;
+            attackDirection=lockedAim-body.position;attackDirection.y=0;
             attackDirection=attackDirection.sqrMagnitude>.0001f?attackDirection.normalized:transform.forward;
             SetPhase(EnemyPhase.Tell,now);
         }
@@ -236,20 +277,72 @@ namespace HowToSuck
         {chapterAttack.Complete(blocked);SetPhase(EnemyPhase.Recover,now);}
         private void BeginJump(double now)
         {
-            jumping=true;jumpUntil=now+1.25;body.isKinematic=false;body.useGravity=true;
+            float flightTime=2*rules.LeapHeightVelocity/Mathf.Max(1,Mathf.Abs(Physics.gravity.y));
+            jumping=true;jumpUntil=now+Mathf.Max(1.25f,flightTime+.4f);body.isKinematic=false;body.useGravity=true;
             body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
             body.constraints=RigidbodyConstraints.FreezeRotation;
             float speed=rules.LeapSpeed*(Enraged?1.25f:1);
-            if(simulation.Players.TryGetValue(targetId,out var target)&&target!=null)speed=Mathf.Min(speed,Mathf.Max(3,Horizontal(body.position,target.transform.position)/.65f));
+            // Match the locked landing point to the real ballistic flight. A fixed
+            // .65 s divisor overshoots close targets and strands bosses on fences.
+            speed=Mathf.Min(speed,Horizontal(body.position,lockedAim)/flightTime);
             body.linearVelocity=attackDirection*speed+Vector3.up*rules.LeapHeightVelocity;
         }
         private void StopJump()
         {
             if(body==null)return;
             if(!body.isKinematic){body.linearVelocity=Vector3.zero;body.angularVelocity=Vector3.zero;}
-            body.isKinematic=true;body.useGravity=false;body.collisionDetectionMode=CollisionDetectionMode.ContinuousSpeculative;jumping=false;
+            body.isKinematic=true;body.useGravity=false;body.collisionDetectionMode=CollisionDetectionMode.ContinuousSpeculative;jumping=false;steppingDown=false;
             // Landing never snaps sideways to a nearby polygon through a door jamb.
-            if(HasAuthority&&initialized&&TryGroundPose(body.position,body.rotation,.8f,out var landing)&&WorldPoseClear(landing,body.rotation))body.position=landing;
+            if(HasAuthority&&initialized&&TryGroundPose(body.position,body.rotation,.8f,out var landing)&&
+                WorldPoseClear(landing,body.rotation)&&CargoPoseClear(landing,body.rotation)&&EnemyPoseClear(landing,body.rotation))body.position=landing;
+        }
+        private bool StepOffRaisedCargo(double now)
+        {
+            bool floorFound=Physics.Raycast(body.position+Vector3.up*.12f,Vector3.down,out var floor,3,
+                LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)&&floor.normal.y>.6f;
+            bool aboveNavigation=NavMesh.SamplePosition(body.position,out var navigation,2f,NavMesh.AllAreas)&&body.position.y-navigation.position.y>.5f;
+            bool aboveFloor=floorFound&&body.position.y-floor.point.y>.5f||aboveNavigation;
+            if(!steppingDown&&!aboveFloor)return false;
+            if(steppingDown&&!aboveNavigation&&floorFound&&body.position.y-floor.point.y<.18f&&body.linearVelocity.y<=0)
+            {StopJump();nextPathAt=0;SetPhase(EnemyPhase.Recover,now);return true;}
+            if(!steppingDown)
+            {
+                steppingDown=true;chapterAttack.Cancel();SetPhase(EnemyPhase.Recover,now);
+                body.isKinematic=false;body.useGravity=true;body.constraints=RigidbodyConstraints.FreezeRotation;
+                body.collisionDetectionMode=CollisionDetectionMode.ContinuousDynamic;
+            }
+            // After landing on furniture, the floor path lies too far below for a
+            // walking step. PhysX carries the body off the edge and down; walls
+            // and cargo stay solid throughout, with no snap through the obstacle.
+            var target=SelectTarget();Vector3 toward=(target!=null?target.transform.position:Home)-body.position;toward.y=0;
+            // A leap can also land on the player's capsule. Moving toward that
+            // capsule keeps the enemy balanced on it forever; step away to fall.
+            if(target!=null&&toward.sqrMagnitude<4)toward=toward.sqrMagnitude>.01f?-toward:transform.right;
+            // A player standing beside a fixed counter can block a straight drop
+            // toward them. Pick a reachable edge of the supporting item first.
+            if(Physics.Raycast(body.position+Vector3.up*.2f,Vector3.down,out var support,.65f,LayerMask.GetMask("Items"),QueryTriggerInteraction.Ignore)&&support.rigidbody!=null)
+            {
+                var item=support.rigidbody.GetComponent<SuckableObject>();
+                if(item!=null&&item.GameplayColliders.Length>0)
+                {
+                    var bounds=item.GameplayColliders[0].bounds;foreach(var c in item.GameplayColliders)bounds.Encapsulate(c.bounds);
+                    float margin=Mathf.Max(shape.size.x,shape.size.z)*.7f+.15f,best=float.PositiveInfinity;
+                    var exits=new[]{new Vector3(bounds.min.x-margin,body.position.y,body.position.z),new Vector3(bounds.max.x+margin,body.position.y,body.position.z),
+                        new Vector3(body.position.x,body.position.y,bounds.min.z-margin),new Vector3(body.position.x,body.position.y,bounds.max.z+margin)};
+                    foreach(var exit in exits)
+                    {
+                        Vector3 move=exit-body.position;float length=move.magnitude;if(length>=best)continue;
+                        if(!Physics.Raycast(exit+Vector3.up*.2f,Vector3.down,4,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))continue;
+                        bool blocked=Physics.BoxCastAll(body.position+body.rotation*shape.center,shape.size*.5f-Vector3.one*.02f,move.normalized,body.rotation,length,
+                            LayerMask.GetMask("World","Items","Player","Enemies"),QueryTriggerInteraction.Ignore)
+                            .Any(h=>h.collider!=shape&&h.collider.bounds.max.y>body.position.y+.15f&&h.normal.y<.6f);
+                        if(blocked)continue;best=length;toward=move;
+                    }
+                }
+            }
+            Vector3 velocity=toward.sqrMagnitude>.01f?toward.normalized*Mathf.Min(3,rules.MoveSpeed):Vector3.zero;
+            velocity.y=body.linearVelocity.y;body.linearVelocity=velocity;
+            return true;
         }
         private void CancelChapterAttack()
         {
@@ -267,6 +360,9 @@ namespace HowToSuck
                 var player=pair.Value;
                 if(player==null||!player.isActiveAndEnabled||simulation.RequiresRecovery(pair.Key))continue;
                 float distance=Horizontal(body.position,player.transform.position);
+                if(pair.Key==targetId)distance*=.8f;
+                if(pair.Key==lastAttacker&&observedAt<aggroUntil)distance*=.65f;
+                if(!LineClear(player))distance+=4;
                 if(distance>=closest)continue;
                 selected=player;closest=distance;
             }
@@ -274,6 +370,24 @@ namespace HowToSuck
         }
         private bool LineClear(PlayerMotor player)=>!Physics.Linecast(AimTarget.position,player.transform.position+Vector3.up*1,
             LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore);
+        private Vector3 PredictTarget(PlayerMotor player,float seconds)
+        {
+            var move=player.LastIntent.Move;
+            Vector3 direction=Quaternion.Euler(0,player.LastIntent.Yaw,0)*new Vector3(move.x,0,move.y);
+            Vector3 predicted=player.transform.position+Vector3.ClampMagnitude(direction,1)*Mathf.Min(player.PlanarSpeed,player.Settings.SprintSpeed)*seconds;
+            return Physics.Linecast(player.transform.position+Vector3.up,predicted+Vector3.up,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)?player.transform.position:predicted;
+        }
+        private Vector3 PursuitPoint(PlayerMotor player,float distance)
+        {
+            Vector3 point=PredictTarget(player,.35f);
+            if(!BossKey.IsValid&&distance>3&&distance<10&&InstanceId%3!=0)
+            {
+                Vector3 side=Vector3.Cross(Vector3.up,(point-body.position).normalized)*(InstanceId%2==0?1:-1)*1.2f;
+                if(NavMesh.SamplePosition(point+side,out var flank,.5f,NavMesh.AllAreas)&&
+                    !Physics.Linecast(point+Vector3.up,flank.position+Vector3.up,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore))point=flank.position;
+            }
+            return point;
+        }
         private bool ProjectileAttack(uint revision)=>BossKey.IsValid?revision%3==1:rules.AttackKind==EnemyAttackKind.Spit&&revision%2==1;
         private bool ProjectileLaneClear(PlayerMotor target)
         {
@@ -315,7 +429,7 @@ namespace HowToSuck
         {
             if(projectileEmitted)return;projectileEmitted=true;projectileActive=true;projectilePosition=AttackOrigin.position;
             projectileDirection=attackDirection;
-            if(simulation.Players.TryGetValue(targetId,out var p)&&p!=null)projectileDirection=(p.transform.position+Vector3.up- projectilePosition).normalized;
+            projectileDirection=(lockedAim-projectilePosition).normalized;
             projectileExpires=now+rules.ProjectileLifetime;
         }
         private void StepProjectile(double now,float dt)
@@ -333,9 +447,11 @@ namespace HowToSuck
         }
         private void Follow(Vector3 destination,double now,float dt)
         {
+            BeginMovementPlan(now);
+            simulationDelta=dt;
             if(now>=nextPathAt||(destination-navDestination).sqrMagnitude>1)
             {
-                nextPathAt=now+.3;navDestination=destination;corner=1;corners=Array.Empty<Vector3>();
+                nextPathAt=now+.18;navDestination=destination;corner=1;corners=Array.Empty<Vector3>();
                 if(NavMesh.SamplePosition(destination,out var end,2f,NavMesh.AllAreas)&&NavMesh.SamplePosition(body.position,out var start,1.5f,NavMesh.AllAreas)&&NavMesh.CalculatePath(start.position,end.position,NavMesh.AllAreas,path))
                 {
                     corners=path.corners;
@@ -353,8 +469,10 @@ namespace HowToSuck
             }
             if(corner>=corners.Length)return;
             Vector3 delta=corners[corner]-body.position;delta.y=0;if(delta.sqrMagnitude<.0001f)return;
+            if(YieldForTraffic(delta,now,dt))return;
             Face(delta.normalized,dt);
-            bool moved=MoveChecked(Vector3.ClampMagnitude(delta,rules.MoveSpeed*dt));
+            bool moved=MoveChecked(Vector3.ClampMagnitude(delta,rules.MoveSpeed*(Enraged?1.16f:1)*dt));
+            if(blockedEnemy!=null)return; // The next traffic step resolves peers, not a wall-slide ping-pong.
             if(!moved&&blockedWorldNormal.sqrMagnitude>.1f)
             {
                 var slide=Vector3.ProjectOnPlane(delta.normalized,blockedWorldNormal);slide.y=0;
@@ -381,8 +499,9 @@ namespace HowToSuck
         }
         private bool MoveChecked(Vector3 delta,bool stopWhenClipped=false)
         {
-            blockedCargo=null;blockedCargoNormal=Vector3.zero;blockedWorldNormal=Vector3.zero;
+            blockedCargo=null;blockedEnemy=null;blockedCargoNormal=Vector3.zero;blockedWorldNormal=Vector3.zero;
             if(delta.sqrMagnitude<1e-8f)return true;
+            EnemyCargoPush.Push(shape,body,delta,simulationDelta,RunId,BossKey.IsValid);
             if(!TryNavigationStep(delta,out delta))return false;
             // A shallow floor lip is a step, not a wall. The nav surface supplies the landing height.
             Vector3 center=body.position+movementRotation*shape.center+Vector3.up*.12f;
@@ -392,8 +511,14 @@ namespace HowToSuck
                 LayerMask.GetMask("World","Player","Enemies"),QueryTriggerInteraction.Ignore))
             {
                 if(hit.collider==shape||hit.collider.transform.IsChildOf(transform)||hit.normal.y>.6f)continue;
+                // PhysX reports zero-distance sweeps for a body already touching
+                // the query volume, including a peer behind us. Allow separation;
+                // the full final pose below still rejects entering that peer.
+                if(hit.distance<=.001f&&hit.collider.gameObject.layer==LayerMask.NameToLayer("Enemies")&&
+                    !Physics.ComputePenetration(shape,body.position+delta,movementRotation,hit.collider,
+                        hit.collider.transform.position,hit.collider.transform.rotation,out _,out _))continue;
                 float clearance=Math.Max(0,hit.distance-.025f);
-                if(clearance<allowed){allowed=clearance;blockedWorldNormal=hit.normal;}
+                if(clearance<allowed){allowed=clearance;blockedWorldNormal=hit.normal;blockedEnemy=hit.collider.GetComponentInParent<EnemyActor>();}
             }
             // Use the full solid box for cargo: the legacy .02 shrink must not enter furniture.
             float turnTravel=2*(shape.center.magnitude+shape.size.magnitude*.5f)*Mathf.Sin(Quaternion.Angle(body.rotation,movementRotation)*Mathf.Deg2Rad*.5f);
@@ -401,14 +526,19 @@ namespace HowToSuck
                 LayerMask.GetMask("Items"),QueryTriggerInteraction.Ignore))
             {
                 if(!BlocksCargo(hit.collider))continue;
+                if(hit.distance<=.001f&&!Physics.ComputePenetration(shape,body.position+delta,movementRotation,hit.collider,
+                    hit.collider.transform.position,hit.collider.transform.rotation,out _,out _))continue;
                 float clearance=Math.Max(0,hit.distance-.025f);
                 if(clearance<allowed){allowed=clearance;blockedCargo=hit.collider;blockedCargoNormal=hit.normal;}
             }
             if(allowed<=.001f)return false;
             Vector3 next=body.position+delta/length*allowed;
-            if(!TryGroundPose(next,movementRotation,.30f,out next)||!WorldPoseClear(next,movementRotation))return false;
+            if(!TryGroundPose(next,movementRotation,.30f,out next))
+            {blockedWorldNormal=-delta.normalized;return false;}
+            if(!WorldPoseClear(next,movementRotation))return false;
             if(!CargoPoseClear(next,movementRotation))return false;
-            body.MovePosition(next);return !stopWhenClipped||allowed>=length;
+            if(!EnemyPoseClear(next,movementRotation))return false;
+            plannedPosition=next;body.MovePosition(next);return !stopWhenClipped||allowed>=length;
         }
         private bool TryNavigationStep(Vector3 requested,out Vector3 delta)
         {
@@ -443,15 +573,17 @@ namespace HowToSuck
             if(Quaternion.Angle(body.rotation,next)<=.001f)return true;
             // The attack admission check uses these exact same ground-level rules.
             if(!EnemyTurnClearance.CanStep(shape,body,body.rotation,next,RunId))return false;
-            movementRotation=next;body.MoveRotation(next);return true;
+            if(!EnemyPoseClear(body.position,next))return false;
+            plannedRotation=next;movementRotation=next;body.MoveRotation(next);return true;
         }
         private bool BlocksCargo(Collider c)
         {
             if(c==null||c.isTrigger||c.transform.IsChildOf(transform)||c.attachedRigidbody==null)return false;
             var item=c.attachedRigidbody.GetComponent<SuckableObject>();
-            // Existing masses, no new kg threshold. Airborne shots keep their real damage contact.
+            // Wait for the shove to clear a real contact; never walk through cargo.
+            // Airborne shots keep their ordinary damage contact.
             return item!=null&&item.RunId==RunId&&item.State==SuckableState.Available&&
-                c.attachedRigidbody.mass>body.mass;
+                !item.WorldFrozen&&(item.IsMounted||!c.attachedRigidbody.isKinematic);
         }
         private bool CargoPoseClear(Vector3 position,Quaternion rotation)
         {
@@ -463,6 +595,94 @@ namespace HowToSuck
                 bool existing=Physics.ComputePenetration(shape,body.position,body.rotation,c,c.transform.position,c.transform.rotation,out _,out float oldDepth);
                 if(existing&&depth<oldDepth)continue;
                 blockedCargo=c;blockedCargoNormal=normal;return false;
+            }
+            return true;
+        }
+        private bool EnemyPoseClear(Vector3 position,Quaternion rotation)
+        {
+            // MovePosition is committed by PhysX only after all actors have stepped.
+            // Reserve accepted poses so two enemies cannot both choose the same gap.
+            foreach(var c in Physics.OverlapBox(position+rotation*shape.center,shape.size*.5f+new Vector3(.5f,.05f,.5f),rotation,LayerMask.GetMask("Enemies"),QueryTriggerInteraction.Ignore))
+            {
+                if(c==shape||c.transform.IsChildOf(transform))continue;
+                var peer=c.GetComponentInParent<EnemyActor>();
+                bool planned=peer!=null&&c==peer.shape&&peer.movementPlanAt==movementPlanAt;
+                var otherPosition=planned?peer.plannedPosition:c.transform.position;var otherRotation=planned?peer.plannedRotation:c.transform.rotation;
+                if(!Physics.ComputePenetration(shape,position,rotation,c,otherPosition,otherRotation,out _,out float depth)||depth<.008f)continue;
+                if(Physics.ComputePenetration(shape,body.position,body.rotation,c,otherPosition,otherRotation,out _,out float old)&&depth<old-.001f)continue;
+                blockedEnemy=c.GetComponentInParent<EnemyActor>();return false;
+            }
+            return true;
+        }
+        private bool YieldForTraffic(Vector3 requested,double now,float dt)
+        {
+            trafficIntent=requested.normalized;trafficAt=now;
+            if(trafficPeer!=null&&(!trafficPeer.IsAlive||trafficPeer.Frozen||now>yieldUntil||
+                Horizontal(body.position,trafficPeer.body.position)>6||
+                Vector3.Dot(trafficPeer.body.position-body.position,yieldDirection)<-1.5f))trafficPeer=null;
+            if(trafficPeer==null)
+            {
+                EnemyActor peer=null;float nearest=float.PositiveInfinity;
+                foreach(var hit in Physics.BoxCastAll(body.position+movementRotation*shape.center,shape.size*.5f+Vector3.one*.06f,
+                    trafficIntent,movementRotation,.8f,LayerMask.GetMask("Enemies"),QueryTriggerInteraction.Ignore))
+                {
+                    var other=hit.collider.GetComponentInParent<EnemyActor>();
+                    if(other==null||other==this||!other.IsAlive||other.RunId!=RunId||hit.distance>=nearest)continue;
+                    if(Vector3.Dot(other.body.position-body.position,trafficIntent)<-.05f)continue;
+                    peer=other;nearest=hit.distance;
+                }
+                if(peer==null)return false;
+                bool peerWalking=now-peer.trafficAt<.6;
+                // An idle neighbour beside the path does not own the whole
+                // look-ahead corridor. Yield only when it blocks the next step.
+                if(!peerWalking&&nearest>rules.MoveSpeed*dt+.025f)return false;
+                var otherIntent=peerWalking?peer.trafficIntent:peer.transform.forward;
+                // A following enemy queues behind its leader. Opposing traffic
+                // uses a stable right of way, so both cannot dodge the same way.
+                bool following=peerWalking&&Vector3.Dot(trafficIntent,otherIntent)>.55f;
+                if(following&&peer.trafficPeer!=this)return true;
+                if(peerWalking&&InstanceId<peer.InstanceId)return false;
+                trafficPeer=peer;yieldDirection=trafficIntent;yieldUntil=now+6;hasYieldPocket=false;
+            }
+            if(hasYieldPocket)
+            {
+                Vector3 remaining=yieldPocket-body.position;remaining.y=0;
+                if(remaining.magnitude>.06f)
+                {if(!MoveChecked(Vector3.ClampMagnitude(remaining,rules.MoveSpeed*dt)))hasYieldPocket=false;}
+                else if(now-trafficPeer.trafficAt>.6||Horizontal(body.position,trafficPeer.body.position)>3)
+                {trafficPeer=null;nextPathAt=0;return false;}
+                return true;
+            }
+            Vector3 right=Vector3.Cross(Vector3.up,yieldDirection);float clearance=(shape.size.x+trafficPeer.shape.size.x)*.5f+.3f;
+            // First look for a clear pocket beside the passing lane. Inside a
+            // one-body doorway, retreat until such a pocket becomes reachable.
+            for(int side=0;side<2;side++)for(int back=0;back<3;back++)
+            {
+                Vector3 candidate=body.position+right*(side==0?clearance:-clearance)-yieldDirection*(back*.8f);
+                if(!NavMesh.SamplePosition(candidate,out var nav,.3f,NavMesh.AllAreas)||Mathf.Abs(nav.position.y-body.position.y)>.5f)continue;
+                candidate=nav.position;Vector3 move=candidate-body.position;move.y=0;
+                if(!WorldPoseClear(candidate,movementRotation)||!CargoPoseClear(candidate,movementRotation)||!EnemyPoseClear(candidate,movementRotation))continue;
+                bool peerAcross=Physics.BoxCastAll(body.position+movementRotation*shape.center,shape.size*.5f+Vector3.one*.025f,
+                    move.normalized,movementRotation,move.magnitude,LayerMask.GetMask("Enemies"),QueryTriggerInteraction.Ignore)
+                    .Any(h=>h.collider!=shape&&!h.collider.transform.IsChildOf(transform));
+                if(peerAcross)continue;
+                bool wall=false;
+                foreach(var hit in Physics.BoxCastAll(body.position+movementRotation*shape.center+Vector3.up*.12f,
+                    Vector3.Max(Vector3.one*.02f,shape.size*.5f-new Vector3(.025f,.14f,.025f)),move.normalized,movementRotation,move.magnitude,LayerMask.GetMask("World","Enemies"),QueryTriggerInteraction.Ignore))
+                    if(hit.collider!=shape&&!hit.collider.transform.IsChildOf(transform)&&hit.normal.y<.6f){wall=true;break;}
+                if(wall)continue;
+                yieldPocket=candidate;hasYieldPocket=true;
+                MoveChecked(Vector3.ClampMagnitude(move,rules.MoveSpeed*dt));return true;
+            }
+            // The priority peer can turn after entering a room. Retreat away
+            // from its current body, rather than back into its changed route.
+            Vector3 away=body.position-trafficPeer.body.position;away.y=0;
+            if(away.sqrMagnitude<.001f)away=-yieldDirection;
+            away.Normalize();
+            if(!MoveChecked(away*rules.MoveSpeed*dt))
+            {
+                var tangent=Vector3.Cross(Vector3.up,away);
+                if(!MoveChecked(tangent*rules.MoveSpeed*dt))MoveChecked(-tangent*rules.MoveSpeed*dt);
             }
             return true;
         }

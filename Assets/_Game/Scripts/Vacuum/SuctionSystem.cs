@@ -57,9 +57,9 @@ namespace HowToSuck
             foreach(var batch in bodies){batch.Forces.Clear();batch.Body=null;pool.Push(batch);}
             bodies.Clear();pending.Clear();collecting=false;
         }
-        private bool Live(PendingForce hit,Rigidbody body)=>body!=null&&!body.isKinematic&&hit.Source!=null&&hit.Source.isActiveAndEnabled&&
+        private bool Live(PendingForce hit,Rigidbody body)=>body!=null&&hit.Source!=null&&hit.Source.isActiveAndEnabled&&
             hit.Source.Active&&hit.Source.Definition==hit.Definition&&hit.Definition!=null&&hit.Item!=null&&
-            hit.Item.Body==body&&(hit.Item.State==SuckableState.Available||hit.Item.State==SuckableState.InFlight)&&!hit.Item.WorldFrozen&&hit.Item.RunId==registry.RunId&&
+            hit.Item.HasPhysicsAuthority&&(!body.isKinematic||hit.Item.IsMounted)&&hit.Item.Body==body&&(hit.Item.State==SuckableState.Available||hit.Item.State==SuckableState.InFlight)&&!hit.Item.WorldFrozen&&hit.Item.RunId==registry.RunId&&
             registry.Items.TryGetValue(hit.Item.InstanceId,out var item)&&item==hit.Item;
         private void Queue(VacuumEmitter source,SuctionContact contact,Vector3 force,double stiffness)
         {
@@ -93,6 +93,9 @@ namespace HowToSuck
                     var body=batch.Body;if(body==null)continue;
                     for(int i=batch.Forces.Count-1;i>=0;i--)if(!Live(batch.Forces[i],body))batch.Forces.RemoveAt(i);
                     if(batch.Forces.Count==0)continue;
+                    // Collection is read-only. Only a still-valid committed force
+                    // batch can release an authored mounting or wake its ambush.
+                    foreach(var hit in batch.Forces)hit.Item.AcceptSuction(hit.Handheld);
                     foreach(var hit in batch.Forces)if(hit.Source.FocusedItem==hit.Item){body.angularVelocity*=Mathf.Exp(-5f*step);break;}
                     batch.Forces.Sort((a,b)=>{int c=a.EmitterId.CompareTo(b.EmitterId);return c!=0?c:a.SourceId.CompareTo(b.SourceId);});
                     body.maxLinearVelocity=25f;body.maxAngularVelocity=20f;
@@ -219,7 +222,7 @@ namespace HowToSuck
             var found=Collect(source);source.LastAffectedCount=found.Count;source.LastLoad=0;
             foreach(var hit in found)
             {
-                var body=hit.Item.Body;if(body==null||body.isKinematic)continue;
+                var body=hit.Item.Body;if(body==null||!hit.Item.HasPhysicsAuthority||body.isKinematic&&!hit.Item.IsMounted)continue;
                 Vector3 offset=hit.Point-source.Position;float distance=offset.magnitude;
                 // Preserve the existing zero-distance drag-only branch, but solve it in the same batch.
                 if(distance<.025f){Queue(source,hit,Vector3.zero,source.Definition.Power);source.LastLoad+=body.mass;continue;}

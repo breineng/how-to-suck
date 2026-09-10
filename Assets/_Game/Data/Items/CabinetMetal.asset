@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: cabinet_metal
   DisplayName: CabinetMetal
-  Value: 650
+  Value: 360
+  CargoRole: 0
   RequiredIntakeSize: 2
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

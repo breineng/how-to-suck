@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: book
   DisplayName: "\u041A\u043D\u0438\u0433\u0430"
-  Value: 25
+  Value: 15
+  CargoRole: 0
   RequiredIntakeSize: 0.25
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

@@ -41,6 +41,9 @@ namespace HowToSuck
         private INetworkSessionDriver networkDriver;
         private SessionReplica replica;
         public bool HasAuthority => networkDriver == null || networkDriver.HasAuthority;
+        public int DisplayedCrewSize => Mathf.Clamp((driver as IEncounterCrewProvider)?.ConnectedCrewSize ?? 1,1,4);
+        public long DisplayedQuota(ContractDefinition contract) => contract == null ? 0 :
+            CampaignContractAccess.IsKnown(contract.ContractId) ? CampaignBalance.QuotaForCrew(contract.Quota,DisplayedCrewSize) : contract.Quota;
         public long DisplayedBalance => HasAuthority ? Campaign?.Balance ?? 0 : replica?.Balance ?? 0;
         public string DisplayedTierId => HasAuthority ? Campaign?.CurrentTierId ?? "" : replica?.CurrentTierId ?? "";
         public int? DisplayedExtraSlots => HasAuthority ? Campaign?.PurchasedExtraSlots :
@@ -197,7 +200,7 @@ namespace HowToSuck
             CurrentContract = contract; selectedLobbyContractId=contract.ContractId; LastError = "";
             // Reserve before asynchronous loading; exactly this run reaches controller/world/input.
             Controller.Prepare(Guid.NewGuid().ToString("N"), new ContractRules(contract.ContractId,
-                contract.Quota, contract.TimeLimitSeconds, contract.FailurePercent, contract.RequiredBossId));
+                DisplayedQuota(contract), contract.TimeLimitSeconds, contract.FailurePercent, contract.RequiredBossId));
             SetPhase(SessionPhase.Loading);
             StartCoroutine(LoadScene(contract.SceneName, true));
             return true;

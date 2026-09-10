@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: pot
   DisplayName: "\u041A\u0430\u0441\u0442\u0440\u044E\u043B\u044F"
-  Value: 45
+  Value: 25
+  CargoRole: 0
   RequiredIntakeSize: 0.4
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

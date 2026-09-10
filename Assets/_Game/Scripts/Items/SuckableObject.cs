@@ -10,6 +10,19 @@ namespace HowToSuck
     {
         public SuckableDefinition Definition;
         public Transform VisualRoot;
+        [Tooltip("Keep the authored wall/floor mounting until the first accepted suction pull.")]
+        public bool StartMounted;
+        public bool IsMounted => StartMounted && !mountReleased && State == SuckableState.Available;
+        public bool HasReceivedPlayerSuction { get; private set; }
+        private bool mountReleased;
+
+        internal void AcceptSuction(bool handheld)
+        {
+            if(!HasPhysicsAuthority||!initialized||WorldFrozen||State!=SuckableState.Available&&State!=SuckableState.InFlight)return;
+            if(handheld)HasReceivedPlayerSuction=true;
+            if(!IsMounted)return;
+            mountReleased=true;ApplyBodyMode();
+        }
 
         public Rigidbody Body
         {
@@ -134,6 +147,7 @@ namespace HowToSuck
             if (!allowed || WorldFrozen && (loose && next != SuckableState.Lost || next == SuckableState.Delivered)) return false;
             if (expected == SuckableState.Ingesting) RestoreVisualPose();
             if (expected == SuckableState.InFlight || next == SuckableState.Ingesting) CancelFlightProvenance();
+            if(next==SuckableState.Ingesting)mountReleased=true;
             State = next;
             ApplyBodyMode();
             return true;
@@ -211,7 +225,9 @@ namespace HowToSuck
         private void ApplyBodyMode()
         {
             if (Body == null) return;
-            bool kinematic = !HasPhysicsAuthority || WorldFrozen || (State != SuckableState.Available && State != SuckableState.InFlight);
+            var obstacle=GetComponent<UnityEngine.AI.NavMeshObstacle>();
+            if(obstacle!=null)obstacle.enabled=HasPhysicsAuthority&&IsMounted;
+            bool kinematic = !HasPhysicsAuthority || WorldFrozen || IsMounted || (State != SuckableState.Available && State != SuckableState.InFlight);
             if (kinematic)
             {
                 // Swept CCD is a flight-only mode and cannot accompany a
@@ -238,11 +254,36 @@ namespace HowToSuck
 
             if (!initialized) return; // Do not overwrite authored enabled flags before their baseline capture.
             bool collisionsEnabled = State == SuckableState.Available || State == SuckableState.InFlight;
+            // PhysX does not reliably wake sleeping cargo when its supporting
+            // collider is disabled for intake. Wake nearby bodies before the
+            // shapes disappear, while their world bounds are still available.
+            if (HasPhysicsAuthority && !WorldFrozen && !collisionsEnabled)
+                WakeSupportedBodies();
             for (int i = 0; i < gameplayColliders.Length; i++)
                 if (gameplayColliders[i] != null) gameplayColliders[i].enabled = collisionsEnabled && (i >= colliderEnabled.Length || colliderEnabled[i]);
             bool visible = collisionsEnabled || State == SuckableState.Ingesting;
             for (int i = 0; i < visualRenderers.Length; i++)
                 if (visualRenderers[i] != null) visualRenderers[i].enabled = visible && rendererEnabled[i];
+        }
+
+        private void WakeSupportedBodies()
+        {
+            bool found = false;
+            Bounds bounds = default;
+            foreach (var shape in gameplayColliders)
+            {
+                if (shape == null || !shape.enabled || shape.isTrigger) continue;
+                if (found) bounds.Encapsulate(shape.bounds);
+                else { bounds = shape.bounds; found = true; }
+            }
+            if (!found) return;
+            foreach (var shape in Physics.OverlapBox(bounds.center, bounds.extents + Vector3.one * .08f,
+                Quaternion.identity, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            {
+                var supported = shape.attachedRigidbody;
+                if (supported != null && supported != body && !supported.isKinematic)
+                    supported.WakeUp();
+            }
         }
 
         public bool TryValidate(out string error)

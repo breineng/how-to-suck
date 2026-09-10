@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.VacuumDefinition
   TierId: mk3
   DisplayName: MK3
-  Power: 1400
+  Power: 900
   IntakeSize: 2.1
-  Price: 6000
+  Price: 4500
   ViewPrefab: {fileID: 1799383462556752069, guid: 0fb71ed92fe41ae488b3e3e8b7f4cc66, type: 3}
   Preview: {fileID: 21300000, guid: 97695e0cf85ec9a44a32693ec2d2ba86, type: 3}

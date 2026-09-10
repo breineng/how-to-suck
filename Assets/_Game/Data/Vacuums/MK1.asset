@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.VacuumDefinition
   TierId: mk1
   DisplayName: MK1
-  Power: 180
+  Power: 220
   IntakeSize: 0.45
   Price: 0
   ViewPrefab: {fileID: 1038376903110713702, guid: 7098ee183f31a844b92adc9352a81238, type: 3}

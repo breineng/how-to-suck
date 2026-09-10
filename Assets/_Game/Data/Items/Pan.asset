@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: pan
   DisplayName: "\u0421\u043A\u043E\u0432\u043E\u0440\u043E\u0434\u0430"
-  Value: 35
+  Value: 20
+  CargoRole: 0
   RequiredIntakeSize: 0.45
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

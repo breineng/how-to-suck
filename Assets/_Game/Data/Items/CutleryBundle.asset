@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: cutlery_bundle
   DisplayName: "\u0421\u0432\u044F\u0437\u043A\u0430 \u043F\u0440\u0438\u0431\u043E\u0440\u043E\u0432"
-  Value: 15
+  Value: 10
+  CargoRole: 0
   RequiredIntakeSize: 0.2
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

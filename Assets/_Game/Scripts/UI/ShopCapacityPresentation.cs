@@ -52,17 +52,17 @@ namespace HowToSuck
                 HowToSuck.LocalizedText.Set(CapacityPriceText, next>current?$"+1 СЛОТ  /  ${price:N0}":$"МАКСИМУМ: {max} СЛОТОВ");
                 if(CapacityIcons!=null)for(int i=0;i<CapacityIcons.Length;i++)if(CapacityIcons[i]!=null){CapacityIcons[i].gameObject.SetActive(i<max);CapacityIcons[i].color=i<current?new Color(.1f,.1f,.1f,1):new Color(.1f,.1f,.1f,.2f);}
                 if(nextModel!=null) {
-                    int future=CampaignCapacityRules.Effective(nextModel.TierId,bonus);
+                    int future=CampaignCapacityRules.Effective(nextModel.TierId,0);
                     CampaignCapacityRules.TryModel(nextModel.TierId,out _,out int futureMax);
                     if(NextCapacity!=null)HowToSuck.LocalizedText.Set(NextCapacity, $"СЛОТЫ  {future} / {futureMax}");
                 }else if(NextCapacity!=null)HowToSuck.LocalizedText.Set(NextCapacity, "Последняя модель");
                 switch(offer.Kind){
-                    case ShopOfferKind.ReadOnly:HowToSuck.LocalizedText.Set(CapacityMessageText, "Общий бонус сохраняется при смене модели. Покупает хост.");break;
+                    case ShopOfferKind.ReadOnly:HowToSuck.LocalizedText.Set(CapacityMessageText, "Слоты улучшаются для текущей модели. Покупает хост.");break;
                     case ShopOfferKind.Insufficient:HowToSuck.LocalizedText.Set(CapacityMessageText, $"Для слота не хватает ${offer.MissingFunds:N0}.");break;
-                    case ShopOfferKind.MaximumTier:HowToSuck.LocalizedText.Set(CapacityMessageText, "Бонус сохранён. Следующая модель покупается отдельно.");break;
+                    case ShopOfferKind.MaximumTier:HowToSuck.LocalizedText.Set(CapacityMessageText, "Все слоты этой модели открыты.");break;
                     case ShopOfferKind.PendingPurchase:case ShopOfferKind.PendingResult:case ShopOfferKind.Saving:
                         HowToSuck.LocalizedText.Set(CapacityMessageText, "Показана подтверждённая вместимость. Сначала завершите сохранение.");break;
-                    default:HowToSuck.LocalizedText.Set(CapacityMessageText, "Бонусные слоты сохраняются при смене модели.");break;
+                    default:HowToSuck.LocalizedText.Set(CapacityMessageText, "Новая модель начинает с базовых слотов. Улучшения слотов не переносятся.");break;
                 }
             }
             var buttons=new List<Button>();foreach(var b in new[]{BuyButton,CapacityBuyButton,RetryButton,CloseButton})if(b!=null&&b.gameObject.activeInHierarchy&&b.IsInteractable())buttons.Add(b);

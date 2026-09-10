@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: cabinet_small
   DisplayName: "\u0422\u0443\u043C\u0431\u0430"
-  Value: 200
+  Value: 110
+  CargoRole: 0
   RequiredIntakeSize: 1.4
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

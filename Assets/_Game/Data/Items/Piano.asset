@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: piano
   DisplayName: "\u041F\u0438\u0430\u043D\u0438\u043D\u043E"
-  Value: 1600
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 3.5
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

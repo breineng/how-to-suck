@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: product_crate
   DisplayName: ProductCrate
-  Value: 160
+  Value: 90
+  CargoRole: 0
   RequiredIntakeSize: 0.9
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

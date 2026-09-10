@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: freezer_display
   DisplayName: FreezerDisplay
-  Value: 2400
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 4.5
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

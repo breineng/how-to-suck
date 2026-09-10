@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: shopping_basket
   DisplayName: ShoppingBasket
-  Value: 45
+  Value: 25
+  CargoRole: 0
   RequiredIntakeSize: 0.45
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

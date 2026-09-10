@@ -18,6 +18,6 @@ MonoBehaviour:
   RequiredBossId: dust_elder
   RecommendedTierId: mk2
   SceneName: OldHouseNetwork
-  Quota: 3000
-  TimeLimitSeconds: 660
-  FailurePercent: 25
+  Quota: 2150
+  TimeLimitSeconds: 1800
+  FailurePercent: 30

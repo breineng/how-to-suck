@@ -19,6 +19,6 @@ MonoBehaviour:
   RequiredBossId: rubbish_boulder
   RecommendedTierId: mk2
   SceneName: SupermarketNetwork
-  Quota: 3500
-  TimeLimitSeconds: 720
-  FailurePercent: 25
+  Quota: 2200
+  TimeLimitSeconds: 1800
+  FailurePercent: 30

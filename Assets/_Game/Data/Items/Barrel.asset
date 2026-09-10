@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: barrel
   DisplayName: Barrel
-  Value: 300
+  Value: 165
+  CargoRole: 0
   RequiredIntakeSize: 1.1
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

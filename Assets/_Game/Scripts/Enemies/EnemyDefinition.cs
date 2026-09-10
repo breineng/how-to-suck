@@ -49,7 +49,7 @@ namespace HowToSuck
         public int HealthForCrew(int count)
         {
             if(count<1||count>4)throw new ArgumentOutOfRangeException(nameof(count));
-            return Mathf.CeilToInt(BaseHealth*(count==1?1:count==2?1.35f:count==3?1.65f:1.9f));
+            return Mathf.CeilToInt(BaseHealth*CampaignBalance.CrewHealth(count,IsBoss));
         }
     }
     [Serializable] public sealed class EnemyEncounter

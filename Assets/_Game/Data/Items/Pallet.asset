@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: pallet
   DisplayName: Pallet
-  Value: 80
+  Value: 45
+  CargoRole: 0
   RequiredIntakeSize: 1.2
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

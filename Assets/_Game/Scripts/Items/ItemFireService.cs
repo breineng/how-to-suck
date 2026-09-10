@@ -147,7 +147,7 @@ namespace HowToSuck
             // Decide while the stored cargo is still non-solid, before its own
             // released collider can occlude the crosshair ray.
             int directedIntake=DirectedTruck(aim.origin,aim.direction)?Truck.Receiver.IntakeId:0;
-            var flight=new Flight {Item=first,Key=key,Shot=nextShot+1,Owner=id,Damage=ItemFireRules.Damage(mass,charge),
+            var flight=new Flight {Item=first,Key=key,Shot=nextShot+1,Owner=id,Damage=ItemFireRules.Damage(mass,charge,source.Definition.TierId),
                 Expires=now+ItemFireRules.FlightLifetime,OriginalCcd=first.Body.collisionDetectionMode,PreviousPosition=pose.position};
             if (!storage.TryReleaseFirst(key,pose.position,pose.rotation,flight.Shot,out var released))
                 return false;

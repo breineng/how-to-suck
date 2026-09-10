@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 namespace HowToSuck.Networking
 {
-    public sealed class NgoSessionDriver : INetworkSessionDriver,IWorldSpawner,IWorldSpawnCommitter
+    public sealed class NgoSessionDriver : INetworkSessionDriver,IWorldSpawner,IWorldSpawnCommitter,IEncounterCrewProvider
     {
         private readonly NgoGameSession game;
         private readonly NetworkWorldSpawner spawner;
@@ -19,6 +19,7 @@ namespace HowToSuck.Networking
         public int ExpectedItems {get;private set;}
         public int ExpectedPlayers {get;private set;}
         public bool HasAuthority=>game.HasAuthority;
+        public int ConnectedCrewSize=>Mathf.Clamp(HasAuthority ? game.Manager.ConnectedClientsIds.Count : game.Control?.Roster?.Count ?? 1,1,4);
         public bool CanBeginContract=>HasAuthority&&game.Control!=null&&game.Control.IsSpawned&&game.Connection.CanBeginContract;
         private double lastAuthorityTime;
         public double Now

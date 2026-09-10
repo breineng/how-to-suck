@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: couch
   DisplayName: "\u0414\u0438\u0432\u0430\u043D"
-  Value: 650
+  Value: 360
+  CargoRole: 0
   RequiredIntakeSize: 2.5
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

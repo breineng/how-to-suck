@@ -22858,6 +22858,144 @@ MonoBehaviour:
   - TypeId: cutlery_bundle
     Sprite: {fileID: 21300000, guid: 6620b8f4d5009274bb1799cca6a86b23, type: 3}
     Definition: {fileID: 11400000, guid: 2bee6823e8b95ad49981131e81457da8, type: 2}
+  - TypeId: decor_oldhouse_bedroom_bedsidetable
+    Sprite: {fileID: 21300000, guid: 238be72c8ddde584c8746af08dda17e2, type: 3}
+    Definition: {fileID: 11400000, guid: 92ddb148fcdcfb44982269d647c9377e, type: 2}
+  - TypeId: decor_oldhouse_bedroom_doublebed
+    Sprite: {fileID: 21300000, guid: a0fd5ada0685d0a40b07b33a0b6a1b1a, type: 3}
+    Definition: {fileID: 11400000, guid: 57d96885298e2854baff68ddda06ac0b, type: 2}
+  - TypeId: decor_oldhouse_bedroom_dressingtable
+    Sprite: {fileID: 21300000, guid: 2a788ec104eb51744a7886e87bd75170, type: 3}
+    Definition: {fileID: 11400000, guid: 13c55902095664043b65cbdc00408ebe, type: 2}
+  - TypeId: decor_oldhouse_bedroom_rug
+    Sprite: {fileID: 21300000, guid: 4881a149fcaacdf468b2c4ab016a0e08, type: 3}
+    Definition: {fileID: 11400000, guid: ca298c97f0afa5b449d9ae1748c80d7f, type: 2}
+  - TypeId: decor_oldhouse_bedroom_wardrobe
+    Sprite: {fileID: 21300000, guid: 98107fbc98a58044ca7b39175ff0fc44, type: 3}
+    Definition: {fileID: 11400000, guid: 52c351d4f82c05e46a4784226497838e, type: 2}
+  - TypeId: decor_oldhouse_fixture_box_kitchencounter
+    Sprite: {fileID: 21300000, guid: 2c66ee4394cdba04c9c029fe9459871e, type: 3}
+    Definition: {fileID: 11400000, guid: 3aee28270041b1f41a475e4230b61ef6, type: 2}
+  - TypeId: decor_oldhouse_guest_bedsidetable
+    Sprite: {fileID: 21300000, guid: 107a7be14634c8f4dad36cbe0fd82afb, type: 3}
+    Definition: {fileID: 11400000, guid: 8e594678c1e8cd6418a0cc05351b7972, type: 2}
+  - TypeId: decor_oldhouse_guest_dresser
+    Sprite: {fileID: 21300000, guid: 459aefac1c6c542408811e4bcf69a3fc, type: 3}
+    Definition: {fileID: 11400000, guid: fe7496a6bc83c5d4182ef2d84f70f6d3, type: 2}
+  - TypeId: decor_oldhouse_guest_linencupboard
+    Sprite: {fileID: 21300000, guid: 0306dddbf34912445b2025f65c70b2f1, type: 3}
+    Definition: {fileID: 11400000, guid: dffbaf462a7020b4fa492b314bec98ff, type: 2}
+  - TypeId: decor_oldhouse_guest_singlebed
+    Sprite: {fileID: 21300000, guid: b7f454269754d464fae0ee3088c192d9, type: 3}
+    Definition: {fileID: 11400000, guid: 190733d9ac01ad449b55e328646c3eca, type: 2}
+  - TypeId: decor_oldhouse_kitchen_breakfasttable
+    Sprite: {fileID: 21300000, guid: 069429942fbeb4141a15c02f2b1c843d, type: 3}
+    Definition: {fileID: 11400000, guid: 5aec7d2f8b032fa4ba47c131129ffb4a, type: 2}
+  - TypeId: decor_oldhouse_living_coffeetable
+    Sprite: {fileID: 21300000, guid: 4fa9c1b306df24c499ce4aea8ebe9cd2, type: 3}
+    Definition: {fileID: 11400000, guid: 5cf97554662951c4b975d67e40392d63, type: 2}
+  - TypeId: decor_oldhouse_living_tvconsole
+    Sprite: {fileID: 21300000, guid: eec4b19ed77a38d41a1a98dfc5eb8770, type: 3}
+    Definition: {fileID: 11400000, guid: 8020c656cefb55c4e9dd4e0c54422afe, type: 2}
+  - TypeId: decor_oldhouse_living_wovenrug
+    Sprite: {fileID: 21300000, guid: 71a5440a2cf8c1443991b146c2eee228, type: 3}
+    Definition: {fileID: 11400000, guid: 00e6db90a83c352449a3783a2014cdcd, type: 2}
+  - TypeId: decor_oldhouse_music_rug
+    Sprite: {fileID: 21300000, guid: 9118d026786ceca40814666aea4f640d, type: 3}
+    Definition: {fileID: 11400000, guid: 408554929fff60646a963731376ccf9d, type: 2}
+  - TypeId: decor_oldhouse_music_scorebookcase
+    Sprite: {fileID: 21300000, guid: 32e93d3fe98d3894380d6eb04ae5930e, type: 3}
+    Definition: {fileID: 11400000, guid: bba1349bf6a0d84478d4cab7280659ed, type: 2}
+  - TypeId: decor_oldhouse_music_writingtable
+    Sprite: {fileID: 21300000, guid: 3fede8d528b96c14fb045990ca4410b3, type: 3}
+    Definition: {fileID: 11400000, guid: a755e19fed22e3c45ad83bd7b674035a, type: 2}
+  - TypeId: decor_oldhouse_study_bookcase
+    Sprite: {fileID: 21300000, guid: e5e1fc63a6df6c440b37f12c68c49700, type: 3}
+    Definition: {fileID: 11400000, guid: 29cb0a76a68dc6f41893c1c571e69a8a, type: 2}
+  - TypeId: decor_oldhouse_study_sideboard
+    Sprite: {fileID: 21300000, guid: 8104a0360cb95d44fbf9794bba58a1de, type: 3}
+    Definition: {fileID: 11400000, guid: e8a0a49f6efeb1b4eaea5b6b1660355e, type: 2}
+  - TypeId: decor_oldhouse_study_writingdesk
+    Sprite: {fileID: 21300000, guid: 8bfbe83a35f2d69459c1659d18d243fe, type: 3}
+    Definition: {fileID: 11400000, guid: 96a405d9ed5921a4dbcaa4b904be3b8a, type: 2}
+  - TypeId: decor_oldhouse_utility_laundrycounter
+    Sprite: {fileID: 21300000, guid: c1a1f4aa76c7b72408658eb3308afb8e, type: 3}
+    Definition: {fileID: 11400000, guid: e686d938718ac8d47a48e044ba8cd418, type: 2}
+  - TypeId: decor_oldhouse_utility_wallshelf
+    Sprite: {fileID: 21300000, guid: c54a71fd2f47961409b8ea52579323ff, type: 3}
+    Definition: {fileID: 11400000, guid: 9ed764117772142408998731c4cb6c39, type: 2}
+  - TypeId: decor_supermarket_basket_stand
+    Sprite: {fileID: 21300000, guid: e0a9160c92f485d4187217b590a5094d, type: 3}
+    Definition: {fileID: 11400000, guid: 75e838b24d398ac4d8b5bd13fb51ceb1, type: 2}
+  - TypeId: decor_supermarket_fixture_anchoredaisle01_body
+    Sprite: {fileID: 21300000, guid: d208bc2f98e79f84faaa1f44eb42818b, type: 3}
+    Definition: {fileID: 11400000, guid: 3af4846ff5b6fe24686ed48e4e7c72a3, type: 2}
+  - TypeId: decor_supermarket_fixture_anchoredaisle02_body
+    Sprite: {fileID: 21300000, guid: 21e8d0867631fb64ab93bc8d0ba3fb92, type: 3}
+    Definition: {fileID: 11400000, guid: 5504245a94a12cb4fb90358aca17b177, type: 2}
+  - TypeId: decor_supermarket_fixture_checkout01
+    Sprite: {fileID: 21300000, guid: 2dcc0c5f46d442f43b3f205ec8006301, type: 3}
+    Definition: {fileID: 11400000, guid: a7d7e31903a877e42b7b16796e1397ab, type: 2}
+  - TypeId: decor_supermarket_fixture_checkout02
+    Sprite: {fileID: 21300000, guid: 4af2ab4a2cdaa274aae1b30123b57569, type: 3}
+    Definition: {fileID: 11400000, guid: ba4b7db7365904e4897d4106fba3d4eb, type: 2}
+  - TypeId: decor_supermarket_fixture_electronicscounter
+    Sprite: {fileID: 21300000, guid: b8306c1f89354dd429740c8201061599, type: 3}
+    Definition: {fileID: 11400000, guid: 5c3c2ea9c9835f244a01afaf2352c4fa, type: 2}
+  - TypeId: decor_supermarket_grocery_endcap
+    Sprite: {fileID: 21300000, guid: b5422988af0cd0648a63daeea35e4559, type: 3}
+    Definition: {fileID: 11400000, guid: b6cb795fe603a8745949a528bdf37015, type: 2}
+  - TypeId: decor_supermarket_produce_island_a
+    Sprite: {fileID: 21300000, guid: a15672c040042dc4d8f5df2f494f47ae, type: 3}
+    Definition: {fileID: 11400000, guid: 6dc7d67c7ee255549bd5345709154a08, type: 2}
+  - TypeId: decor_supermarket_produce_island_b
+    Sprite: {fileID: 21300000, guid: 5984aeb98aa1abe4ca616c569970ffe5, type: 3}
+    Definition: {fileID: 11400000, guid: 444952509dc5e594d94e8bd4e85a0bd8, type: 2}
+  - TypeId: decor_supermarket_returns_servicedesk
+    Sprite: {fileID: 21300000, guid: a47245d14a7a589499d4525aeac47e8e, type: 3}
+    Definition: {fileID: 11400000, guid: 0cb0c6b0bb01572489c8cca40f32a216, type: 2}
+  - TypeId: decor_supermarket_stockroom_inventorydesk
+    Sprite: {fileID: 21300000, guid: 4ea90a6f5b056c447926a7814a29e785, type: 3}
+    Definition: {fileID: 11400000, guid: 45168d3a647cbfa48a67f00b9cb6a392, type: 2}
+  - TypeId: decor_supermarket_stockroom_packingbench
+    Sprite: {fileID: 21300000, guid: 302445f3b4278ca45baea3adebfc605d, type: 3}
+    Definition: {fileID: 11400000, guid: 43edf552f2e269243a3f7944d979292a, type: 2}
+  - TypeId: decor_supermarket_stockroom_resupplyshelf
+    Sprite: {fileID: 21300000, guid: efad0e49b6b1b1446bea162d14519d5e, type: 3}
+    Definition: {fileID: 11400000, guid: 216cd2aca5a67e143b9a301e8e322a10, type: 2}
+  - TypeId: decor_supermarket_stockroom_spares
+    Sprite: {fileID: 21300000, guid: 2c02e74c923d7a54f8263ecbf3744594, type: 3}
+    Definition: {fileID: 11400000, guid: 02f814011dc8ce048b4cbd80dc941a56, type: 2}
+  - TypeId: decor_warehouse_dispatch_officedesk
+    Sprite: {fileID: 21300000, guid: e98d188433024e24cbffdb55fec92713, type: 3}
+    Definition: {fileID: 11400000, guid: a38ff7f34d9241d438dbfa2b4d628050, type: 2}
+  - TypeId: decor_warehouse_dispatch_returnsshelf
+    Sprite: {fileID: 21300000, guid: 28c6a3179c1afee4c91182c3a82a97fc, type: 3}
+    Definition: {fileID: 11400000, guid: 6bda06da33efd534bae054c9dbc06e56, type: 2}
+  - TypeId: decor_warehouse_dispatch_testbench
+    Sprite: {fileID: 21300000, guid: 1c7290ee737f3bb44a62226b926535de, type: 3}
+    Definition: {fileID: 11400000, guid: 94a18bd546f0f6046a119127bb3a054a, type: 2}
+  - TypeId: decor_warehouse_fixture_anchoredrack_1
+    Sprite: {fileID: 21300000, guid: af5e1002051b2d64c95ce17cfac6ebca, type: 3}
+    Definition: {fileID: 11400000, guid: 8ed0d088ece72d2438cea7619484adf0, type: 2}
+  - TypeId: decor_warehouse_fixture_anchoredrack_-1
+    Sprite: {fileID: 21300000, guid: 03db4ee8b4f688b4e925bd1c2d4545e5, type: 3}
+    Definition: {fileID: 11400000, guid: 9661751871e95744aa4489e5812ac21d, type: 2}
+  - TypeId: decor_warehouse_packing_cartonshelf
+    Sprite: {fileID: 21300000, guid: 38f64078077ea0e45a9d6c0faac15bfa, type: 3}
+    Definition: {fileID: 11400000, guid: 910dc2a9cd7dd4448824113299a58979, type: 2}
+  - TypeId: decor_warehouse_packing_sortingtable
+    Sprite: {fileID: 21300000, guid: f9d33c3a4ca416d4e9ace34851e26f04, type: 3}
+    Definition: {fileID: 11400000, guid: 1adaf77286088d241a25cbbf384e715a, type: 2}
+  - TypeId: decor_warehouse_staff_breaktable
+    Sprite: {fileID: 21300000, guid: 79f2341dee456164dbd92d43acb33930, type: 3}
+    Definition: {fileID: 11400000, guid: 76452472215d3bb48834e54b2afae8e7, type: 2}
+  - TypeId: decor_warehouse_workshop_grindingbench
+    Sprite: {fileID: 21300000, guid: 55d0194151971324bb71bd4ade603f1c, type: 3}
+    Definition: {fileID: 11400000, guid: 6ff00064a1aa08348a8e376d21b6de64, type: 2}
+  - TypeId: decor_warehouse_workshop_servicebench
+    Sprite: {fileID: 21300000, guid: 39e3724f64329fb4c8774c6750f11181, type: 3}
+    Definition: {fileID: 11400000, guid: 46b29f2b3a9dae944af7d7c9856902a7, type: 2}
   - TypeId: food_carton
     Sprite: {fileID: 21300000, guid: 17b658e7a7fb3834d80eb7a16d7c2198, type: 3}
     Definition: {fileID: 11400000, guid: bb9a70787b5ee8349b2334cce3f54739, type: 2}
@@ -22882,6 +23020,24 @@ MonoBehaviour:
   - TypeId: microwave
     Sprite: {fileID: 21300000, guid: f77f32993281720459b4cef26872bcc6, type: 3}
     Definition: {fileID: 11400000, guid: 659ee68bd034ae94a871b316443868bf, type: 2}
+  - TypeId: modular_market_product_1
+    Sprite: {fileID: 21300000, guid: 9484b871751bae948b81a62d998756b4, type: 3}
+    Definition: {fileID: 11400000, guid: 81811539b787bb74d898f882a8c2ea0c, type: 2}
+  - TypeId: modular_market_product_2
+    Sprite: {fileID: 21300000, guid: 096b5fb38b4be4843b73e25eb5a7433d, type: 3}
+    Definition: {fileID: 11400000, guid: 2d1009f1fc2c9ef4d9ef47abeb4eb62f, type: 2}
+  - TypeId: modular_market_product_3
+    Sprite: {fileID: 21300000, guid: bbc6d80c76b45904593e31353803fce2, type: 3}
+    Definition: {fileID: 11400000, guid: e7ad9c4c2813f194b91136d042c90358, type: 2}
+  - TypeId: modular_market_shelf
+    Sprite: {fileID: 21300000, guid: 61c684893db289a47819702d907ccb69, type: 3}
+    Definition: {fileID: 11400000, guid: e2374dd12152d624d936887b4f993335, type: 2}
+  - TypeId: modular_warehouse_crate
+    Sprite: {fileID: 21300000, guid: 6a63572dad54fd94391fc0bebca96174, type: 3}
+    Definition: {fileID: 11400000, guid: 6398d992a6d7afd4c92dfa09c9a5f3a0, type: 2}
+  - TypeId: modular_warehouse_shelf
+    Sprite: {fileID: 21300000, guid: 99924cce52b916643b81470e6528e5b7, type: 3}
+    Definition: {fileID: 11400000, guid: 61f452bd203e0ef45b81088b597b4782, type: 2}
   - TypeId: monitor
     Sprite: {fileID: 21300000, guid: 17594512aca2d464e972e08a3d1c32cf, type: 3}
     Definition: {fileID: 11400000, guid: 74013012a3669914cb72bd1029bf01cc, type: 2}

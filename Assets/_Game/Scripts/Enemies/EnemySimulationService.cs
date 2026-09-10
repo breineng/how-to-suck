@@ -38,11 +38,16 @@ namespace HowToSuck
         public const double ReviveSeconds=3;
         public const double SelfRevivePenalty=15;
         public const float ReviveDistance=2.2f;
+        public const double ArrivalGraceSeconds=30;
         private sealed class Dormant {public EnemySpawnPoint Spawn;public SuckableObject Cover;public Vector3 Position;public ulong Id;public bool Awakened;}
         private readonly List<Dormant> dormant=new List<Dormant>();
         private EnemySpawnPoint bossSpawn;
         private ulong bossId;
         private int encounterCrew;
+        private EnemySpawnPoint[] reinforcementSpawns=Array.Empty<EnemySpawnPoint>();
+        private ulong nextEnemyId;
+        private double nextReinforcementAt;
+        private int reinforcementCursor;
         private int EarnedRepairs=>1+(contract!=null?(int)Math.Min(3,contract.State.DeliveredValue*4/Math.Max(1,contract.State.Quota)):0);
         public IReadOnlyDictionary<ulong,EnemyActor> Actors=>actors;
         public bool AdvancedEncounter=>contract!=null&&contract.State.ContractId.EndsWith("_ii",StringComparison.Ordinal);
@@ -54,6 +59,9 @@ namespace HowToSuck
         public bool RegisteredItem(SuckableObject item)=>item!=null&&item.RunId==run&&world.Loot.Items.TryGetValue(item.InstanceId,out var actual)&&actual==item;
         public bool CanDefeat(BossKey key)=>contract!=null&&contract.State.Boss.Status==BossObjectiveStatus.Active&&contract.State.Boss.Key.Equals(key);
         public bool RequiresRecovery(int owner)=>suits.TryGetValue(owner,out var suit)&&suit.Pending;
+        public int Stage=>CampaignBalance.Stage(contract?.State.ContractId);
+        // Re-evaluate against the active roster, including after a revive or disconnect.
+        public bool AllPlayersDown=>world.Players.Count>0&&world.Players.All(p=>p.Value!=null&&suits.TryGetValue(p.Key,out var s)&&s.Pending);
         public PlayerSuitSnapshot SuitSnapshot(int owner)=>suits.TryGetValue(owner,out var s)?new PlayerSuitSnapshot(run,owner,s.Segments,s.InvulnerableUntil,s.Pending,
             Math.Max(0,EarnedRepairs-s.UsedRepairs),s.RepairStarted>=0?Mathf.Clamp01((float)((now-s.RepairStarted)/(s.Pending?ReviveSeconds:1.5))):0):default;
         public bool InsideWorld(Vector3 point)=>level!=null&&level.BoundsGuard!=null&&point.y>=level.BoundsGuard.MinimumY&&level.BoundsGuard.AllowedBounds.Contains(point);
@@ -84,12 +92,13 @@ namespace HowToSuck
             {
                 ulong id=++next;
                 if(point.Prefab.GetComponent<EnemyActor>().Definition.IsBoss){bossSpawn=point;bossId=id;continue;}
-                if(covers.Count==0)continue;
-                var cover=covers[0];covers.RemoveAt(0);
-                dormant.Add(new Dormant{Spawn=point,Cover=cover,Position=cover.transform.position,Id=id});
+                var cover=covers.Count>0?covers[0]:null;if(cover!=null)covers.RemoveAt(0);
+                dormant.Add(new Dormant{Spawn=point,Cover=cover,Position=cover!=null?cover.transform.position:point.transform.position,Id=id});
             }
+            nextEnemyId=next;nextReinforcementAt=0;reinforcementCursor=0;
+            reinforcementSpawns=entries[0].Spawns.Where(p=>!p.Prefab.GetComponent<EnemyActor>().Definition.IsBoss).ToArray();
         }
-        private bool TrySpawn(EnemySpawnPoint point,Vector3 position,ulong id,bool boss)
+        private bool TrySpawn(EnemySpawnPoint point,Vector3 position,ulong id,bool boss,bool hiddenFromCrew=false)
         {
             var template=point.Prefab.GetComponent<EnemyActor>();var shape=point.Prefab.GetComponent<BoxCollider>();
             for(int sample=0;sample<17;sample++)
@@ -97,6 +106,7 @@ namespace HowToSuck
                 float angle=sample*Mathf.PI*.25f,radius=sample==0?0:sample<=8?.65f:1.3f;
                 var candidate=position+new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius;
                 if(!UnityEngine.AI.NavMesh.SamplePosition(candidate,out var nav,1.5f,UnityEngine.AI.NavMesh.AllAreas)||!InsideWorld(nav.position))continue;
+                if(hiddenFromCrew&&!HiddenFromCrew(nav.position))continue;
                 bool blocked=false;
                 foreach(var c in Physics.OverlapBox(nav.position+point.transform.rotation*shape.center+Vector3.up*.06f,
                     Vector3.Max(Vector3.one*.02f,shape.size*.5f-Vector3.one*.04f),point.transform.rotation,LayerMask.GetMask("World","Items","Player","Enemies"),QueryTriggerInteraction.Ignore))
@@ -119,17 +129,43 @@ namespace HowToSuck
         }
         private void StepSpawns()
         {
+            // Allow the crew to arrive and orient themselves before any encounter.
+            // Settling furniture and automatic truck intake never count as provocation.
+            if(now-contract.State.StartedAt<ArrivalGraceSeconds)return;
+            int alive=actors.Values.Count(a=>a!=null&&a.IsAlive&&!a.BossKey.IsValid);
+            int cap=Math.Min(6,encounterCrew+1+Stage/3);
             for(int i=dormant.Count-1;i>=0;i--)
             {
                 var hidden=dormant[i];
-                if(hidden.Cover==null){dormant.RemoveAt(i);continue;}
-                if(hidden.Cover.State==SuckableState.Ingesting||hidden.Cover.State==SuckableState.Stored||
-                    (hidden.Cover.transform.position-hidden.Position).sqrMagnitude>.64f)hidden.Awakened=true;
-                if(hidden.Awakened&&TrySpawn(hidden.Spawn,hidden.Position,hidden.Id,false))dormant.RemoveAt(i);
+                if(hidden.Cover!=null&&hidden.Cover.HasReceivedPlayerSuction)hidden.Awakened=true;
+                if(now-contract.State.StartedAt>ArrivalGraceSeconds+25+hidden.Id*14)hidden.Awakened=true;
+                // A disturbed object may be next to its collector: use an authored
+                // entrance, with the same distance/visibility checks as reinforcements.
+                if(hidden.Awakened&&alive<cap&&SpawnHiddenFromCrew(hidden.Spawn,hidden.Id)){dormant.RemoveAt(i);alive++;}
             }
             if(bossSpawn!=null&&contract.State.Boss.Status==BossObjectiveStatus.Unassigned&&contract.State.DeliveredValue>contract.State.Quota/2)
                 if(TrySpawn(bossSpawn,bossSpawn.transform.position,bossId,true))bossSpawn=null;
+            // Bounded pressure, with regular quiet intervals and no reinforcements
+            // on top of players or after the boss dies. All spawn points are authored.
+            if(contract.State.Boss.Status!=BossObjectiveStatus.Active||reinforcementSpawns.Length==0||AllPlayersDown)return;
+            if(nextReinforcementAt==0){nextReinforcementAt=now+65;return;}
+            if(now<nextReinforcementAt||alive>=cap)return;
+            if((now-contract.State.StartedAt)%90<18){nextReinforcementAt=now+5;return;}
+            if(suits.Values.Any(s=>s.Pending)||suits.Values.All(s=>s.Segments<=25)){nextReinforcementAt=now+10;return;}
+            nextReinforcementAt=now+Math.Max(38,65-Stage*5);
+            for(int i=0;i<reinforcementSpawns.Length;i++)
+            {
+                var point=reinforcementSpawns[reinforcementCursor++%reinforcementSpawns.Length];
+                if(SpawnHiddenFromCrew(point,nextEnemyId+1)){nextEnemyId++;break;}
+            }
         }
+        private bool SpawnHiddenFromCrew(EnemySpawnPoint point,ulong id)
+        {
+            return TrySpawn(point,point.transform.position,id,false,true);
+        }
+        private bool HiddenFromCrew(Vector3 point)=>!world.Players.Values.Any(p=>p!=null&&((p.transform.position-point).sqrMagnitude<64||
+            Vector3.Dot(p.AimRay.direction,(point+Vector3.up-p.AimRay.origin).normalized)>.25f&&
+            !Physics.Linecast(p.AimRay.origin,point+Vector3.up,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)));
         public void RegisterPlayer(int owner)
         {if(string.IsNullOrEmpty(run)||owner<1||owner>4)throw new InvalidOperationException("Register suit in the prepared run.");suits.Add(owner,new Suit());}
         public void RemovePlayer(int owner)=>suits.Remove(owner);
@@ -148,22 +184,23 @@ namespace HowToSuck
             foreach(var pair in suits)
             {
                 var suit=pair.Value;if(!suit.Pending||!world.Players.TryGetValue(pair.Key,out var motor)||motor==null)continue;
-                bool solo=world.Players.Count==1;
+                bool selfRescue=AllPlayersDown;
                 var intent=world.RecoveryIntent(pair.Key);
                 if(!intent.InteractHeld)suit.SelfReviveArmed=true;
-                int helper=solo?(suit.SelfReviveArmed&&intent.InteractHeld?pair.Key:0):FindReviver(pair.Key,motor);
+                int helper=selfRescue?(suit.SelfReviveArmed&&intent.InteractHeld?pair.Key:0):FindReviver(pair.Key,motor);
                 if(helper==0){suit.RepairStarted=-1;suit.Reviver=0;continue;}
                 if(suit.RepairStarted<0||suit.Reviver!=helper){suit.RepairStarted=now;suit.Reviver=helper;continue;}
-                if(now-suit.RepairStarted<ReviveSeconds||!StandingRoom(motor,suit.DownPosition))continue;
-                if(solo)
+                if(now-suit.RepairStarted<ReviveSeconds||!TryRecoveryPosition(motor,suit.DownPosition,out var recoveryPosition))continue;
+                if(helper==pair.Key&&contract.State.Deadline-now<=SelfRevivePenalty)
                 {
                     contract.ApplyDeadlinePenalty(SelfRevivePenalty,now);
-                    if(!CanApplyAt(now))return;
+                    return;
                 }
-                if(world.TryRecoverCombatPlayer(motor,suit.DownPosition,now))
-                {suit.Segments=25;suit.Pending=false;suit.RepairStarted=-1;suit.Reviver=0;suit.InvulnerableUntil=now+2;
+                if(world.TryRecoverCombatPlayer(motor,recoveryPosition,now))
+                {suit.Segments=CampaignBalance.ReviveHealth;suit.Pending=false;suit.RepairStarted=-1;suit.Reviver=0;suit.InvulnerableUntil=now+2;
+                    if(helper==pair.Key)contract.ApplyDeadlinePenalty(SelfRevivePenalty,now);
                     if(suit.AudioOccurrence<ulong.MaxValue)Audio.CommittedAudioEvents.Publish(new Audio.CommittedAudioFact(
-                        run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,25,motor.transform.position));}
+                        run,Audio.CommittedAudioKind.SuitRecovered,++suit.AudioOccurrence,0,0,pair.Key,0,false,now,0,suit.Segments,motor.transform.position));}
             }
             // A disconnected owner's original FIFO survives until each item has a checked physical return pose.
             foreach(var storage in world.Storages.Values)
@@ -262,6 +299,26 @@ namespace HowToSuck
             }
             return selected;
         }
+        private bool TryRecoveryPosition(PlayerMotor motor,Vector3 down,out Vector3 position)
+        {
+            position=down;
+            if(InsideWorld(down)&&StandingRoom(motor,down))return true;
+            // A disabled downed capsule can finish inside a door lip. Find nearby
+            // floor on the same side of the wall instead of waiting forever there.
+            for(int ring=0;ring<=3;ring++)for(int direction=0;direction<(ring==0?1:8);direction++)
+            {
+                float angle=direction*Mathf.PI*.25f;
+                Vector3 candidate=down+new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*(ring*.4f);
+                if(!Physics.Raycast(candidate+Vector3.up*.6f,Vector3.down,out var floor,1.2f,
+                    LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)||floor.normal.y<.6f)continue;
+                candidate.y=floor.point.y+.035f;
+                if(!InsideWorld(candidate)||Mathf.Abs(candidate.y-down.y)>.5f||
+                    Physics.Linecast(down+Vector3.up*.6f,candidate+Vector3.up*.6f,LayerMask.GetMask("World"),QueryTriggerInteraction.Ignore)||
+                    !StandingRoom(motor,candidate))continue;
+                position=candidate;return true;
+            }
+            return false;
+        }
         private static bool StandingRoom(PlayerMotor motor,Vector3 position)
         {
             float radius=motor.Settings.CapsuleRadius*.92f;
@@ -321,7 +378,7 @@ namespace HowToSuck
             foreach(var actor in actors.Values)if(actor!=null)spawner?.Despawn(actor.gameObject);
             // Pending cargo is registered; AuthorityWorld's ordinary loot teardown owns its one destruction.
             actors.Clear();suits.Clear();retired.Clear();pendingCargo.Clear();cargoCandidates.Clear();recoverCargo.Clear();cargoRetry.Clear();
-            dormant.Clear();bossSpawn=null;bossId=0;
+            dormant.Clear();bossSpawn=null;bossId=0;reinforcementSpawns=Array.Empty<EnemySpawnPoint>();nextEnemyId=0;
             run=null;level=null;contract=null;spawner=null;
         }
     }

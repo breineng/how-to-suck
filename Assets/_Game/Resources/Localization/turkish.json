@@ -1967,6 +1967,230 @@
     {
       "source": "PC",
       "text": "PC"
+    },
+    {
+      "source": "Код комнаты",
+      "text": "Oda kodu"
+    },
+    {
+      "source": "Вставьте код друга",
+      "text": "Arkadaşının kodunu yapıştır"
+    },
+    {
+      "source": "Подключиться по коду",
+      "text": "Kodla katıl"
+    },
+    {
+      "source": "Скопировать код",
+      "text": "Kodu kopyala"
+    },
+    {
+      "source": "Код скопирован. Отправьте его другу.",
+      "text": "Kod kopyalandı. Arkadaşına gönder."
+    },
+    {
+      "source": "Отправьте этот код другу для входа в комнату.",
+      "text": "Arkadaşının odana katılması için bu kodu ona gönder."
+    },
+    {
+      "source": "Создайте комнату или введите код друга.",
+      "text": "Bir oda oluştur veya arkadaşının kodunu gir."
+    },
+    {
+      "source": "Введите полный код комнаты, полученный от хозяина.",
+      "text": "Ev sahibinin verdiği oda kodunun tamamını gir."
+    },
+    {
+      "source": "Epic Online Services ещё не настроен. Одиночная игра доступна.",
+      "text": "Epic Online Services henüz yapılandırılmadı. Tek oyunculu mod kullanılabilir."
+    },
+    {
+      "source": "Проверьте настройки Epic Online Services. Одиночная игра доступна.",
+      "text": "Epic Online Services ayarlarını kontrol et. Tek oyunculu mod kullanılabilir."
+    },
+    {
+      "source": "Совместная игра через Epic Online Services. Подключение по коду комнаты.",
+      "text": "Epic Online Services üzerinden eşli oyun. Oda koduyla katıl."
+    },
+    {
+      "source": "Не удалось проверить версию игры.",
+      "text": "Oyun sürümü doğrulanamadı."
+    },
+    {
+      "source": "Сеанс Epic завершён. Подключитесь заново.",
+      "text": "Epic oturumun sona erdi. Yeniden bağlan."
+    },
+    {
+      "source": "Epic: не удалось подготовить вход ({0}).",
+      "text": "Epic oturum açmayı hazırlayamadı ({0})."
+    },
+    {
+      "source": "Не удалось войти в Epic ({0}).",
+      "text": "Epic hesabına giriş yapılamadı ({0})."
+    },
+    {
+      "source": "Учётная запись Epic изменилась. Подключитесь заново.",
+      "text": "Epic hesabın değişti. Yeniden bağlan."
+    },
+    {
+      "source": "Epic не ответил вовремя. Проверьте соединение и настройки сервиса.",
+      "text": "Epic zamanında yanıt vermedi. Bağlantını ve hizmet ayarlarını kontrol et."
+    },
+    {
+      "source": "Не удалось создать комнату Epic",
+      "text": "Epic odası oluşturulamadı"
+    },
+    {
+      "source": "Не удалось найти комнату Epic",
+      "text": "Epic odası bulunamadı"
+    },
+    {
+      "source": "Комната не найдена, заполнена или уже начала контракт",
+      "text": "Oda bulunamadı, dolu veya bir sözleşmeye başlamış"
+    },
+    {
+      "source": "Комната недоступна или использует другую версию игры",
+      "text": "Oda kullanılamıyor veya farklı bir oyun sürümü kullanıyor"
+    },
+    {
+      "source": "Не удалось войти в комнату Epic",
+      "text": "Epic odasına katılınamadı"
+    },
+    {
+      "source": "Состояние комнаты изменилось. Подключитесь заново",
+      "text": "Oda değişti. Yeniden bağlan"
+    },
+    {
+      "source": "Не удалось проверить участников комнаты Epic",
+      "text": "Epic odası üyeleri doğrulanamadı"
+    },
+    {
+      "source": "Не удалось обновить комнату Epic",
+      "text": "Epic odası güncellenemedi"
+    },
+    {
+      "source": "Не удалось записать параметры комнаты Epic",
+      "text": "Epic odası ayarları kaydedilemedi"
+    },
+    {
+      "source": "Не удалось закрыть вход в комнату Epic",
+      "text": "Epic odası yeni oyunculara kapatılamadı"
+    },
+    {
+      "source": "Epic не подтвердил созданную комнату",
+      "text": "Epic yeni odayı onaylamadı"
+    },
+    {
+      "source": "Epic не ответил на запрос комнаты вовремя",
+      "text": "Epic oda isteğine zamanında yanıt vermedi"
+    },
+    {
+      "source": "Не удалось запустить Epic Online Services. Проверьте настройки сервиса.",
+      "text": "Epic Online Services başlatılamadı. Hizmet ayarlarını kontrol et."
+    },
+    {
+      "source": "Не удалось открыть комнату Epic.",
+      "text": "Epic odası açılamadı."
+    },
+    {
+      "source": "Не удалось запустить хозяина комнаты Epic.",
+      "text": "Epic odasının ev sahibi başlatılamadı."
+    },
+    {
+      "source": "Не удалось подключиться к хозяину комнаты Epic.",
+      "text": "Epic odasının ev sahibine bağlanılamadı."
+    },
+    {
+      "source": "Не удалось запустить соединение Epic.",
+      "text": "Epic bağlantısı başlatılamadı."
+    },
+    {
+      "source": "Не удалось закрыть комнату Epic перед контрактом.",
+      "text": "Epic odası sözleşmeden önce kapatılamadı."
+    },
+    {
+      "source": "Не удалось обновить состояние комнаты Epic.",
+      "text": "Epic odasının durumu güncellenemedi."
+    },
+    {
+      "source": "Обновить",
+      "text": "Yenile"
+    },
+    {
+      "source": "Слоты улучшаются для текущей модели. Покупает хост.",
+      "text": "Yuvalar mevcut model için geliştirilir. Satın almayı ev sahibi yapar."
+    },
+    {
+      "source": "Все слоты этой модели открыты.",
+      "text": "Bu modelin tüm yuvaları açıldı."
+    },
+    {
+      "source": "Новая модель начинает с базовых слотов. Улучшения слотов не переносятся.",
+      "text": "Yeni model temel yuvalarıyla başlar. Yuva geliştirmeleri aktarılmaz."
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через {0} с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": "Bu görüntü modu korunsun mu?\n{0} sn. sonra geri dönülecek.\nEsc veya “Geri al” değişikliği iptal eder."
+    },
+    {
+      "source": "Вся команда выведена из строя",
+      "text": "Tüm ekip yere düştü"
+    },
+    {
+      "source": "Ковёр",
+      "text": "Halı"
+    },
+    {
+      "source": "Кровать",
+      "text": "Yatak"
+    },
+    {
+      "source": "Шкаф",
+      "text": "Dolap"
+    },
+    {
+      "source": "Стеллаж",
+      "text": "Raf"
+    },
+    {
+      "source": "Стол",
+      "text": "Masa"
+    },
+    {
+      "source": " · УЯЗВИМ",
+      "text": " · SAVUNMASIZ"
+    },
+    {
+      "source": " · БРОНЯ",
+      "text": " · ZIRHLI"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "Tüm ekip yere düştü\nKalkmak için {0} tuşunu 3 saniye tut\n%25 tulum · −15 saniye"
+    },
+    {
+      "source": "Epic: не удалось подготовить вход (",
+      "text": "Epic oturum açmayı hazırlayamadı ("
+    },
+    {
+      "source": "Не удалось войти в Epic (",
+      "text": "Epic hesabına giriş yapılamadı ("
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 50% костюма",
+      "text": "KALDIRILIYORSUN\nKalkınca tulum %50 olur"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "YERE DÜŞTÜN\nKalkmak için {0} tuşunu 3 saniye tut\n%50 tulum · −15 saniye"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 50% HP",
+      "text": "Arkadaşını kaldırmak için {0} tuşunu 3 saniye tut · %50 can"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "Tüm ekip yere düştü\nKalkmak için {0} tuşunu 3 saniye tut\n%50 tulum · −15 saniye"
     }
   ]
 }

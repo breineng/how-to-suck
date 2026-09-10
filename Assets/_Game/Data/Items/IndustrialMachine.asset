@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: industrial_machine
   DisplayName: IndustrialMachine
-  Value: 3800
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 5
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

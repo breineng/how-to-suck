@@ -18,6 +18,6 @@ MonoBehaviour:
   RequiredBossId: workshop_tangle
   RecommendedTierId: mk4
   SceneName: WarehouseNetwork
-  Quota: 11000
-  TimeLimitSeconds: 1080
-  FailurePercent: 25
+  Quota: 5100
+  TimeLimitSeconds: 1800
+  FailurePercent: 30

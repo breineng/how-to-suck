@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: chair_office
   DisplayName: "\u041E\u0444\u0438\u0441\u043D\u043E\u0435 \u043A\u0440\u0435\u0441\u043B\u043E"
-  Value: 140
+  Value: 75
+  CargoRole: 0
   RequiredIntakeSize: 1.3
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

@@ -5,6 +5,7 @@ namespace HowToSuck
 {
     // Optional composition seam. The role is selected before World.Initialize and cannot change in-place.
     public interface ISessionDriverProvider { ISessionDriver CreateDriver(SessionRoot session); }
+    public interface IEncounterCrewProvider { int ConnectedCrewSize { get; } }
     public interface INetworkSessionDriver : ISessionDriver
     {
         bool HasAuthority { get; }

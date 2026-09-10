@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: generator
   DisplayName: Generator
-  Value: 1200
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 2.2
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

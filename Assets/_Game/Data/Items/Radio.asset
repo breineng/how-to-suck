@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: radio
   DisplayName: "\u0420\u0430\u0434\u0438\u043E"
-  Value: 80
+  Value: 45
+  CargoRole: 0
   RequiredIntakeSize: 0.4
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

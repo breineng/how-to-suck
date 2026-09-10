@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: bottle
   DisplayName: Bottle
-  Value: 15
+  Value: 10
+  CargoRole: 0
   RequiredIntakeSize: 0.18
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

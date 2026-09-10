@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: safe_large
   DisplayName: SafeLarge
-  Value: 3000
+  Value: 450
+  CargoRole: 0
   RequiredIntakeSize: 3.3
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

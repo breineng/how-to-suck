@@ -33,7 +33,7 @@ namespace HowToSuck
             if(actor.Health<health){flash=1;health=actor.Health;}
             flash=Mathf.MoveTowards(flash,0,Time.unscaledDeltaTime*5);
             for(int i=0;i<renderers.Length;i++)if(renderers[i]!=null)
-            {renderers[i].GetPropertyBlock(block);block.SetColor("_BaseColor",Color.Lerp(colors[i],new Color(2,.035f,.015f),flash));block.SetColor("_EmissionColor",new Color(.8f,0,0)*flash);renderers[i].SetPropertyBlock(block);}
+            {renderers[i].GetPropertyBlock(block);Color baseColor=actor.BossKey.IsValid&&actor.Phase==EnemyPhase.Recover?Color.Lerp(colors[i],new Color(1,.68f,.16f),.45f):colors[i];block.SetColor("_BaseColor",Color.Lerp(baseColor,new Color(2,.035f,.015f),flash));block.SetColor("_EmissionColor",new Color(.8f,0,0)*flash);renderers[i].SetPropertyBlock(block);}
             if(actor.Health==0&&!dead)
             {
                 dead=true;bool boss=actor.BossKey.IsValid;

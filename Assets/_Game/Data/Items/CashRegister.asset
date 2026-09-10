@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: cash_register
   DisplayName: CashRegister
-  Value: 250
+  Value: 140
+  CargoRole: 0
   RequiredIntakeSize: 0.75
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

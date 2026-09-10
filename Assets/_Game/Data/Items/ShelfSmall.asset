@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: shelf_small
   DisplayName: ShelfSmall
-  Value: 350
+  Value: 195
+  CargoRole: 0
   RequiredIntakeSize: 2.3
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

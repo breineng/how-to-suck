@@ -3,22 +3,25 @@ namespace HowToSuck
 {
     public static class ItemFireRules
     {
-        public const double Cooldown = .30;
+        public const double Cooldown = .65;
         public const double FlightLifetime = 3.0;
         public const float LaunchSpeed = 18f;
         public const float MaximumLaunchSpeed = 36f;
         public const double ChargeSeconds = 2;
-        public const int MaximumDamage = 250;
+        public const int MaximumDamage = 100;
+        public const float ChargeDamageBonus = .65f;
         public const float MinimumHitSpeed = 3f;
         public static float Charge(double heldSeconds) => (float)Math.Clamp((heldSeconds - .12) / (ChargeSeconds - .12), 0, 1);
         public static float Speed(float charge) => LaunchSpeed + (MaximumLaunchSpeed - LaunchSpeed) * Math.Clamp(charge, 0, 1);
-        public static int Damage(float mass, float charge) => (int)Math.Round(Damage(mass) * (1 + 1.5 * Math.Clamp(charge, 0, 1)));
+        public static int Damage(float mass, float charge) => Damage(mass,charge,"mk1");
+        public static int Damage(float mass,float charge,string tier) => Math.Min(MaximumDamage,
+            (int)Math.Round(Damage(mass)*(1+ChargeDamageBonus*Math.Clamp(charge,0,1))*CampaignBalance.ShotMultiplier(tier)));
         public static bool Finite(double v) => !double.IsNaN(v) && !double.IsInfinity(v);
         public static bool Newer(uint value, uint previous) => unchecked((int)(value - previous)) > 0;
         public static int Damage(float mass)
         {
             if (!Finite(mass) || mass <= 0) throw new ArgumentOutOfRangeException(nameof(mass));
-            return (int)Math.Round(Math.Min(100.0, Math.Max(12.0, 12.0 + 8.0 * Math.Sqrt(mass))), MidpointRounding.ToEven);
+            return (int)Math.Round(Math.Min(48.0, 10.0 + 5.0 * Math.Sqrt(mass)), MidpointRounding.ToEven);
         }
         public static bool CanDamage(bool ordinary, double now, double expires, float relativeSpeed) =>
             ordinary && Finite(now) && Finite(expires) && now < expires && Finite(relativeSpeed) && relativeSpeed >= MinimumHitSpeed;

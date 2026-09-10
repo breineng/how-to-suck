@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: microwave
   DisplayName: "\u041C\u0438\u043A\u0440\u043E\u0432\u043E\u043B\u043D\u043E\u0432\u043A\u0430"
-  Value: 150
+  Value: 80
+  CargoRole: 0
   RequiredIntakeSize: 0.85
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

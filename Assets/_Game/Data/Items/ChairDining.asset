@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: HowToSuck.Runtime::HowToSuck.SuckableDefinition
   TypeId: chair_dining
   DisplayName: ChairDining
-  Value: 90
+  Value: 50
+  CargoRole: 0
   RequiredIntakeSize: 0.95
   CanBeSwallowedByPlayer: 1
   CanBeSwallowedByTruck: 1

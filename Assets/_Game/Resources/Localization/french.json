@@ -1967,6 +1967,230 @@
     {
       "source": "PC",
       "text": "PC"
+    },
+    {
+      "source": "Код комнаты",
+      "text": "Code du salon"
+    },
+    {
+      "source": "Вставьте код друга",
+      "text": "Collez le code de votre ami"
+    },
+    {
+      "source": "Подключиться по коду",
+      "text": "Rejoindre avec un code"
+    },
+    {
+      "source": "Скопировать код",
+      "text": "Copier le code"
+    },
+    {
+      "source": "Код скопирован. Отправьте его другу.",
+      "text": "Code copié. Envoyez-le à votre ami."
+    },
+    {
+      "source": "Отправьте этот код другу для входа в комнату.",
+      "text": "Envoyez ce code à votre ami pour qu'il rejoigne votre salon."
+    },
+    {
+      "source": "Создайте комнату или введите код друга.",
+      "text": "Créez un salon ou saisissez le code de votre ami."
+    },
+    {
+      "source": "Введите полный код комнаты, полученный от хозяина.",
+      "text": "Saisissez le code complet du salon fourni par l'hôte."
+    },
+    {
+      "source": "Epic Online Services ещё не настроен. Одиночная игра доступна.",
+      "text": "Epic Online Services n'est pas encore configuré. Le mode solo est disponible."
+    },
+    {
+      "source": "Проверьте настройки Epic Online Services. Одиночная игра доступна.",
+      "text": "Vérifiez les paramètres d'Epic Online Services. Le mode solo est disponible."
+    },
+    {
+      "source": "Совместная игра через Epic Online Services. Подключение по коду комнаты.",
+      "text": "Coopération via Epic Online Services. Connexion avec un code de salon."
+    },
+    {
+      "source": "Не удалось проверить версию игры.",
+      "text": "Impossible de vérifier la version du jeu."
+    },
+    {
+      "source": "Сеанс Epic завершён. Подключитесь заново.",
+      "text": "Votre session Epic est terminée. Reconnectez-vous."
+    },
+    {
+      "source": "Epic: не удалось подготовить вход ({0}).",
+      "text": "Epic n'a pas pu préparer la connexion ({0})."
+    },
+    {
+      "source": "Не удалось войти в Epic ({0}).",
+      "text": "Impossible de se connecter à Epic ({0})."
+    },
+    {
+      "source": "Учётная запись Epic изменилась. Подключитесь заново.",
+      "text": "Votre compte Epic a changé. Reconnectez-vous."
+    },
+    {
+      "source": "Epic не ответил вовремя. Проверьте соединение и настройки сервиса.",
+      "text": "Epic n'a pas répondu à temps. Vérifiez votre connexion et les paramètres du service."
+    },
+    {
+      "source": "Не удалось создать комнату Epic",
+      "text": "Impossible de créer un salon Epic"
+    },
+    {
+      "source": "Не удалось найти комнату Epic",
+      "text": "Impossible de trouver le salon Epic"
+    },
+    {
+      "source": "Комната не найдена, заполнена или уже начала контракт",
+      "text": "Le salon est introuvable, complet ou a déjà commencé un contrat"
+    },
+    {
+      "source": "Комната недоступна или использует другую версию игры",
+      "text": "Le salon est indisponible ou utilise une autre version du jeu"
+    },
+    {
+      "source": "Не удалось войти в комнату Epic",
+      "text": "Impossible de rejoindre le salon Epic"
+    },
+    {
+      "source": "Состояние комнаты изменилось. Подключитесь заново",
+      "text": "Le salon a changé. Reconnectez-vous"
+    },
+    {
+      "source": "Не удалось проверить участников комнаты Epic",
+      "text": "Impossible de vérifier les membres du salon Epic"
+    },
+    {
+      "source": "Не удалось обновить комнату Epic",
+      "text": "Impossible de mettre à jour le salon Epic"
+    },
+    {
+      "source": "Не удалось записать параметры комнаты Epic",
+      "text": "Impossible d'enregistrer les paramètres du salon Epic"
+    },
+    {
+      "source": "Не удалось закрыть вход в комнату Epic",
+      "text": "Impossible de fermer le salon Epic aux nouveaux joueurs"
+    },
+    {
+      "source": "Epic не подтвердил созданную комнату",
+      "text": "Epic n'a pas confirmé le nouveau salon"
+    },
+    {
+      "source": "Epic не ответил на запрос комнаты вовремя",
+      "text": "Epic n'a pas répondu à temps à la demande de salon"
+    },
+    {
+      "source": "Не удалось запустить Epic Online Services. Проверьте настройки сервиса.",
+      "text": "Impossible de démarrer Epic Online Services. Vérifiez les paramètres du service."
+    },
+    {
+      "source": "Не удалось открыть комнату Epic.",
+      "text": "Impossible d'ouvrir un salon Epic."
+    },
+    {
+      "source": "Не удалось запустить хозяина комнаты Epic.",
+      "text": "Impossible de démarrer l'hôte du salon Epic."
+    },
+    {
+      "source": "Не удалось подключиться к хозяину комнаты Epic.",
+      "text": "Impossible de se connecter à l'hôte du salon Epic."
+    },
+    {
+      "source": "Не удалось запустить соединение Epic.",
+      "text": "Impossible de démarrer la connexion Epic."
+    },
+    {
+      "source": "Не удалось закрыть комнату Epic перед контрактом.",
+      "text": "Impossible de fermer le salon Epic avant le contrat."
+    },
+    {
+      "source": "Не удалось обновить состояние комнаты Epic.",
+      "text": "Impossible de mettre à jour l'état du salon Epic."
+    },
+    {
+      "source": "Обновить",
+      "text": "Actualiser"
+    },
+    {
+      "source": "Слоты улучшаются для текущей модели. Покупает хост.",
+      "text": "Les emplacements sont améliorés pour le modèle actuel. L'hôte les achète."
+    },
+    {
+      "source": "Все слоты этой модели открыты.",
+      "text": "Tous les emplacements de ce modèle sont débloqués."
+    },
+    {
+      "source": "Новая модель начинает с базовых слотов. Улучшения слотов не переносятся.",
+      "text": "Un nouveau modèle commence avec ses emplacements de base. Les améliorations ne sont pas transférées."
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через {0} с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": "Conserver ce mode vidéo ?\nRetour dans {0} s.\nÉchap ou « Rétablir » annule le changement."
+    },
+    {
+      "source": "Вся команда выведена из строя",
+      "text": "Toute l'équipe est à terre"
+    },
+    {
+      "source": "Ковёр",
+      "text": "Tapis"
+    },
+    {
+      "source": "Кровать",
+      "text": "Lit"
+    },
+    {
+      "source": "Шкаф",
+      "text": "Armoire"
+    },
+    {
+      "source": "Стеллаж",
+      "text": "Étagère"
+    },
+    {
+      "source": "Стол",
+      "text": "Table"
+    },
+    {
+      "source": " · УЯЗВИМ",
+      "text": " · VULNÉRABLE"
+    },
+    {
+      "source": " · БРОНЯ",
+      "text": " · BLINDÉ"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "Toute l'équipe est à terre\nMaintenez {0} 3 secondes pour vous relever\n25% de combinaison · −15 secondes"
+    },
+    {
+      "source": "Epic: не удалось подготовить вход (",
+      "text": "Epic n'a pas pu préparer la connexion ("
+    },
+    {
+      "source": "Не удалось войти в Epic (",
+      "text": "Impossible de se connecter à Epic ("
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 50% костюма",
+      "text": "RÉANIMATION EN COURS\nCombinaison à 50% après réanimation"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "VOUS ÊTES À TERRE\nMaintenez {0} 3 secondes pour vous relever\n50% de combinaison · −15 secondes"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 50% HP",
+      "text": "Maintenez {0} 3 secondes pour réanimer un équipier · 50% PV"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "Toute l'équipe est à terre\nMaintenez {0} 3 secondes pour vous relever\n50% de combinaison · −15 secondes"
     }
   ]
 }

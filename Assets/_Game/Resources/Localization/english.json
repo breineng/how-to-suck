@@ -2111,6 +2111,86 @@
     {
       "source": "Не удалось обновить состояние комнаты Epic.",
       "text": "Could not update the Epic room state."
+    },
+    {
+      "source": "Обновить",
+      "text": "Refresh"
+    },
+    {
+      "source": "Слоты улучшаются для текущей модели. Покупает хост.",
+      "text": "Slots are upgraded for the current model. The host purchases them."
+    },
+    {
+      "source": "Все слоты этой модели открыты.",
+      "text": "All slots for this model are unlocked."
+    },
+    {
+      "source": "Новая модель начинает с базовых слотов. Улучшения слотов не переносятся.",
+      "text": "A new model starts with its base slots. Slot upgrades do not carry over."
+    },
+    {
+      "source": "Оставить этот видеорежим?\nВозврат через {0} с.\nEsc или «Вернуть» отменяют изменение.",
+      "text": "Keep this video mode?\nReverting in {0} s.\nEsc or “Revert” cancels the change."
+    },
+    {
+      "source": "Вся команда выведена из строя",
+      "text": "The entire crew is down"
+    },
+    {
+      "source": "Ковёр",
+      "text": "Rug"
+    },
+    {
+      "source": "Кровать",
+      "text": "Bed"
+    },
+    {
+      "source": "Шкаф",
+      "text": "Wardrobe"
+    },
+    {
+      "source": "Стеллаж",
+      "text": "Shelving"
+    },
+    {
+      "source": "Стол",
+      "text": "Table"
+    },
+    {
+      "source": " · УЯЗВИМ",
+      "text": " · VULNERABLE"
+    },
+    {
+      "source": " · БРОНЯ",
+      "text": " · ARMORED"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n25% костюма · −15 секунд",
+      "text": "The entire crew is down\nHold {0} for 3 seconds to get up\n25% suit · −15 seconds"
+    },
+    {
+      "source": "Epic: не удалось подготовить вход (",
+      "text": "Epic could not prepare sign-in ("
+    },
+    {
+      "source": "Не удалось войти в Epic (",
+      "text": "Could not sign in to Epic ("
+    },
+    {
+      "source": "ВАС ПОДНИМАЮТ\nПосле подъёма — 50% костюма",
+      "text": "BEING REVIVED\nSuit restored to 50% after revival"
+    },
+    {
+      "source": "ВЫ ВЫВЕДЕНЫ ИЗ СТРОЯ\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "YOU ARE DOWN\nHold {0} for 3 seconds to get up\n50% suit · −15 seconds"
+    },
+    {
+      "source": "Удерживайте {0} 3 секунды — поднять товарища · 50% HP",
+      "text": "Hold {0} for 3 seconds to revive a teammate · 50% HP"
+    },
+    {
+      "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
+      "text": "The entire crew is down\nHold {0} for 3 seconds to get up\n50% suit · −15 seconds"
     }
   ]
 }

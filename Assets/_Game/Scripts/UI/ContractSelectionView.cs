@@ -17,6 +17,7 @@ namespace HowToSuck
         private Button[] navigationButtons;private int navigationMask=-1;
         private SessionRoot session;
         private bool wasBlocked;
+        private int shownCrew;
         public void Bind(SessionRoot root)
         {
             if(session==root){Refresh();return;}
@@ -39,7 +40,7 @@ namespace HowToSuck
         }
         private void Update()
         {
-            bool blocked=Menu!=null&&Menu.ModalBlocksLobby;if(wasBlocked!=blocked)Refresh();RefreshNavigation();
+            bool blocked=Menu!=null&&Menu.ModalBlocksLobby;if(wasBlocked!=blocked||shownCrew!=(session?.DisplayedCrewSize??1))Refresh();RefreshNavigation();
         }
         private void RefreshNavigation()
         {
@@ -65,6 +66,7 @@ namespace HowToSuck
             var entries=session?.Catalog?.Contracts;var selected=session?.SelectedLobbyContract;
             int index=entries!=null?System.Array.IndexOf(entries,selected):-1;
             wasBlocked=Menu!=null&&Menu.ModalBlocksLobby;
+            shownCrew=session?.DisplayedCrewSize??1;
             bool canChoose=isActiveAndEnabled&&session!=null&&session.HasAuthority&&session.Phase==SessionPhase.Lobby&&!wasBlocked&&index>=0&&entries.Length>1;
             if(PreviousButton!=null)PreviousButton.interactable=canChoose;if(NextButton!=null)NextButton.interactable=canChoose;
             if(NameText==null)return;
@@ -72,10 +74,11 @@ namespace HowToSuck
             HowToSuck.LocalizedText.Set(NameText, selected.DisplayName);HowToSuck.LocalizedText.Set(IndexText, (index+1)+" / "+entries.Length);
             if(MapPreview!=null){MapPreview.sprite=selected.Preview;MapPreview.enabled=selected.Preview!=null;}
             int seconds=Mathf.CeilToInt(selected.TimeLimitSeconds);
-            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(QuotaValue, $"${selected.Quota:N0}");
+            long quota=session.DisplayedQuota(selected);
+            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(QuotaValue, $"${quota:N0}");
             if(TimeValue!=null)HowToSuck.LocalizedText.Set(TimeValue, $"{seconds/60}:{seconds%60:00}");
             if(FailureValue!=null)HowToSuck.LocalizedText.Set(FailureValue, $"При неудаче: {selected.FailurePercent}% сданной стоимости");
-            HowToSuck.LocalizedText.Set(DetailsText, $"Квота: ${selected.Quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса");
+            HowToSuck.LocalizedText.Set(DetailsText, $"Квота: ${quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса");
             if(QuotaValue!=null)HowToSuck.LocalizedText.Set(DetailsText, "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.");
             string current=TierName(session.DisplayedTierId),recommended=TierName(selected.RecommendedTierId);
             HowToSuck.LocalizedText.Set(RecommendationText, (current!=null?"Команда: "+current:"Ожидаем оборудование…")+
