@@ -20,7 +20,7 @@ namespace HowToSuck
         private static readonly Regex Token = new Regex(@"\{(\d+)\}", RegexOptions.CultureInvariant);
         public TranslationCatalog(IEnumerable<Entry> entries)
         {
-            foreach (var entry in entries.OrderByDescending(e => e.source.Length))
+            foreach (var entry in WithLineTemplates(entries).OrderByDescending(e => e.source.Length))
             {
                 if (string.IsNullOrEmpty(entry.source) || entry.text == null) continue;
                 var tokens = Token.Matches(entry.source);
@@ -46,6 +46,21 @@ namespace HowToSuck
                 templates.Add(new Pattern { regex = new Regex(pattern.ToString(), RegexOptions.Singleline | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(30)), target = entry.text, arguments = arguments });
             }
             fragments.Sort((a,b)=>b.Key.Length.CompareTo(a.Key.Length));
+        }
+        private static IEnumerable<Entry> WithLineTemplates(IEnumerable<Entry> entries)
+        {
+            var originals=entries.ToArray();
+            var sources=new HashSet<string>(originals.Select(e=>e.source),StringComparer.Ordinal);
+            foreach(var entry in originals)
+            {
+                yield return entry;
+                if(string.IsNullOrEmpty(entry.source)||entry.text==null||!Token.IsMatch(entry.source))continue;
+                // Composed HUD messages split at newlines before translating each clause. Retain
+                // a numeric template's line form as well, without adding the separator twice.
+                string line=entry.source.TrimEnd('\r','\n');
+                if(line!=entry.source&&sources.Add(line))
+                    yield return new Entry{source=line,text=entry.text.TrimEnd('\r','\n')};
+            }
         }
         public static TranslationCatalog Load(string language)
         {
