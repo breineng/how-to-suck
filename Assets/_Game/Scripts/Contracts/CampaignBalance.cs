@@ -8,7 +8,25 @@ namespace HowToSuck
         public static int Stage(string contract) => Math.Max(0, Array.IndexOf(Contracts, contract));
         public static readonly string[] Contracts = { "old_house", "supermarket", "old_house_ii", "warehouse", "supermarket_ii", "warehouse_ii" };
         public static readonly long[] Quotas = { 1250, 2200, 2150, 3200, 3650, 5100 };
-        public static readonly float[] Deadlines = { 1800, 1800, 1800, 1800, 1800, 1800 };
+        // Rows follow Contracts, columns are 1–4 connected players. Calibrated
+        // against recommended equipment without paid slots; see time-pressure report.
+        private static readonly float[,] CrewDeadlines = {
+            { 960, 870, 870, 900 },
+            { 1020, 990, 1020, 1050 },
+            { 960, 870, 900, 930 },
+            { 780, 750, 750, 780 },
+            { 1080, 1020, 1020, 1080 },
+            { 900, 870, 900, 960 }
+        };
+        // Authored asset fallback describes the two-player contract.
+        public static readonly float[] Deadlines = Array.ConvertAll(Contracts, id => TimeLimitForCrew(id, 2));
+        public static float TimeLimitForCrew(string contract, int count)
+        {
+            if (count < 1 || count > 4) throw new ArgumentOutOfRangeException(nameof(count));
+            int stage = Array.IndexOf(Contracts, contract);
+            if (stage < 0) throw new ArgumentException("Unknown campaign contract.", nameof(contract));
+            return CrewDeadlines[stage, count - 1];
+        }
         public const int ReviveHealth = 50;
         public static readonly int[] BossHealth = { 2600, 4000, 3700, 5300, 5700, 7500 };
         public static readonly long[] ModelPrices = { 0, 1500, 4500, 6800 };

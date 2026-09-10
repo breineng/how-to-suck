@@ -97,10 +97,10 @@ namespace HowToSuck
             }
             int remaining = (int)Math.Max(0, Math.Ceiling(state.RemainingSeconds));
             if (identityChanged || (int)Math.Max(0, Math.Ceiling(previous.Contract.RemainingSeconds)) != remaining ||
-                (previous.Contract.RemainingSeconds <= 20) != (state.RemainingSeconds <= 20))
+                (previous.Contract.RemainingSeconds <= 120) != (state.RemainingSeconds <= 120))
             {
                 Text(TimerText, $"{remaining / 60:00}:{remaining % 60:00}");
-                Tint(TimerText, state.RemainingSeconds <= 20 ? Accent : Paper);
+                Tint(TimerText, state.RemainingSeconds <= 120 ? Accent : Paper);
             }
             if (identityChanged || previous.Contract.Boss.Status != state.Boss.Status)
             {

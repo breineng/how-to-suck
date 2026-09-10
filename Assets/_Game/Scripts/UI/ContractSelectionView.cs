@@ -73,7 +73,7 @@ namespace HowToSuck
             if(selected==null){HowToSuck.LocalizedText.Set(NameText, "Выбор карты");HowToSuck.LocalizedText.Set(IndexText, "");HowToSuck.LocalizedText.Set(DetailsText, session!=null&&session.HasAuthority?"Доступная карта не найдена.":"Ожидаем выбор хозяина…");HowToSuck.LocalizedText.Set(RecommendationText, "");HowToSuck.LocalizedText.Set(RoleText, "Карту и начало контракта выбирает хозяин.");return;}
             HowToSuck.LocalizedText.Set(NameText, selected.DisplayName);HowToSuck.LocalizedText.Set(IndexText, (index+1)+" / "+entries.Length);
             if(MapPreview!=null){MapPreview.sprite=selected.Preview;MapPreview.enabled=selected.Preview!=null;}
-            int seconds=Mathf.CeilToInt(selected.TimeLimitSeconds);
+            int seconds=Mathf.CeilToInt(session.DisplayedTimeLimit(selected));
             long quota=session.DisplayedQuota(selected);
             if(QuotaValue!=null)HowToSuck.LocalizedText.Set(QuotaValue, $"${quota:N0}");
             if(TimeValue!=null)HowToSuck.LocalizedText.Set(TimeValue, $"{seconds/60}:{seconds%60:00}");

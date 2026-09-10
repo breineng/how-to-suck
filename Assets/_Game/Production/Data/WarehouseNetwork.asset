@@ -19,5 +19,5 @@ MonoBehaviour:
   RecommendedTierId: mk3
   SceneName: WarehouseNetwork
   Quota: 3200
-  TimeLimitSeconds: 1800
+  TimeLimitSeconds: 750
   FailurePercent: 30
