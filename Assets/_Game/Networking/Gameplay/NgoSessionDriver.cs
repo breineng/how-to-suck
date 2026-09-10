@@ -19,6 +19,11 @@ namespace HowToSuck.Networking
         public int ExpectedItems {get;private set;}
         public int ExpectedPlayers {get;private set;}
         public bool HasAuthority=>game.HasAuthority;
+        public event Action LobbyChanged
+        {
+            add => game.Connection.Changed += value;
+            remove => game.Connection.Changed -= value;
+        }
         public int ConnectedCrewSize=>Mathf.Clamp(HasAuthority ? game.Manager.ConnectedClientsIds.Count : game.Control?.Roster?.Count ?? 1,1,4);
         public bool CanBeginContract=>HasAuthority&&game.Control!=null&&game.Control.IsSpawned&&game.Connection.CanBeginContract;
         private double lastAuthorityTime;

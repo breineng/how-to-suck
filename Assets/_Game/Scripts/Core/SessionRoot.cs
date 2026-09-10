@@ -55,6 +55,7 @@ namespace HowToSuck
         public bool DisplayedSavePending => HasAuthority ? HasPendingSave : replica?.PendingPayout ?? false;
         public bool CanReturnToMenu => !HasAuthority || Progression != null && !Progression.HasPending;
         public bool CanStartContract => HasAuthority && Phase == SessionPhase.Lobby && Progression != null && Progression.CanStartRun && (networkDriver == null || networkDriver.CanBeginContract);
+        public bool WaitingForLobbyReadiness => HasAuthority && Phase == SessionPhase.Lobby && Progression != null && Progression.CanStartRun && networkDriver != null && !networkDriver.CanBeginContract;
         public bool CanStartNewCampaign => IsInitialized && HasAuthority && Phase == SessionPhase.Lobby &&
             campaignRepository != null && Progression != null && Progression.CanStartRun;
         public bool CanReturnToLobby => HasAuthority && Phase == SessionPhase.Results && CanReturnToMenu;
@@ -96,7 +97,11 @@ namespace HowToSuck
             GetComponent<AchievementSessionBridge>()?.Bind(this, ownCampaignDirectory);
             World.SnapshotChanged += OnWorldSnapshot;
             SceneManager.sceneLoaded += OnSceneLoaded;
-            if (networkDriver != null) networkDriver.Bind(this);
+            if (networkDriver != null)
+            {
+                networkDriver.LobbyChanged += OnNetworkLobbyChanged;
+                networkDriver.Bind(this);
+            }
             else StartCoroutine(LoadScene(MenuSceneName, false));
         }
 
@@ -411,6 +416,11 @@ namespace HowToSuck
             if (Phase != SessionPhase.ShuttingDown) SetPhase(SessionPhase.Results);
         }
 
+        // Readiness and roster changes do not mutate the host world, but must refresh its lobby UI.
+        private void OnNetworkLobbyChanged()
+        {
+            if (HasAuthority && Phase == SessionPhase.Lobby) Changed?.Invoke();
+        }
         private void OnWorldSnapshot() => Changed?.Invoke();
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => BindSceneUi();
         private void BindSceneUi()
@@ -426,6 +436,7 @@ namespace HowToSuck
         private void SetPhase(SessionPhase phase) { Phase = phase; networkDriver?.PhaseChanged(phase); Changed?.Invoke(); }
         private void OnDestroy()
         {
+            if (networkDriver != null) networkDriver.LobbyChanged -= OnNetworkLobbyChanged;
             SceneManager.sceneLoaded -= OnSceneLoaded;
             if (World != null) World.SnapshotChanged -= OnWorldSnapshot;
             if (Controller != null) Controller.Finished -= OnContractFinished;

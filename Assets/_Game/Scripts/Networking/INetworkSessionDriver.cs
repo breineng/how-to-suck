@@ -8,6 +8,7 @@ namespace HowToSuck
     public interface IEncounterCrewProvider { int ConnectedCrewSize { get; } }
     public interface INetworkSessionDriver : ISessionDriver
     {
+        event Action LobbyChanged;
         bool HasAuthority { get; }
         bool CanBeginContract { get; }
         void Bind(SessionRoot session);

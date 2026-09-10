@@ -86,7 +86,9 @@ namespace HowToSuck
             bool unlocked=session.DisplayedContractUnlocked(selected.ContractId);
             string prerequisite=CampaignContractAccess.Prerequisite(selected.ContractId),priorName=prerequisite;
             if(entries!=null)foreach(var entry in entries)if(entry!=null&&entry.ContractId==prerequisite)priorName=entry.DisplayName;
-            HowToSuck.LocalizedText.Set(RoleText, !unlocked?"Чтобы открыть, завершите «"+priorName+"»":session.HasAuthority?"Выберите главу и начните контракт.":"Выбор хозяина · ожидаем начала контракта");
+            HowToSuck.LocalizedText.Set(RoleText, !unlocked?"Чтобы открыть, завершите «"+priorName+"»":
+                session.WaitingForLobbyReadiness?"Ожидаем готовность игроков":
+                session.HasAuthority?"Выберите главу и начните контракт.":"Выбор хозяина · ожидаем начала контракта");
         }
         private void Unbind()
         {
