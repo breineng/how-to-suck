@@ -1,7 +1,7 @@
 using System;
 namespace HowToSuck.Networking
 {
-    public enum ProductEntryMode { None, Solo, SteamHost, SteamGuest }
+    public enum ProductEntryMode { None, Solo, SteamHost, SteamGuest, EpicHost, EpicGuest }
     // A mode is selected once, before driver creation. Browsing reserves this root for Steam,
     // but does not select a role or open a campaign. Cancel always requires a fresh root.
     public sealed class ProductEntryChoice
@@ -21,14 +21,14 @@ namespace HowToSuck.Networking
         public bool TrySelect(ProductEntryMode mode)
         {
             if (mode == ProductEntryMode.Solo ? !CanChooseSolo :
-                (mode != ProductEntryMode.SteamHost && mode != ProductEntryMode.SteamGuest) || !CanChooseSteam) return false;
+                (mode != ProductEntryMode.SteamHost && mode != ProductEntryMode.SteamGuest && mode != ProductEntryMode.EpicHost && mode != ProductEntryMode.EpicGuest) || !CanChooseSteam) return false;
             Mode = mode; Phase = SoloEntryPhase.Starting; return true;
         }
         public bool ResolveGuest()
         {
             if (!Selected || Phase != SoloEntryPhase.Starting)
                 throw new InvalidOperationException("Choose a session role before initialization.");
-            return Mode == ProductEntryMode.SteamGuest;
+            return Mode == ProductEntryMode.SteamGuest || Mode == ProductEntryMode.EpicGuest;
         }
         public void Connected()
         {

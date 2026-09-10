@@ -1,0 +1,6 @@
+{
+  "name": "HowToSuck.Networking.Editor",
+  "references": ["HowToSuck.Networking", "HowToSuck.Runtime", "Unity.Netcode.Runtime"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

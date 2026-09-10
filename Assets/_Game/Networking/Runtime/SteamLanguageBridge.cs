@@ -11,6 +11,7 @@ namespace HowToSuck.Networking
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Install()
         {
+            if (OnlineServicesSettings.SelectedBackend != OnlineBackend.Steam) return;
             var root=new GameObject("Steam language");DontDestroyOnLoad(root);root.AddComponent<SteamLanguageBridge>();
         }
         private void Awake()=>Refresh();

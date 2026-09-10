@@ -13,6 +13,11 @@ namespace HowToSuck.Networking
         public NgoGameSession Game;
         public SoloBuildIdentity Identity;
         public SteamEntryConfiguration SteamConfiguration; // Optional. Missing means Solo-only, with no Steam initialization.
+        public bool OverrideBackend;
+        public OnlineBackend BackendOverride;
+        public OnlineBackend Backend => OverrideBackend ? BackendOverride : OnlineServicesSettings.SelectedBackend;
+        public bool UsesEpic => Backend == OnlineBackend.EpicOnlineServices;
+        public string RoomCode => Game != null ? Game.Connection.EpicLobby?.LobbyId : null;
         public string EntrySceneName="ProductEntry";
         private readonly ProductEntryChoice attempt=new ProductEntryChoice();
         private bool connectionConfigured;
@@ -21,8 +26,8 @@ namespace HowToSuck.Networking
         public IReadOnlyList<SteamLobbyCandidate> FriendLobbies=>friends.AsReadOnly();
         public bool HasPendingInvitation=>pendingInvitation!=0;
         public bool IsBrowsingCoop=>attempt.CanChooseSteam;
-        public bool CanBeginCoop=>FreshChoice&&(attempt.CanChooseSolo||attempt.CanChooseSteam)&&TrySteamConfiguration(out _,out _);
-        public string CoopStatus {get {TrySteamConfiguration(out _,out var status);return status;}}
+        public bool CanBeginCoop=>FreshChoice&&(attempt.CanChooseSolo||attempt.CanChooseSteam)&&TryOnlineConfiguration(out _,out _);
+        public string CoopStatus {get {TryOnlineConfiguration(out _,out var status);return status;}}
         public bool CanCancelEntry=>entryReady&&!Game.IsStopping&&
             (attempt.Browsing&&!attempt.Selected||attempt.Phase==SoloEntryPhase.Starting||attempt.Phase==SoloEntryPhase.Failed);
         private bool FreshChoice=>entryReady&&isActiveAndEnabled&&Bootstrap!=null&&Bootstrap.Session!=null&&!Bootstrap.Session.IsInitialized&&
@@ -118,7 +123,7 @@ namespace HowToSuck.Networking
         }
         public bool CanExitSessionMenu(SessionRoot session)=>session==Bootstrap.Session&&attempt.Phase==SoloEntryPhase.Connected&&
             session.Phase==SessionPhase.Lobby&&!session.HasPendingSave&&!Game.IsStopping&&
-            (Game.Connection.Mode==ConnectionMode.SoloLoopback||Game.Connection.Mode==ConnectionMode.SteamHost||Game.Connection.Mode==ConnectionMode.SteamClient);
+            (Game.Connection.Mode==ConnectionMode.SoloLoopback||Game.Connection.Mode==ConnectionMode.SteamHost||Game.Connection.Mode==ConnectionMode.SteamClient||Game.Connection.IsEpicSession);
         public bool ExitSessionMenu(SessionRoot session)
         {
             if(!CanExitSessionMenu(session))return false;
@@ -129,9 +134,23 @@ namespace HowToSuck.Networking
         private bool TrySteamConfiguration(out NetworkConfiguration configuration,out string status)
         {
             configuration=null;
-            if(SteamConfiguration==null)
+            var steamConfiguration=SteamConfiguration!=null?SteamConfiguration:OnlineServicesSettings.SteamFallback;
+            if(steamConfiguration==null)
             {status="Совместная игра ещё не настроена для этой сборки. Одиночная игра доступна.";return false;}
-            return SteamConfiguration.TryConfiguration(Identity,out configuration,out status);
+            return steamConfiguration.TryConfiguration(Identity,out configuration,out status);
+        }
+        private bool TryOnlineConfiguration(out NetworkConfiguration configuration, out string status)
+        {
+            if (!UsesEpic) return TrySteamConfiguration(out configuration, out status);
+            configuration = null;
+            if (!EosClientConfiguration.TryLoad(out _, out status)) return false;
+            try
+            {
+                var identity = Identity.Configuration();
+                configuration = NetworkConfiguration.ForEpic(identity.BuildId, identity.ContentHash); return true;
+            }
+            catch (Exception error) when (error is InvalidOperationException || error is ArgumentException)
+            { status = "Не удалось проверить версию игры."; return false; }
         }
         // No API initialization, repository, world or scene work merely by opening this choice.
         public bool BeginCoop()
@@ -139,20 +158,27 @@ namespace HowToSuck.Networking
             if(!FreshChoice)return false;
             if(attempt.CanChooseSteam)return connectionConfigured;
             if(!attempt.CanChooseSolo||connectionConfigured)return false;
-            if(!TrySteamConfiguration(out var config,out notice)){Refresh();return false;}
+            if(!TryOnlineConfiguration(out var config,out notice)){Refresh();return false;}
             if(!attempt.TryBrowse())return false;
             try
             {
-                if(Game.Connection.SteamTransport!=null||GetComponent<HowToSuckSteamTransport>()!=null)
-                    throw new InvalidOperationException("A fresh entry must not own an earlier Steam transport.");
-                Game.Connection.SteamTransport=gameObject.AddComponent<HowToSuckSteamTransport>();
-                Game.Connection.Configure(config);connectionConfigured=true;
-                notice="Создайте игру или выберите игру друга.";Refresh();return true;
+                if(Game.Connection.SteamTransport!=null||Game.Connection.EpicTransport!=null)
+                    throw new InvalidOperationException("A fresh entry must not own an earlier online transport.");
+                EosClientConfiguration epic = null;
+                if (UsesEpic)
+                {
+                    if (!EosClientConfiguration.TryLoad(out epic, out notice)) throw new InvalidOperationException("Epic settings changed");
+                    Game.Connection.EpicTransport = gameObject.AddComponent<HowToSuckEosTransport>();
+                }
+                else Game.Connection.SteamTransport=gameObject.AddComponent<HowToSuckSteamTransport>();
+                Game.Connection.Configure(config, epic);connectionConfigured=true;
+                notice=UsesEpic?"Создайте комнату или введите код друга.":"Создайте игру или выберите игру друга.";Refresh();return true;
             }
             catch(Exception error){FailBeforeSession("Не удалось подготовить совместную игру. Вернитесь в главное меню.",error);return false;}
         }
         public bool RefreshFriendLobbies()
         {
+            if (UsesEpic) return false;
             if(!FreshChoice||!attempt.CanChooseSteam||!connectionConfigured)return false;
             friends.Clear();pendingInvitation=0;Refresh();
             try
@@ -178,6 +204,13 @@ namespace HowToSuck.Networking
         }
         public bool AcceptPendingInvitation()=>pendingInvitation!=0&&JoinSteamLobby(pendingInvitation);
         public bool StartSteamHost()=>StartSteam(ProductEntryMode.SteamHost,0);
+        public bool StartOnlineHost()=>StartSteam(UsesEpic?ProductEntryMode.EpicHost:ProductEntryMode.SteamHost,0);
+        public bool JoinEpicRoom(string code)
+        {
+            if (!UsesEpic || !EosRoomCode.TryNormalize(code, out var room))
+            { notice = "Введите полный код комнаты, полученный от хозяина."; Refresh(); return false; }
+            return StartSteam(ProductEntryMode.EpicGuest, 0, room);
+        }
         public bool JoinSteamLobby(ulong lobby)
         {
             if(lobby==0)return false;
@@ -186,21 +219,24 @@ namespace HowToSuck.Networking
             // Discovery is only a UI hint: SteamLobbyService requests and revalidates exact current metadata again.
             return offered&&StartSteam(ProductEntryMode.SteamGuest,lobby);
         }
-        private bool StartSteam(ProductEntryMode mode,ulong lobby)
+        private bool StartSteam(ProductEntryMode mode,ulong lobby,string epicRoom=null)
         {
+            bool epic = mode == ProductEntryMode.EpicHost || mode == ProductEntryMode.EpicGuest;
+            if (epic != UsesEpic) return false;
             if(!BeginCoop()||!attempt.TrySelect(mode))return false;
             friends.Clear();pendingInvitation=0;
-            notice=mode==ProductEntryMode.SteamHost?"Открываем вашу кампанию…":"Подключаемся к игре…";Refresh();
+            notice=mode==ProductEntryMode.SteamHost||mode==ProductEntryMode.EpicHost?"Открываем вашу кампанию…":"Подключаемся к игре…";Refresh();
             try
             {
                 Bootstrap.InitializeNow(); // ResolveRole has already committed Host/Guest; guest never opens a campaign.
-                bool guest=mode==ProductEntryMode.SteamGuest;
+                bool guest=mode==ProductEntryMode.SteamGuest||mode==ProductEntryMode.EpicGuest;
                 if(!Bootstrap.Session.IsInitialized||Game.Driver==null||Game.HasAuthority==guest||
                     Game.Role!=(guest?PreparedSessionRole.Guest:PreparedSessionRole.Authority)||
                     guest&&(Bootstrap.Session.Campaign!=null||Bootstrap.Session.Progression!=null))
                     throw new InvalidOperationException("Prepared role/repository ownership mismatch.");
                 Bootstrap.Session.Changed+=Refresh;
-                bool started=guest?Game.Connection.JoinSteamLobby(lobby):Game.Connection.CreateSteamLobby();
+                bool started=epic?(guest?Game.Connection.JoinEpicLobby(epicRoom):Game.Connection.CreateEpicLobby()):
+                    guest?Game.Connection.JoinSteamLobby(lobby):Game.Connection.CreateSteamLobby();
                 if(!started)
                 {
                     notice=Game.Connection.LastError??"Не удалось подключиться к совместной игре.";
@@ -218,7 +254,7 @@ namespace HowToSuck.Networking
         private IEnumerator ConnectSteam()
         {
             // Existing Steam lobby timeout and connection deadline remain independently active.
-            double deadline=Time.realtimeSinceStartupAsDouble+45;
+            double deadline=Time.realtimeSinceStartupAsDouble+(UsesEpic?95:45);
             while(Game.Connection.Phase!=ConnectionPhase.Lobby||!Game.Manager.IsConnectedClient)
             {
                 if(Game.IsStopping||attempt.Phase!=SoloEntryPhase.Starting)yield break;
@@ -241,16 +277,22 @@ namespace HowToSuck.Networking
             Game.SetLocalReady(ready);return true; // Request accepted for sending; LocalReady updates only after the authority accepts it.
         }
         public bool CanInviteToLobby=>attempt.Phase==SoloEntryPhase.Connected&&!Game.IsStopping&&
-            (Game.Connection.Mode==ConnectionMode.SteamHost||Game.Connection.Mode==ConnectionMode.SteamClient)&&
+            (Game.Connection.Mode==ConnectionMode.SteamHost||Game.Connection.Mode==ConnectionMode.SteamClient||Game.Connection.IsEpicSession)&&
             Game.Session.Phase==SessionPhase.Lobby&&Game.Connection.Phase==ConnectionPhase.Lobby&&
-            Game.Connection.ActiveSteamRuntime?.Initialized==true&&Game.Connection.Lobby!=null&&Game.Connection.Lobby.LobbyId!=0&&
+            (Game.Connection.IsEpicSession?!string.IsNullOrEmpty(RoomCode):
+                Game.Connection.ActiveSteamRuntime?.Initialized==true&&Game.Connection.Lobby!=null&&Game.Connection.Lobby.LobbyId!=0)&&
             Game.Control!=null&&Game.Control.IsSpawned&&Game.Control.HasAcceptedCurrentSnapshot&&Game.Control.Roster.Count<4;
         public bool OpenInviteOverlay()
         {
-            if(!CanInviteToLobby)return false;
+            if(!CanInviteToLobby||UsesEpic)return false;
             return Game.Connection.Lobby.InviteFriendsOverlay();
         }
-        public bool InviteFriend(ulong steamId)=>CanInviteToLobby&&Game.Connection.Lobby.InviteFriend(steamId);
+        public bool InviteFriend(ulong steamId)=>!UsesEpic&&CanInviteToLobby&&Game.Connection.Lobby.InviteFriend(steamId);
+        public bool CopyRoomCode()
+        {
+            if (!UsesEpic || !CanInviteToLobby || string.IsNullOrEmpty(RoomCode)) return false;
+            GUIUtility.systemCopyBuffer = RoomCode; return true;
+        }
         public bool CancelEntry()
         {
             if(!CanCancelEntry)return false;

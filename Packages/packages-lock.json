@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.howtosuck.eos-sdk": {
+      "version": "file:../ThirdParty/EosSdk",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.rlabrecque.steamworks.net": {
       "version": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#c21a8f0e31c56ae8707130967faf491f7dd7c0d8",
       "depth": 0,

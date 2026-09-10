@@ -9,14 +9,17 @@ namespace HowToSuck.Networking
         {
             if (config == null) return "configuration";
             if (mode == ConnectionMode.SteamHost && !config.SteamConfigured) return "steam_not_configured";
+            if (mode == ConnectionMode.EpicHost && !config.EpicConfigured) return "epic_not_configured";
             if (phase != ConnectionPhase.Lobby && !(hostLocal && phase == ConnectionPhase.Starting)) return "contract_in_progress";
             if (alreadyApproved) return "duplicate_connection";
             if (admittedAndReserved >= NetworkConfiguration.MaxPlayers) return "lobby_full";
             if (mode == ConnectionMode.SoloLoopback && !hostLocal) return "solo_only";
-            if (mode != ConnectionMode.SoloLoopback && mode != ConnectionMode.SteamHost && mode != ConnectionMode.DiagnosticLoopbackHost) return "not_host";
+            if (mode != ConnectionMode.SoloLoopback && mode != ConnectionMode.SteamHost && mode != ConnectionMode.EpicHost && mode != ConnectionMode.DiagnosticLoopbackHost) return "not_host";
             if (!ConnectionHello.TryDecode(payload, out var hello) || !hello.Matches(config, lobbyId, lobbySession)) return "incompatible_build";
             if (mode == ConnectionMode.SteamHost && !hostLocal &&
                 (verifiedSteamId == 0 || verifiedSteamId == ulong.MaxValue || !actualLobbyMember || steamIdentityAlreadyPresent)) return "lobby_membership";
+            // EOS membership and duplicate checks use the full authenticated ProductUserId in the coordinator.
+            if (mode == ConnectionMode.EpicHost && !hostLocal && (!actualLobbyMember || steamIdentityAlreadyPresent)) return "lobby_membership";
             return null;
         }
     }

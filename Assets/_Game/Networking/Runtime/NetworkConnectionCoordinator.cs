@@ -14,6 +14,9 @@ namespace HowToSuck.Networking
         public NetworkManager Manager;
         public UnityTransport Loopback;
         public HowToSuckSteamTransport SteamTransport;
+        public HowToSuckEosTransport EpicTransport;
+        public EosLobbyService EpicLobby => epicLobby;
+        public bool IsEpicSession => Mode == ConnectionMode.EpicHost || Mode == ConnectionMode.EpicClient;
         public ConnectionMode Mode { get; private set; }
         public ConnectionPhase Phase { get; private set; } = ConnectionPhase.Offline;
         public string LastError { get; private set; }
@@ -37,6 +40,7 @@ namespace HowToSuck.Networking
         private sealed class Reservation
         {
             public ulong SteamId;
+            public string EpicUserId;
             public double At;
             public bool Connected, Ready;
         }
@@ -46,20 +50,27 @@ namespace HowToSuck.Networking
         private SteamRuntime steam;
         public SteamRuntime ActiveSteamRuntime => steam; // Existing lifetime owner; this accessor never initializes Steam.
         private SteamLobbyService lobby;
+        private EosRuntime epic;
+        private EosLobbyService epicLobby;
+        private EosClientConfiguration epicCredentials;
+        private string pendingEpicRoom;
         private string sessionNonce;
         private bool initialized, stopping, hostApprovalRejected;
         private readonly UnexpectedStopSignal unexpectedStop = new UnexpectedStopSignal();
         private double connectDeadline;
 
-        public void Configure(NetworkConfiguration configuration)
+        public void Configure(NetworkConfiguration configuration, EosClientConfiguration epicConfiguration = null)
         {
             if (initialized) throw new InvalidOperationException("Configure one coordinator once.");
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             if (Manager == null || Loopback == null || (configuration.SteamConfigured && SteamTransport == null))
                 throw new InvalidOperationException("Bind one persistent NetworkManager, loopback, and a Steam transport only for configured Steam sessions.");
+            if (configuration.EpicConfigured && (EpicTransport == null || epicConfiguration == null || !epicConfiguration.IsValid))
+                throw new InvalidOperationException("EOS requires its transport and valid client settings.");
             if (Manager.IsListening || Manager.ShutdownInProgress || Manager.ConnectionApprovalCallback != null)
                 throw new InvalidOperationException("The manager already has an active connection owner.");
             config = configuration;
+            epicCredentials = epicConfiguration;
             Manager.ConnectionApprovalCallback = Approve;
             Manager.OnClientConnectedCallback += OnConnected;
             Manager.OnClientDisconnectCallback += OnDisconnected;
@@ -72,6 +83,61 @@ namespace HowToSuck.Networking
                     lobby != null && lobby.IsHost && lobby.ContainsMember(peer);
             }
             initialized = true;
+        }
+        public bool CreateEpicLobby() => StartEpic(null);
+        public bool JoinEpicLobby(string code)
+        {
+            if (!EosRoomCode.TryNormalize(code, out var room)) return false;
+            return StartEpic(room);
+        }
+        private bool StartEpic(string room)
+        {
+            if (!CanStart() || !config.EpicConfigured) return false;
+            pendingEpicRoom = room;
+            Mode = room == null ? ConnectionMode.EpicHost : ConnectionMode.EpicClient;
+            SetPhase(ConnectionPhase.Starting);
+            epic = new EosRuntime();
+            epic.ReadyChanged += OnEpicReady;
+            epic.Failed += OnEpicFailed;
+            if (!epic.Start(epicCredentials, config.BuildId)) return StartFailed("Не удалось запустить Epic Online Services. Проверьте настройки сервиса.");
+            return true;
+        }
+        private void OnEpicReady()
+        {
+            if (stopping || Phase != ConnectionPhase.Starting || !IsEpicSession) return;
+            epicLobby = new EosLobbyService(epic, config);
+            epicLobby.Joined += OnEpicLobbyJoined;
+            epicLobby.Failed += OnEpicFailed;
+            epicLobby.HostLost += OnHostLost;
+            epicLobby.MembersChanged += OnLobbyMembersChanged;
+            bool started = Mode == ConnectionMode.EpicHost ? epicLobby.Create() : epicLobby.Join(pendingEpicRoom);
+            if (!started) StartFailed("Не удалось открыть комнату Epic.");
+        }
+        private void OnEpicLobbyJoined(bool hosting)
+        {
+            if (stopping || Phase != ConnectionPhase.Starting || hosting != (Mode == ConnectionMode.EpicHost))
+            { epicLobby.Leave(); return; }
+            try
+            {
+                approved.Clear(); sessionNonce = epicLobby.Session;
+                EpicTransport.Runtime = epic; EpicTransport.HostUserId = epicLobby.HostUserId; EpicTransport.Session = sessionNonce;
+                EpicTransport.MayAcceptPeer = peer => Mode == ConnectionMode.EpicHost && Phase == ConnectionPhase.Lobby &&
+                    epicLobby != null && epicLobby.IsHost && epicLobby.ContainsMember(peer);
+                ConfigureManager(EpicTransport, 0, sessionNonce);
+                hostApprovalRejected = false; connectDeadline = Time.realtimeSinceStartupAsDouble + 30;
+                if (hosting)
+                {
+                    if (!epicLobby.IsHost || !Manager.StartHost() || hostApprovalRejected) { StartFailed("Не удалось запустить хозяина комнаты Epic."); return; }
+                    connectDeadline = 0; SetPhase(ConnectionPhase.Lobby);
+                }
+                else if (!Manager.StartClient()) StartFailed("Не удалось подключиться к хозяину комнаты Epic.");
+            }
+            catch (Exception error)
+            { Debug.LogWarning("EOS transport startup: " + error.GetType().Name); StartFailed("Не удалось запустить соединение Epic."); }
+        }
+        private void OnEpicFailed(string reason)
+        {
+            if (IsEpicSession) FailAndStop(reason);
         }
         public bool StartSolo()
         {
@@ -196,6 +262,7 @@ namespace HowToSuck.Networking
             bool hostLocal = request.ClientNetworkId == NetworkManager.ServerClientId;
             ExpireReservations();
             ulong steamId = 0;
+            string epicUserId = null;
             bool member = false, duplicate = false;
             if (Mode == ConnectionMode.SteamHost && !hostLocal)
             {
@@ -204,6 +271,15 @@ namespace HowToSuck.Networking
                 {
                     member = lobby != null && lobby.ContainsMember(steamId);
                     foreach (var item in approved.Values) if (item.SteamId == steamId) duplicate = true;
+                }
+            }
+            if (Mode == ConnectionMode.EpicHost && !hostLocal)
+            {
+                ulong transportId = Manager.GetTransportIdFromClientId(request.ClientNetworkId);
+                if (transportId != ulong.MaxValue && EpicTransport.TryGetVerifiedPeer(transportId, out epicUserId))
+                {
+                    member = epicLobby != null && epicLobby.ContainsMember(epicUserId);
+                    foreach (var item in approved.Values) if (item.EpicUserId == epicUserId) duplicate = true;
                 }
             }
             ulong expectedLobby = Mode == ConnectionMode.SoloLoopback ? 0 : lobby?.LobbyId ?? 0;
@@ -221,7 +297,9 @@ namespace HowToSuck.Networking
                 return;
             }
             approved.Add(request.ClientNetworkId, new Reservation
-            { SteamId = hostLocal && Mode == ConnectionMode.SteamHost ? steam.LocalSteamId : steamId, At = Time.realtimeSinceStartupAsDouble, Ready = hostLocal });
+            { SteamId = hostLocal && Mode == ConnectionMode.SteamHost ? steam.LocalSteamId : steamId,
+                EpicUserId = hostLocal && Mode == ConnectionMode.EpicHost ? epic.LocalUserId.ToString() : epicUserId,
+                At = Time.realtimeSinceStartupAsDouble, Ready = hostLocal });
             response.Approved = true;
         }
         private void OnConnected(ulong id)
@@ -276,6 +354,8 @@ namespace HowToSuck.Networking
             SetPhase(ConnectionPhase.Preparing); // Close approval before Steam metadata/network scene work.
             if (Mode == ConnectionMode.SteamHost && !lobby.SetHostPhase(ConnectionPhase.Preparing, contractId))
             { StartFailed("Не удалось закрыть лобби перед контрактом."); return false; }
+            if (Mode == ConnectionMode.EpicHost && !epicLobby.SetHostPhase(ConnectionPhase.Preparing, contractId))
+            { StartFailed("Не удалось закрыть комнату Epic перед контрактом."); return false; }
             return true;
         }
         public bool SetAuthoritativePhase(ConnectionPhase phase, string contractId)
@@ -289,6 +369,8 @@ namespace HowToSuck.Networking
             SetPhase(phase);
             if (Mode == ConnectionMode.SteamHost && !lobby.SetHostPhase(phase, contractId))
             { StartFailed("Не удалось обновить состояние лобби."); return false; }
+            if (Mode == ConnectionMode.EpicHost && !epicLobby.SetHostPhase(phase, contractId))
+            { StartFailed("Не удалось обновить состояние комнаты Epic."); return false; }
             return true;
         }
         public void StopSession()
@@ -310,7 +392,14 @@ namespace HowToSuck.Networking
             double until = Time.realtimeSinceStartupAsDouble + 5;
             while (Manager != null && (Manager.IsListening || Manager.ShutdownInProgress) && Time.realtimeSinceStartupAsDouble < until) yield return null;
             bool stopped = Manager == null || (!Manager.IsListening && !Manager.ShutdownInProgress);
-            SteamTransport?.Shutdown(); lobby?.Leave(); approved.Clear(); sessionNonce = null;
+            SteamTransport?.Shutdown(); lobby?.Leave();
+            EpicTransport?.Shutdown(); epicLobby?.Leave();
+            // Never release a native platform while executing one of its Tick callbacks.
+            yield return null;
+            until = Time.realtimeSinceStartupAsDouble + 5;
+            while (epicLobby != null && epicLobby.Busy && Time.realtimeSinceStartupAsDouble < until) yield return null;
+            epicLobby?.Dispose(); epicLobby = null; epic?.Dispose(); epic = null;
+            approved.Clear(); sessionNonce = null;
             Mode = ConnectionMode.None; stopping = false;
             if (!stopped) LastError = "Сетевой менеджер не завершился вовремя. Новый запуск заблокирован.";
             SetPhase(stopped ? ConnectionPhase.Offline : ConnectionPhase.Failed);
@@ -318,7 +407,7 @@ namespace HowToSuck.Networking
         private bool CanStart(bool requireSteamIdle = true)
         {
             if (!initialized) throw new InvalidOperationException("Configure the coordinator before choosing a mode.");
-            if (stopping || unexpectedStop.IsNotifying || Manager.IsListening || Manager.ShutdownInProgress || (Phase != ConnectionPhase.Offline && Phase != ConnectionPhase.Failed) || (lobby != null && (lobby.LobbyId != 0 || (requireSteamIdle && lobby.Busy))))
+            if (stopping || unexpectedStop.IsNotifying || epic != null || Manager.IsListening || Manager.ShutdownInProgress || (Phase != ConnectionPhase.Offline && Phase != ConnectionPhase.Failed) || (lobby != null && (lobby.LobbyId != 0 || (requireSteamIdle && lobby.Busy))))
                 return false;
             unexpectedStop.Reset(); LastError = null; return true;
         }
@@ -348,6 +437,13 @@ namespace HowToSuck.Networking
         private void OnHostLost() => FailAndStop("Хозяин покинул сессию. Переноса игрового мира к другому игроку нет.");
         private void OnLobbyMembersChanged()
         {
+            if (Mode == ConnectionMode.EpicHost && Manager.IsServer)
+            {
+                expired.Clear();
+                foreach (var pair in approved)
+                    if (pair.Key != NetworkManager.ServerClientId && !epicLobby.ContainsMember(pair.Value.EpicUserId)) expired.Add(pair.Key);
+                foreach (ulong id in expired) Manager.DisconnectClient(id, "lobby_membership");
+            }
             if (Mode == ConnectionMode.SteamHost && Manager.IsServer)
             {
                 expired.Clear();
@@ -359,12 +455,13 @@ namespace HowToSuck.Networking
         }
         private void ForwardCandidate(SteamLobbyCandidate candidate) => FriendLobbyFound?.Invoke(candidate);
         private void ForwardInvite(ulong id) => InviteAvailable?.Invoke(id); // UI must reject switching away from an active contract.
-        private bool IsRemoteClientMode() => Mode == ConnectionMode.SteamClient || Mode == ConnectionMode.DiagnosticLoopbackClient;
+        private bool IsRemoteClientMode() => Mode == ConnectionMode.SteamClient || Mode == ConnectionMode.EpicClient || Mode == ConnectionMode.DiagnosticLoopbackClient;
         private bool IsOnlineOrSoloActive() => Mode != ConnectionMode.None && Phase != ConnectionPhase.Offline && Phase != ConnectionPhase.Failed;
         private void SetPhase(ConnectionPhase phase) { Phase = phase; Changed?.Invoke(); }
         private void Update()
         {
             steam?.Pump(); lobby?.PollTimeouts();
+            epic?.Pump(); epicLobby?.PollTimeouts();
             if (connectDeadline > 0 && Time.realtimeSinceStartupAsDouble >= connectDeadline)
                 StartFailed("Хозяин не подтвердил соединение вовремя.");
         }
@@ -380,6 +477,7 @@ namespace HowToSuck.Networking
                 if (Manager.IsListening || Manager.ShutdownInProgress) Manager.Shutdown(true);
             }
             SteamTransport?.Shutdown(); lobby?.Dispose(); steam?.Dispose();
+            EpicTransport?.Shutdown(); epicLobby?.Dispose(); epic?.Dispose();
             Changed = null; SessionLost = null; FriendLobbyFound = null; InviteAvailable = null;
         }
     }

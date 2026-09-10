@@ -17,6 +17,9 @@ namespace HowToSuck.Networking
         public Button HostButton,RefreshButton,AcceptInvitationButton,BackButton,FriendTemplate;
         public Transform FriendContent;
         public TMP_Text Message;
+        public GameObject EpicJoinPanel;
+        public TMP_InputField EpicRoomCode;
+        public Button EpicJoinButton;
         public bool IsOpen{get;private set;}
         private SoloSessionStartup source;
         private readonly List<Button> rows=new List<Button>();
@@ -36,6 +39,7 @@ namespace HowToSuck.Networking
         }
         private void OnEnable()
         {
+            if(!wired&&EpicJoinButton!=null)EpicJoinButton.onClick.AddListener(JoinEpic);
             if(!wired){HostButton.onClick.AddListener(Host);RefreshButton.onClick.AddListener(Discover);AcceptInvitationButton.onClick.AddListener(Accept);BackButton.onClick.AddListener(Back);wired=true;}
             if(source!=null){source.Changed-=Refresh;source.Changed+=Refresh;BindSceneEvents();}Refresh();
         }
@@ -50,7 +54,8 @@ namespace HowToSuck.Networking
             source.BeginCoop(); // Explicit click only. Unconfigured returns false and creates no session or Steam owner.
             Refresh();Select(BackButton);
         }
-        private void Host(){if(IsOpen&&source!=null&&source.IsBrowsingCoop)source.StartSteamHost();}
+        private void Host(){if(IsOpen&&source!=null&&source.IsBrowsingCoop)source.StartOnlineHost();}
+        private void JoinEpic(){if(IsOpen&&source!=null&&source.IsBrowsingCoop&&EpicRoomCode!=null)source.JoinEpicRoom(EpicRoomCode.text);}
         private void Discover(){if(IsOpen&&source!=null&&source.IsBrowsingCoop)source.RefreshFriendLobbies();}
         private void Accept(){if(IsOpen&&source!=null&&source.IsBrowsingCoop)source.AcceptPendingInvitation();}
         private void Join(ulong lobby){if(IsOpen&&source!=null&&source.IsBrowsingCoop)source.JoinSteamLobby(lobby);}
@@ -74,6 +79,11 @@ namespace HowToSuck.Networking
             if(!IsOpen||source==null)return;
             if(source.Phase==SoloEntryPhase.Connected||source.Phase==SoloEntryPhase.Returning){CloseView(false);return;}
             bool browse=source.IsBrowsingCoop;HostButton.interactable=RefreshButton.interactable=browse;
+            bool epic=source.UsesEpic;
+            RefreshButton.gameObject.SetActive(!epic);
+            if(EpicJoinPanel!=null)EpicJoinPanel.SetActive(epic);
+            if(EpicJoinButton!=null)EpicJoinButton.interactable=browse;
+            if(EpicRoomCode!=null)EpicRoomCode.interactable=browse;
             AcceptInvitationButton.gameObject.SetActive(browse&&source.HasPendingInvitation);
             BackButton.interactable=source.CanCancelEntry||source.CanStartSolo;
             HowToSuck.LocalizedText.Set(Message, browse?(string.IsNullOrWhiteSpace(source.Status)?"Создайте игру или выберите друга.":source.Status):
@@ -142,6 +152,7 @@ namespace HowToSuck.Networking
             UnbindSceneEvents();
             if(source!=null)source.Changed-=Refresh;
             if(wired){HostButton.onClick.RemoveListener(Host);RefreshButton.onClick.RemoveListener(Discover);AcceptInvitationButton.onClick.RemoveListener(Accept);BackButton.onClick.RemoveListener(Back);}ClearRows();
+            if(EpicJoinButton!=null)EpicJoinButton.onClick.RemoveListener(JoinEpic);
         }
     }
 }

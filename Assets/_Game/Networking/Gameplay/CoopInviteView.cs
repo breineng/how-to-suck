@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace HowToSuck.Networking
 {
-    // Native picker first. Directly launched development players can have Steam without its overlay.
+    // EOS shares a room code; Steam uses its native picker with a friend-list fallback.
     public sealed class CoopInviteView : MonoBehaviour, ICancelHandler
     {
         public GameObject Panel;
@@ -16,7 +16,13 @@ namespace HowToSuck.Networking
         public Button CloseButton, RefreshButton, FriendTemplate;
         public RectTransform Content;
         public ScrollRect Scroll;
+        public RectTransform Dialog;
+        public GameObject EpicCodePanel, SteamHint;
+        public TMP_Text RoomCodeText;
+        public float EpicDialogHeight = 360;
         public bool IsOpen => Panel != null && Panel.activeSelf;
+        private bool epic;
+        private float steamDialogHeight;
         private sealed class FriendRow
         {
             public ulong Id;
@@ -39,13 +45,27 @@ namespace HowToSuck.Networking
 
         private void Awake()
         {
+            steamDialogHeight = Dialog.sizeDelta.y;
             CloseButton.onClick.AddListener(Close);
             RefreshButton.onClick.AddListener(RefreshFriends);
         }
         public void Open(SoloSessionStartup owner)
         {
             if (IsOpen || owner == null || !owner.CanInviteToLobby) return;
-            source = owner; runtime = owner.Game.Connection.ActiveSteamRuntime; lobby = owner.Game.Connection.Lobby;
+            source = owner; epic = owner.UsesEpic;
+            Scroll.gameObject.SetActive(!epic);
+            SteamHint.SetActive(!epic);
+            EpicCodePanel.SetActive(epic);
+            Dialog.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, epic ? EpicDialogHeight : steamDialogHeight);
+            if (epic)
+            {
+                previousSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+                Panel.SetActive(true); RefreshButton.interactable = true;
+                HowToSuck.LocalizedText.Set(RefreshButton.GetComponentInChildren<TMP_Text>(), "Скопировать код");
+                ShowEpicCode(false); Select(CloseButton.gameObject); return;
+            }
+            HowToSuck.LocalizedText.Set(RefreshButton.GetComponentInChildren<TMP_Text>(), "Обновить");
+            runtime = owner.Game.Connection.ActiveSteamRuntime; lobby = owner.Game.Connection.Lobby;
             if (lastLobby != lobby.LobbyId) { sentAt.Clear(); lastLobby = lobby.LobbyId; }
             previousSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
             activationCount = runtime.OverlayActivationCount;
@@ -62,12 +82,13 @@ namespace HowToSuck.Networking
             Select(CloseButton.gameObject);
         }
         private bool SessionAvailable => source != null && source.CanInviteToLobby &&
-            ReferenceEquals(runtime, source.Game.Connection.ActiveSteamRuntime) &&
-            ReferenceEquals(lobby, source.Game.Connection.Lobby) && lobby.LobbyId == lastLobby;
+            (epic ? !string.IsNullOrEmpty(source.RoomCode) : ReferenceEquals(runtime, source.Game.Connection.ActiveSteamRuntime) &&
+            ReferenceEquals(lobby, source.Game.Connection.Lobby) && lobby != null && lobby.LobbyId == lastLobby);
         private void Update()
         {
             if (!IsOpen) return;
             if (!SessionAvailable) { Close(); return; }
+            if (epic) return;
             if (runtime.OverlayActive || runtime.OverlayActivationCount != activationCount)
             {
                 Debug.Log("Steam invite picker: overlay activation confirmed");
@@ -87,6 +108,7 @@ namespace HowToSuck.Networking
         private void RefreshFriends()
         {
             if (!IsOpen || !SessionAvailable || waitingForOverlay) return;
+            if (epic) { ShowEpicCode(source.CopyRoomCode()); return; }
             // A rebuild must not leave keyboard focus pointing at a row scheduled for destruction.
             Select(RefreshButton.gameObject);
             ClearRows();
@@ -167,6 +189,14 @@ namespace HowToSuck.Networking
             waitingForOverlay = false; ClearRows(); source = null; runtime = null; lobby = null;
             if (restore && previousSelection != null && previousSelection.activeInHierarchy) Select(previousSelection);
             previousSelection = null;
+            HowToSuck.LocalizedText.SetLiteral(RoomCodeText, "");
+            epic = false;
+        }
+        private void ShowEpicCode(bool copied)
+        {
+            HowToSuck.LocalizedText.Set(Message,
+                copied ? "Код скопирован. Отправьте его другу." : "Отправьте этот код другу для входа в комнату.");
+            HowToSuck.LocalizedText.SetLiteral(RoomCodeText, source.RoomCode);
         }
         public void OnCancel(BaseEventData data) { if (IsOpen) { Close(); data.Use(); } }
         private void LateUpdate()

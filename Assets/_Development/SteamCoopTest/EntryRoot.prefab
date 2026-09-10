@@ -160,6 +160,7 @@ MonoBehaviour:
   Manager: {fileID: 7110343122358671001}
   Loopback: {fileID: 2134800062186879863}
   SteamTransport: {fileID: 0}
+  EpicTransport: {fileID: 0}
 --- !u!114 &8866420979186269234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +211,8 @@ MonoBehaviour:
   Game: {fileID: 8866420979186269234}
   Identity: {fileID: 11400000, guid: c6bd53128f3e93f4b96df4212795dd4d, type: 2}
   SteamConfiguration: {fileID: 11400000, guid: b84493f6012efbd45a543cc4cde0aaae, type: 2}
+  OverrideBackend: 1
+  BackendOverride: 1
   EntrySceneName: ProductEntry
 --- !u!114 &532474018086468772
 MonoBehaviour:

@@ -155,7 +155,7 @@ namespace HowToSuck.Networking
         {
             if(stopping||Session==null||Session.Phase!=SessionPhase.Lobby||Session.HasPendingSave||
                 !(RoleSource is SoloSessionStartup)||!SoloSessionStartup.IsDeferredEntry(OfflineMenuBootstrapPrefab)||
-                (Connection.Mode!=ConnectionMode.SoloLoopback&&Connection.Mode!=ConnectionMode.SteamHost&&Connection.Mode!=ConnectionMode.SteamClient))return false;
+                (Connection.Mode!=ConnectionMode.SoloLoopback&&Connection.Mode!=ConnectionMode.SteamHost&&Connection.Mode!=ConnectionMode.SteamClient&&!Connection.IsEpicSession))return false;
             return BeginIntentionalProductReturn();
         }
         public bool CancelProductEntryStart()

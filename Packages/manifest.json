@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.howtosuck.eos-sdk": "file:../ThirdParty/EosSdk",
     "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#c21a8f0e31c56ae8707130967faf491f7dd7c0d8",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.11.2",

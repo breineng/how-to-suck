@@ -1967,6 +1967,150 @@
     {
       "source": "PC",
       "text": "PC"
+    },
+    {
+      "source": "Код комнаты",
+      "text": "Room code"
+    },
+    {
+      "source": "Вставьте код друга",
+      "text": "Paste your friend's code"
+    },
+    {
+      "source": "Подключиться по коду",
+      "text": "Join with code"
+    },
+    {
+      "source": "Скопировать код",
+      "text": "Copy code"
+    },
+    {
+      "source": "Код скопирован. Отправьте его другу.",
+      "text": "Code copied. Send it to your friend."
+    },
+    {
+      "source": "Отправьте этот код другу для входа в комнату.",
+      "text": "Send this code to your friend to join your room."
+    },
+    {
+      "source": "Создайте комнату или введите код друга.",
+      "text": "Create a room or enter your friend's code."
+    },
+    {
+      "source": "Введите полный код комнаты, полученный от хозяина.",
+      "text": "Enter the complete room code provided by the host."
+    },
+    {
+      "source": "Epic Online Services ещё не настроен. Одиночная игра доступна.",
+      "text": "Epic Online Services is not configured yet. Solo play is available."
+    },
+    {
+      "source": "Проверьте настройки Epic Online Services. Одиночная игра доступна.",
+      "text": "Check the Epic Online Services settings. Solo play is available."
+    },
+    {
+      "source": "Совместная игра через Epic Online Services. Подключение по коду комнаты.",
+      "text": "Co-op through Epic Online Services. Join using a room code."
+    },
+    {
+      "source": "Не удалось проверить версию игры.",
+      "text": "Could not verify the game version."
+    },
+    {
+      "source": "Сеанс Epic завершён. Подключитесь заново.",
+      "text": "Your Epic session has ended. Please reconnect."
+    },
+    {
+      "source": "Epic: не удалось подготовить вход ({0}).",
+      "text": "Epic could not prepare sign-in ({0})."
+    },
+    {
+      "source": "Не удалось войти в Epic ({0}).",
+      "text": "Could not sign in to Epic ({0})."
+    },
+    {
+      "source": "Учётная запись Epic изменилась. Подключитесь заново.",
+      "text": "Your Epic identity has changed. Please reconnect."
+    },
+    {
+      "source": "Epic не ответил вовремя. Проверьте соединение и настройки сервиса.",
+      "text": "Epic did not respond in time. Check your connection and service settings."
+    },
+    {
+      "source": "Не удалось создать комнату Epic",
+      "text": "Could not create an Epic room"
+    },
+    {
+      "source": "Не удалось найти комнату Epic",
+      "text": "Could not find the Epic room"
+    },
+    {
+      "source": "Комната не найдена, заполнена или уже начала контракт",
+      "text": "The room was not found, is full, or has already started a contract"
+    },
+    {
+      "source": "Комната недоступна или использует другую версию игры",
+      "text": "The room is unavailable or uses a different game version"
+    },
+    {
+      "source": "Не удалось войти в комнату Epic",
+      "text": "Could not join the Epic room"
+    },
+    {
+      "source": "Состояние комнаты изменилось. Подключитесь заново",
+      "text": "The room has changed. Please reconnect"
+    },
+    {
+      "source": "Не удалось проверить участников комнаты Epic",
+      "text": "Could not verify the Epic room members"
+    },
+    {
+      "source": "Не удалось обновить комнату Epic",
+      "text": "Could not update the Epic room"
+    },
+    {
+      "source": "Не удалось записать параметры комнаты Epic",
+      "text": "Could not save the Epic room settings"
+    },
+    {
+      "source": "Не удалось закрыть вход в комнату Epic",
+      "text": "Could not close the Epic room to new players"
+    },
+    {
+      "source": "Epic не подтвердил созданную комнату",
+      "text": "Epic did not confirm the new room"
+    },
+    {
+      "source": "Epic не ответил на запрос комнаты вовремя",
+      "text": "Epic did not respond to the room request in time"
+    },
+    {
+      "source": "Не удалось запустить Epic Online Services. Проверьте настройки сервиса.",
+      "text": "Could not start Epic Online Services. Check the service settings."
+    },
+    {
+      "source": "Не удалось открыть комнату Epic.",
+      "text": "Could not open an Epic room."
+    },
+    {
+      "source": "Не удалось запустить хозяина комнаты Epic.",
+      "text": "Could not start the Epic room host."
+    },
+    {
+      "source": "Не удалось подключиться к хозяину комнаты Epic.",
+      "text": "Could not connect to the Epic room host."
+    },
+    {
+      "source": "Не удалось запустить соединение Epic.",
+      "text": "Could not start the Epic connection."
+    },
+    {
+      "source": "Не удалось закрыть комнату Epic перед контрактом.",
+      "text": "Could not close the Epic room before the contract."
+    },
+    {
+      "source": "Не удалось обновить состояние комнаты Epic.",
+      "text": "Could not update the Epic room state."
     }
   ]
 }

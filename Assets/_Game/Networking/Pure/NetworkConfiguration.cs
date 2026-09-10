@@ -4,7 +4,8 @@ using System.Globalization;
 namespace HowToSuck.Networking
 {
     public enum SteamApplicationMode { Development480, Production, Unconfigured }
-    public enum ConnectionMode { None, SoloLoopback, SteamHost, SteamClient, DiagnosticLoopbackHost, DiagnosticLoopbackClient }
+    public enum ConnectionMode { None, SoloLoopback, SteamHost, SteamClient, DiagnosticLoopbackHost, DiagnosticLoopbackClient, EpicHost, EpicClient }
+    public enum OnlineBackend { EpicOnlineServices, Steam }
     public enum ConnectionPhase { Offline, Starting, Lobby, Preparing, Running, Results, Stopping, Failed }
 
     public sealed class NetworkConfiguration
@@ -12,7 +13,7 @@ namespace HowToSuck.Networking
         // ProjectSettings.productGUID is public project identity, not a credential or an authentication secret.
         public const string ProductKey = "hts.79bd2fdafe42bb445986bf55af7bf135";
         public const int MaxPlayers = 4;
-        public const uint ProtocolVersion = 12; // Replicated collector identity aligns item flight with each peer's visible nozzle.
+        public const uint ProtocolVersion = 13; // EOS sessions use authenticated PUIDs and session-specific sockets.
         public const ushort SoloPort = 7777;
         public readonly SteamApplicationMode ApplicationMode;
         public readonly uint AppId;
@@ -20,6 +21,7 @@ namespace HowToSuck.Networking
         public readonly string ContentHash;
         public bool SteamConfigured => ApplicationMode != SteamApplicationMode.Unconfigured;
         public bool IsDevelopment480 => ApplicationMode == SteamApplicationMode.Development480;
+        public bool EpicConfigured { get; private set; }
 
         public NetworkConfiguration(SteamApplicationMode mode, uint productionAppId, string buildId, string contentHash,
             bool developmentExecution)
@@ -38,6 +40,8 @@ namespace HowToSuck.Networking
         // Shipping solo has a real build/content identity but no invented Steam AppID.
         // This explicit factory never relaxes the configured Steam constructor's AppID/480 gates.
         public static NetworkConfiguration ForSolo(string buildId, string contentHash) => new NetworkConfiguration(buildId, contentHash);
+        public static NetworkConfiguration ForEpic(string buildId, string contentHash) =>
+            new NetworkConfiguration(buildId, contentHash) { EpicConfigured = true };
         private NetworkConfiguration(string buildId, string contentHash)
         {
             if (!ValidToken(buildId, 48)) throw new ArgumentException("An explicit ASCII build ID is required.", nameof(buildId));
