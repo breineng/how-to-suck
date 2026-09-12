@@ -16,18 +16,18 @@ MonoBehaviour:
   DisplayName: "\u0421\u043E\u0440\u043D\u044B\u0439 \u0432\u0430\u043B\u0443\u043D"
   IsBoss: 1
   AttackKind: 1
-  BaseHealth: 4000
-  ContactDamage: 30
-  RangedDamage: 24
+  BaseHealth: 500
+  ContactDamage: 16
+  RangedDamage: 14
   LeapSpeed: 11
   LeapHeightVelocity: 4
-  MoveSpeed: 4.2
+  MoveSpeed: 3.25
   DetectionRange: 10
   AttackRange: 2.4
   HomeRadius: 9
-  TellSeconds: 0.8
+  TellSeconds: 1.1
   AttackSeconds: 0.8
-  RecoverySeconds: 1.25
+  RecoverySeconds: 2
   ChargeSpeed: 11
   ProjectileSpeed: 12
   ProjectileLifetime: 3
@@ -35,5 +35,5 @@ MonoBehaviour:
   HasSweep: 0
   ChapterIIPattern: 2
   SweepRange: 3.5
-  SweepTellSeconds: 1.05
+  SweepTellSeconds: 1.35
   SweepAttackSeconds: 0.85

@@ -2191,6 +2191,14 @@
     {
       "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
       "text": "Cała załoga jest powalona\nPrzytrzymaj {0} przez 3 sekundy, aby wstać\n50% kombinezonu · −15 sekund"
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты или через {0} от начала",
+      "text": "Pojawi się po dostarczeniu ponad 50% normy lub {0} od rozpoczęcia"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты или через {0} от начала.",
+      "text": "Dostarcz wymaganą wartość łupu i ciało bossa do ciężarówki.\nPojawi się po dostarczeniu ponad 50% normy lub {0} od rozpoczęcia."
     }
   ]
 }

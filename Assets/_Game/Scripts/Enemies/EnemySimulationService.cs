@@ -47,7 +47,7 @@ namespace HowToSuck
         private EnemySpawnPoint[] reinforcementSpawns=Array.Empty<EnemySpawnPoint>();
         private ulong nextEnemyId;
         private double nextReinforcementAt;
-        private int reinforcementCursor;
+        private int reinforcementCursor,reinforcementsSpawned;
         private int EarnedRepairs=>1+(contract!=null?(int)Math.Min(3,contract.State.DeliveredValue*4/Math.Max(1,contract.State.Quota)):0);
         public IReadOnlyDictionary<ulong,EnemyActor> Actors=>actors;
         public bool AdvancedEncounter=>contract!=null&&contract.State.ContractId.EndsWith("_ii",StringComparison.Ordinal);
@@ -95,7 +95,7 @@ namespace HowToSuck
                 var cover=covers.Count>0?covers[0]:null;if(cover!=null)covers.RemoveAt(0);
                 dormant.Add(new Dormant{Spawn=point,Cover=cover,Position=cover!=null?cover.transform.position:point.transform.position,Id=id});
             }
-            nextEnemyId=next;nextReinforcementAt=0;reinforcementCursor=0;
+            nextEnemyId=next;nextReinforcementAt=0;reinforcementCursor=0;reinforcementsSpawned=0;
             reinforcementSpawns=entries[0].Spawns.Where(p=>!p.Prefab.GetComponent<EnemyActor>().Definition.IsBoss).ToArray();
         }
         private bool TrySpawn(EnemySpawnPoint point,Vector3 position,ulong id,bool boss,bool hiddenFromCrew=false)
@@ -133,30 +133,32 @@ namespace HowToSuck
             // Settling furniture and automatic truck intake never count as provocation.
             if(now-contract.State.StartedAt<ArrivalGraceSeconds)return;
             int alive=actors.Values.Count(a=>a!=null&&a.IsAlive&&!a.BossKey.IsValid);
-            int cap=Math.Min(6,encounterCrew+1+Stage/3);
+            int cap=CampaignBalance.EnemyCap(Stage,encounterCrew);
+            if(contract.State.Boss.Status==BossObjectiveStatus.Active)cap=CampaignBalance.BossEscortCap(Stage,encounterCrew);
             for(int i=dormant.Count-1;i>=0;i--)
             {
                 var hidden=dormant[i];
                 if(hidden.Cover!=null&&hidden.Cover.HasReceivedPlayerSuction)hidden.Awakened=true;
-                if(now-contract.State.StartedAt>ArrivalGraceSeconds+25+hidden.Id*14)hidden.Awakened=true;
+                if(now-contract.State.StartedAt>ArrivalGraceSeconds+35+hidden.Id*18)hidden.Awakened=true;
                 // A disturbed object may be next to its collector: use an authored
                 // entrance, with the same distance/visibility checks as reinforcements.
                 if(hidden.Awakened&&alive<cap&&SpawnHiddenFromCrew(hidden.Spawn,hidden.Id)){dormant.RemoveAt(i);alive++;}
             }
-            if(bossSpawn!=null&&contract.State.Boss.Status==BossObjectiveStatus.Unassigned&&contract.State.DeliveredValue>contract.State.Quota/2)
+            if(bossSpawn!=null&&contract.State.Boss.Status==BossObjectiveStatus.Unassigned&&contract.CanRevealBoss)
                 if(TrySpawn(bossSpawn,bossSpawn.transform.position,bossId,true))bossSpawn=null;
             // Bounded pressure, with regular quiet intervals and no reinforcements
             // on top of players or after the boss dies. All spawn points are authored.
-            if(contract.State.Boss.Status!=BossObjectiveStatus.Active||reinforcementSpawns.Length==0||AllPlayersDown)return;
-            if(nextReinforcementAt==0){nextReinforcementAt=now+65;return;}
+            if(contract.State.Boss.Status!=BossObjectiveStatus.Active||reinforcementSpawns.Length==0||AllPlayersDown||
+                reinforcementsSpawned>=CampaignBalance.ReinforcementBudget[Stage])return;
+            if(nextReinforcementAt==0){nextReinforcementAt=now+CampaignBalance.ReinforcementSeconds[Stage];return;}
             if(now<nextReinforcementAt||alive>=cap)return;
             if((now-contract.State.StartedAt)%90<18){nextReinforcementAt=now+5;return;}
             if(suits.Values.Any(s=>s.Pending)||suits.Values.All(s=>s.Segments<=25)){nextReinforcementAt=now+10;return;}
-            nextReinforcementAt=now+Math.Max(38,65-Stage*5);
+            nextReinforcementAt=now+CampaignBalance.ReinforcementSeconds[Stage];
             for(int i=0;i<reinforcementSpawns.Length;i++)
             {
                 var point=reinforcementSpawns[reinforcementCursor++%reinforcementSpawns.Length];
-                if(SpawnHiddenFromCrew(point,nextEnemyId+1)){nextEnemyId++;break;}
+                if(SpawnHiddenFromCrew(point,nextEnemyId+1)){nextEnemyId++;reinforcementsSpawned++;break;}
             }
         }
         private bool SpawnHiddenFromCrew(EnemySpawnPoint point,ulong id)

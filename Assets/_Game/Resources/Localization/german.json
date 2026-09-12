@@ -2191,6 +2191,14 @@
     {
       "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
       "text": "Die gesamte Crew ist außer Gefecht\nHalte {0} 3 Sekunden zum Aufstehen\n50% Anzug · −15 Sekunden"
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты или через {0} от начала",
+      "text": "Erscheint nach Abgabe von über 50% der Quote oder {0} nach Beginn"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты или через {0} от начала.",
+      "text": "Bringt die Quote und den Bosskörper zum Laster.\nErscheint nach Abgabe von über 50% der Quote oder {0} nach Beginn."
     }
   ]
 }

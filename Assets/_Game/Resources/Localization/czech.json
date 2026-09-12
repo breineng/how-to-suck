@@ -2191,6 +2191,14 @@
     {
       "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
       "text": "Celá posádka je vyřazená\nDrž {0} 3 sekundy pro zvednutí\n50% obleku · −15 sekund"
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты или через {0} от начала",
+      "text": "Objeví se po odevzdání více než 50% kvóty nebo {0} od začátku"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты или через {0} от начала.",
+      "text": "Dovezte požadovanou kořist a tělo bosse do náklaďáku.\nObjeví se po odevzdání více než 50% kvóty nebo {0} od začátku."
     }
   ]
 }

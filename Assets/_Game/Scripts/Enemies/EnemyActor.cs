@@ -95,10 +95,19 @@ namespace HowToSuck
             // Freeze the authored rules for this instance; live asset edits cannot change an ongoing attack.
             rules=Instantiate(Definition);rules.hideFlags=HideFlags.HideAndDontSave;
             int stage=owner.Stage;
-            rules.BaseHealth=rules.IsBoss?CampaignBalance.BossHealth[stage]:Mathf.RoundToInt(rules.BaseHealth*(1+.18f*stage));
-            rules.MoveSpeed*=1+.045f*stage;
-            rules.ContactDamage=Mathf.Min(45,Mathf.RoundToInt(rules.ContactDamage*(1+.06f*stage)));
-            rules.RangedDamage=Mathf.Min(38,Mathf.RoundToInt(rules.RangedDamage*(1+.06f*stage)));
+            rules.BaseHealth=rules.IsBoss?CampaignBalance.BossHealth[stage]:Mathf.RoundToInt(rules.BaseHealth*CampaignBalance.EnemyHealthMultiplier(stage));
+            rules.MoveSpeed*=CampaignBalance.EnemySpeedMultiplier(stage);
+            rules.ContactDamage=Mathf.Min(45,Mathf.RoundToInt(rules.ContactDamage*CampaignBalance.EnemyDamageMultiplier(stage)));
+            rules.RangedDamage=Mathf.Min(38,Mathf.RoundToInt(rules.RangedDamage*CampaignBalance.EnemyDamageMultiplier(stage)));
+            if(rules.IsBoss)
+            {
+                rules.MoveSpeed=CampaignBalance.BossMoveSpeed[stage];
+                rules.ContactDamage=CampaignBalance.BossContactDamage[stage];
+                rules.RangedDamage=CampaignBalance.BossRangedDamage[stage];
+                rules.TellSeconds=CampaignBalance.BossTellSeconds[stage];
+                rules.SweepTellSeconds=rules.TellSeconds+.25f;
+                rules.RecoverySeconds=CampaignBalance.BossRecoverySeconds[stage];
+            }
             simulation=owner;RunId=run;EnemyId=rules.EnemyId;InstanceId=id;BossKey=boss;Home=point.position;
             Health=MaximumHealth=rules.HealthForCrew(crewSize);body.position=Home;initialized=true;Phase=EnemyPhase.Idle;
             PhaseRevision=1;shape.enabled=true;Frozen=true;

@@ -107,7 +107,10 @@ namespace HowToSuck
                 bool delivered = state.Boss.IsDelivered;
                 bool defeated = state.Boss.Status == BossObjectiveStatus.Defeated;
                 Text(BossTitleText, delivered ? "БОСС ДОСТАВЛЕН" : defeated ? "БОСС ПОВЕРЖЕН" : state.Boss.Status==BossObjectiveStatus.Unassigned?"БОСС СКРЫВАЕТСЯ":"ДОСТАВЬТЕ БОССА");
-                Text(BossDetailText, delivered ? "Цель выполнена" : defeated ? "Выстрелите телом в приёмник грузовика" : state.Boss.Status==BossObjectiveStatus.Unassigned?"Появится после сдачи более 50% квоты":"Победите босса и доставьте тело в грузовик");
+                double revealDelay=CampaignBalance.RevealDelay(state.ContractId);
+                int reveal=double.IsPositiveInfinity(revealDelay)?0:(int)revealDelay;
+                Text(BossDetailText, delivered ? "Цель выполнена" : defeated ? "Выстрелите телом в приёмник грузовика" : state.Boss.Status==BossObjectiveStatus.Unassigned?
+                    reveal>0?$"Появится после сдачи более 50% квоты или через {reveal/60}:{reveal%60:00} от начала":"Появится после сдачи более 50% квоты":"Победите босса и доставьте тело в грузовик");
             }
 
             if (identityChanged || !previous.Storage.SameValues(value.Storage)) PresentStorage(value.Storage, knownStorage);

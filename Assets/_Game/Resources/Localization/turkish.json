@@ -2191,6 +2191,14 @@
     {
       "source": "Вся команда выведена из строя\nУдерживайте {0} 3 секунды — подняться\n50% костюма · −15 секунд",
       "text": "Tüm ekip yere düştü\nKalkmak için {0} tuşunu 3 saniye tut\n%50 tulum · −15 saniye"
+    },
+    {
+      "source": "Появится после сдачи более 50% квоты или через {0} от начала",
+      "text": "Kotanın %50’sinden fazlası teslim edilince veya başlangıçtan {0} sonra ortaya çıkar"
+    },
+    {
+      "source": "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты или через {0} от начала.",
+      "text": "Kotayı ve bölüm sonu canavarının gövdesini kamyona teslim edin.\nKotanın %50’sinden fazlası teslim edilince veya başlangıçtan {0} sonra ortaya çıkar."
     }
   ]
 }

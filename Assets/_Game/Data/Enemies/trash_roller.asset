@@ -16,19 +16,19 @@ MonoBehaviour:
   DisplayName: "\u041C\u0443\u0441\u043E\u0440\u043D\u044B\u0439 \u043A\u0430\u0442\u0443\u043D"
   IsBoss: 0
   AttackKind: 1
-  BaseHealth: 110
-  ContactDamage: 25
-  RangedDamage: 14
-  LeapSpeed: 11
+  BaseHealth: 48
+  ContactDamage: 14
+  RangedDamage: 12
+  LeapSpeed: 8
   LeapHeightVelocity: 3.5
-  MoveSpeed: 4.3
+  MoveSpeed: 3.6
   DetectionRange: 8
   AttackRange: 1.5
   HomeRadius: 8
-  TellSeconds: 0.6
+  TellSeconds: 0.9
   AttackSeconds: 0.8
-  RecoverySeconds: 0.9
-  ChargeSpeed: 10
+  RecoverySeconds: 1.5
+  ChargeSpeed: 8
   ProjectileSpeed: 5
   ProjectileLifetime: 2.5
   DefeatedCargoPrefab: {fileID: 0}

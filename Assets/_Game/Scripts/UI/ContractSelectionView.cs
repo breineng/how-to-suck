@@ -79,7 +79,9 @@ namespace HowToSuck
             if(TimeValue!=null)HowToSuck.LocalizedText.Set(TimeValue, $"{seconds/60}:{seconds%60:00}");
             if(FailureValue!=null)HowToSuck.LocalizedText.Set(FailureValue, $"При неудаче: {selected.FailurePercent}% сданной стоимости");
             HowToSuck.LocalizedText.Set(DetailsText, $"Квота: ${quota:N0}    Время: {seconds/60}:{seconds%60:00}\nПри неудаче: {selected.FailurePercent}% сданной стоимости\nЦель: квота и доставка побеждённого босса");
-            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(DetailsText, "Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.");
+            double revealDelay=CampaignBalance.RevealDelay(selected.ContractId);
+            int reveal=double.IsPositiveInfinity(revealDelay)?0:(int)revealDelay;
+            if(QuotaValue!=null)HowToSuck.LocalizedText.Set(DetailsText, reveal>0?$"Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты или через {reveal/60}:{reveal%60:00} от начала.":"Сдайте квоту и тело босса в грузовик.\nБосс появится после сдачи более 50% квоты.");
             string current=TierName(session.DisplayedTierId),recommended=TierName(selected.RecommendedTierId);
             HowToSuck.LocalizedText.Set(RecommendationText, (current!=null?"Команда: "+current:"Ожидаем оборудование…")+
                 (recommended!=null?"\nРекомендуется: "+recommended:"\nЛюбая модель"));

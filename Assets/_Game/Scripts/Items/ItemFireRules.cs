@@ -8,7 +8,7 @@ namespace HowToSuck
         public const float LaunchSpeed = 18f;
         public const float MaximumLaunchSpeed = 36f;
         public const double ChargeSeconds = 2;
-        public const int MaximumDamage = 100;
+        public const int MaximumDamage = 120;
         public const float ChargeDamageBonus = .65f;
         public const float MinimumHitSpeed = 3f;
         public static float Charge(double heldSeconds) => (float)Math.Clamp((heldSeconds - .12) / (ChargeSeconds - .12), 0, 1);
@@ -21,7 +21,7 @@ namespace HowToSuck
         public static int Damage(float mass)
         {
             if (!Finite(mass) || mass <= 0) throw new ArgumentOutOfRangeException(nameof(mass));
-            return (int)Math.Round(Math.Min(48.0, 10.0 + 5.0 * Math.Sqrt(mass)), MidpointRounding.ToEven);
+            return (int)Math.Round(Math.Min(58.0, 22.0 + 5.0 * Math.Sqrt(mass)), MidpointRounding.ToEven);
         }
         public static bool CanDamage(bool ordinary, double now, double expires, float relativeSpeed) =>
             ordinary && Finite(now) && Finite(expires) && now < expires && Finite(relativeSpeed) && relativeSpeed >= MinimumHitSpeed;

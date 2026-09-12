@@ -85,8 +85,9 @@ namespace HowToSuck
             return true;
         }
 
-        public bool TryAssignBoss(BossKey key) => (phase == ContractPhase.Preparing ||
-            phase == ContractPhase.Running && collectedMoney > rules.Quota / 2) && boss != null && boss.TryAssign(key);
+        public bool CanRevealBoss => phase == ContractPhase.Running &&
+            (collectedMoney > rules.Quota / 2 || lastNow - startedAt >= CampaignBalance.RevealDelay(rules.ContractId));
+        public bool TryAssignBoss(BossKey key) => (phase == ContractPhase.Preparing || CanRevealBoss) && boss != null && boss.TryAssign(key);
 
         public bool TryDefeatBoss(BossKey key, double now)
         {
