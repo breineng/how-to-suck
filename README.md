@@ -118,12 +118,11 @@ The interface uses **Unity UI (uGUI)** and **TextMesh Pro**, with settings, inpu
 
 ## Screenshots
 
-<!-- Replace the placeholder URLs with uploaded screenshots and remove this comment wrapper.
-<img width="2560" height="1440" alt="Screenshot 1" src="SCREENSHOT_URL_1" />
-<img width="2560" height="1440" alt="Screenshot 2" src="SCREENSHOT_URL_2" />
-<img width="2560" height="1440" alt="Screenshot 3" src="SCREENSHOT_URL_3" />
-<img width="2560" height="1440" alt="Screenshot 4" src="SCREENSHOT_URL_4" />
--->
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/3d1a2bdd-06d5-48cc-8f40-040068918763" />
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/7233eeb2-06a7-48cb-8ec4-d93905acb374" />
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/64a368ce-eeb2-4248-985a-3cf3c6a3f8aa" />
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/e09db2ae-3a84-45fc-b748-010ecde60d4e" />
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/cf6fd2f4-336b-49c0-879f-c4c9de883565" />
 
 ## Documentation
 
